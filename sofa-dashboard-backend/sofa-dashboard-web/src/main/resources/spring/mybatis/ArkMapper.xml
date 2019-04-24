@@ -1,0 +1,89 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.alipay.sofa.dashboard.dao.ArkDao">
+
+    <insert id="insert" parameterType="com.alipay.sofa.dashboard.model.ArkPluginDO">
+		<selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS id
+		</selectKey>
+    	INSERT INTO ark_module_info
+    		(plugin_name,plugin_url,create_time,description)
+    	VALUES
+    		(#{pluginName},#{pluginUrl},#{createTime},#{description})
+    </insert>
+
+	<insert id="insertModuleVersion" parameterType="com.alipay.sofa.dashboard.model.ArkModuleVersionDO">
+		<selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		INSERT INTO ark_module_version
+		(module_id,module_version,source_path,create_time,is_release)
+		VALUES
+		(#{moduleId},#{moduleVersion},#{sourcePath},#{createTime},#{isRelease})
+	</insert>
+
+	<insert id="insertModuleUser" parameterType="com.alipay.sofa.dashboard.model.ArkModuleUserDO">
+		<selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS id
+		</selectKey>
+		INSERT INTO ark_module_user
+		(module_id,user_id,create_time)
+		VALUES
+		(#{moduleId},#{userId},#{createTime})
+	</insert>
+
+	<select id="queryModuleIdByName" parameterType="java.lang.String" resultType="int">
+		select id from ark_module_info where plugin_name = #{pluginName};
+	</select>
+
+	<delete id="remove">
+		delete from ark_module_info where id = #{mId}
+	</delete>
+
+    <select id="queryModuleIdByPluginName" parameterType="java.lang.String" resultType="int">
+        select id from ark_module_info where plugin_name = #{pluginName};
+    </select>
+
+	<delete id="removeModuleVersion">
+		delete from ark_module_version where module_id = #{mId}
+	</delete>
+
+	<delete id="removeModuleUser">
+		delete from ark_module_user where module_id = #{mId}
+	</delete>
+
+	<select id="queryModuleInfoByName" parameterType="java.lang.String" resultType="com.alipay.sofa.dashboard.model.ArkPluginDO">
+		select * from ark_module_info
+		WHERE 1=1
+		<if test="pluginName != null and pluginName != ''" >
+			AND plugin_name LIKE concat('%',#{pluginName},'%')
+		</if>
+	</select>
+
+	<select id="queryVersionsByMid" parameterType="int" resultType="String">
+		select module_version from ark_module_version where module_id = #{mId}
+	</select>
+
+	<insert id="insertAppArk" parameterType="com.alipay.sofa.dashboard.model.AppArkDO">
+		<selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS id
+		</selectKey>
+		INSERT INTO ark_module_app
+		(module_id,app_name,create_time)
+		VALUES
+		(#{moduleId},#{appName},#{createTime})
+	</insert>
+	<select id="queryAppsModuleId" parameterType="int" resultType="java.lang.String">
+		select app_name from ark_module_app where module_id = #{moduleId}
+	</select>
+
+	<delete id="deleteByPluginNameAndAppName">
+		delete from ark_module_app where app_name=#{appName} and module_id=#{moduleId}
+	</delete>
+
+	<select id="queryByModuleIdAndModuleVersion" resultType="com.alipay.sofa.dashboard.model.ArkModuleVersionDO">
+		select * from ark_module_version where module_id=#{moduleId} and module_version=#{moduleVersion}
+	</select>
+</mapper>

@@ -1,0 +1,67 @@
+@import '~antd/lib/style/themes/default.less';
+@import '~@/utils/utils.less';
+.operatorsWrapper {
+    display: flex;
+    flex-direction: row;
+
+    .item {
+        margin-right: 24px;
+        color: #538CF5;
+
+        &:last-child {
+            margin-right: 0;
+        }
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
+    .paddingBox {
+        padding: 0 16px 24px;
+    }
+}
+
+.optional {
+    color: #8E8E8E;
+}
+.components-table-demo-nested{
+    :global{
+        .ant-table-expanded-row{
+            background:  #F7F8FA;
+        }
+        .ant-table-expanded-row > td:last-child{
+            padding: 0;
+        }
+        .ant-table-expanded-row > td:first-child{
+            background:  #F7F8FA;
+        }
+        .ant-table-expanded-row .ant-table-row:last-child td{
+            border: none;
+        }
+        .ant-table-expanded-row .ant-table-thead > tr{
+            background: none;
+        }
+        .ant-table-expanded-row,.ant-table-expanded-row-level-1 td{
+            background:  #F7F8FA;
+        }
+        .ant-table-placeholder{
+            background:  #F7F8FA;
+        }
+        .ant-table-row:hover{
+            .eye-dom_86805{
+                visibility: visible;
+            }
+        }
+    }
+}
+
+.eye-dom{
+    visibility: hidden;
+}
+.inner-table-warpper{
+    :global{
+        td{
+            padding: 12px 8px !important;
+        } 
+    }
+}
