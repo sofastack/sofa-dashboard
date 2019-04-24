@@ -129,8 +129,9 @@ public class ZookeeperApplicationManager implements ApplicationManager, Initiali
     }
 
     private void doUpdateApplications(TreeCacheEvent event) {
-        if (LOGGER.isDebugEnabled()){
-            LOGGER.debug("dashboard client event type = {},data = {}", event.getType(), event.getData());
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("dashboard client event type = {},data = {}", event.getType(),
+                event.getData());
         }
         ChildData chileData = event.getData();
         try {
@@ -153,8 +154,9 @@ public class ZookeeperApplicationManager implements ApplicationManager, Initiali
     }
 
     private void doRemoveApplications(TreeCacheEvent event) {
-        if (LOGGER.isDebugEnabled()){
-            LOGGER.debug("dashboard client event type = {},data = {}", event.getType(), event.getData());
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("dashboard client event type = {},data = {}", event.getType(),
+                event.getData());
         }
         ChildData chileData = event.getData();
         if (chileData.getPath() == null) {
@@ -164,14 +166,16 @@ public class ZookeeperApplicationManager implements ApplicationManager, Initiali
             if (chileData.getPath().contains(SofaDashboardConstants.COLON)) {
                 String[] paths = chileData.getPath().split(SofaDashboardConstants.SEPARATOR);
                 // standard path is /apps/instance/appName/ip:port
-                if (paths.length == 5){
+                if (paths.length == 5) {
                     String appName = paths[3];
                     Set<Application> apps = ZookeeperApplicationManager.applications.get(appName);
                     if (apps == null) {
                         return;
                     }
-                    for (Application application : apps){
-                        if (paths[4].equals((application.getHostName()+SofaDashboardConstants.COLON+application.getPort()))){
+                    for (Application application : apps) {
+                        if (paths[4]
+                            .equals((application.getHostName() + SofaDashboardConstants.COLON + application
+                                .getPort()))) {
                             apps.remove(application);
                             break;
                         }

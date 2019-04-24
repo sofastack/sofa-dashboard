@@ -52,8 +52,8 @@ public class ConsumerNodeChangeListener implements PathChildrenCacheListener {
 
         final String path = event.getData().getPath();
 
-        if (LOGGER.isDebugEnabled()){
-            LOGGER.debug("consumer : {}" ,path);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("consumer : {}", path);
         }
 
         switch (event.getType()) {

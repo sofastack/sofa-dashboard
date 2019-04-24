@@ -51,8 +51,8 @@ public class ProviderNodeChangeListener implements PathChildrenCacheListener {
     public void childEvent(CuratorFramework client, PathChildrenCacheEvent event) throws Exception {
 
         final String path = event.getData().getPath();
-        if (LOGGER.isDebugEnabled()){
-            LOGGER.debug("provider : {}" , path);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("provider : {}", path);
         }
         switch (event.getType()) {
 

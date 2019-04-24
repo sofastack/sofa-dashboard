@@ -49,8 +49,9 @@ public class ServiceNodeChangeListener implements PathChildrenCacheListener {
         switch (event.getType()) {
         //加了一个provider
             case CHILD_ADDED:
-                if (LOGGER.isDebugEnabled()){
-                    LOGGER.debug("service event type ={},event={}", event.getType(), event.getData());
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("service event type ={},event={}", event.getType(),
+                        event.getData());
                 }
                 String path = event.getData().getPath();
 
@@ -66,13 +67,13 @@ public class ServiceNodeChangeListener implements PathChildrenCacheListener {
                 break;
             //删了一个provider
             case CHILD_REMOVED:
-                if (LOGGER.isDebugEnabled()){
+                if (LOGGER.isDebugEnabled()) {
                     LOGGER.debug("event type ={},event={}", event.getType(), event.getData());
                 }
                 break;
             // 更新一个Provider
             case CHILD_UPDATED:
-                if (LOGGER.isDebugEnabled()){
+                if (LOGGER.isDebugEnabled()) {
                     LOGGER.debug("event type ={},event={}", event.getType(), event.getData());
                 }
                 break;
