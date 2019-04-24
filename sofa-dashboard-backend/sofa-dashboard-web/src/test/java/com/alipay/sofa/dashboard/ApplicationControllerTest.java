@@ -39,7 +39,7 @@ public class ApplicationControllerTest extends AbstractTestBase {
     public void before() throws Exception {
         restTemplate = new RestTemplate();
         // 初始化 zk 节点
-        client = CuratorFrameworkFactory.newClient("localhost:2181", new ExponentialBackoffRetry(
+        client = CuratorFrameworkFactory.newClient("127.0.0.1:2181", new ExponentialBackoffRetry(
             1000, 3));
         client.start();
         initAppData();
@@ -52,14 +52,14 @@ public class ApplicationControllerTest extends AbstractTestBase {
 
     @Test
     public void testGetList() {
-        String request = "http://localhost:" + definedPort + "/api/application/list";
+        String request = "http://127.0.0.1:" + definedPort + "/api/application/list";
         ApplicationVO list = restTemplate.getForObject(request, ApplicationVO.class);
         Assert.assertTrue(list != null && list.getData().get(0).getName().equals("test"));
     }
 
     @Test
     public void testRemove() {
-        String request = "http://localhost:" + definedPort + "/api/application/remove?name={1}";
+        String request = "http://127.0.0.1:" + definedPort + "/api/application/remove?name={1}";
         boolean result = restTemplate.getForObject(request, Boolean.class, "test");
         Assert.assertTrue(result);
     }
