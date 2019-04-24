@@ -16,10 +16,12 @@
  */
 package com.alipay.sofa.dashboard;
 
+import com.alipay.sofa.dashboard.application.ZookeeperApplicationManager;
 import com.alipay.sofa.dashboard.base.AbstractTestBase;
 import com.alipay.sofa.dashboard.model.Application;
 import com.alipay.sofa.dashboard.utils.ObjectBytesUtil;
 import com.alipay.sofa.dashboard.vo.ApplicationVO;
+import com.alipay.sofa.dashboard.zookeeper.ZkCommandClient;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
@@ -27,13 +29,20 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.RestTemplate;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 /**
  * @author: guolei.sgl (guolei.sgl@antfin.com) 2019/4/10 3:38 PM
  * @since:
  **/
 public class ApplicationControllerTest extends AbstractTestBase {
+
+    @Autowired
+    ZkCommandClient zkCommandClient;
 
     @Before
     public void before() throws Exception {
@@ -43,6 +52,18 @@ public class ApplicationControllerTest extends AbstractTestBase {
             1000, 3));
         client.start();
         initAppData();
+        // 反射调用，强制获取一次数据
+        Class classObj = Class
+            .forName("com.alipay.sofa.dashboard.application.ZookeeperApplicationManager");
+        ZookeeperApplicationManager zookeeperApplicationManager = (ZookeeperApplicationManager) classObj
+            .newInstance();
+        Method method = classObj.getDeclaredMethod("initApplications");
+        Field field = classObj.getDeclaredField("zkCommandClient");
+        field.setAccessible(true);
+        method.setAccessible(true);
+        field.set(zookeeperApplicationManager, zkCommandClient);
+        method.invoke(zookeeperApplicationManager);
+
     }
 
     @After
