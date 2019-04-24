@@ -51,17 +51,6 @@ public class ApplicationControllerTest extends AbstractTestBase {
     }
 
     @Test
-    public void test() {
-        testGetList();
-        testRemove();
-    }
-
-    public void testGetList() {
-        String request = "http://127.0.0.1:" + definedPort + "/api/application/list";
-        ApplicationVO list = restTemplate.getForObject(request, ApplicationVO.class);
-        Assert.assertTrue(list != null && list.getData().get(0).getName().equals("test"));
-    }
-
     public void testRemove() {
         String request = "http://127.0.0.1:" + definedPort + "/api/application/remove?name={1}";
         boolean result = restTemplate.getForObject(request, Boolean.class, "test");
