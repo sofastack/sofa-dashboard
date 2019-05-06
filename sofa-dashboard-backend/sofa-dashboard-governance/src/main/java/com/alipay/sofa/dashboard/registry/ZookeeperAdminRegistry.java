@@ -16,6 +16,7 @@
  */
 package com.alipay.sofa.dashboard.registry;
 
+import com.alipay.sofa.dashboard.constants.SofaDashboardConstants;
 import com.alipay.sofa.dashboard.listener.RegistryDataChangeListener;
 import com.alipay.sofa.dashboard.listener.zookeeper.RootNodeChangeListener;
 import com.alipay.sofa.rpc.common.utils.StringUtils;
@@ -38,13 +39,9 @@ import static com.alipay.sofa.rpc.common.utils.StringUtils.CONTEXT_SEP;
  * @author bystander
  * @version $Id: ZookeeperAdminRegistry.java, v 0.1 2018年12月11日 17:35 bystander Exp $
  */
-@Component
 public class ZookeeperAdminRegistry implements AdminRegistry {
 
-    private static final Logger    LOGGER    = LoggerFactory
-                                                 .getLogger(ZookeeperAdminRegistry.class);
-
-    private final static String    SEPARATOR = "/";
+    private static final Logger    LOGGER = LoggerFactory.getLogger(ZookeeperAdminRegistry.class);
 
     /**
      * 注册中心服务配置
@@ -130,7 +127,7 @@ public class ZookeeperAdminRegistry implements AdminRegistry {
         // 注册Consumer节点
         try {
             PathChildrenCache pathChildrenCache = new PathChildrenCache(zkClient,
-                SEPARATOR + group, true);
+                SofaDashboardConstants.SEPARATOR + group, true);
 
             pathChildrenCache.start(PathChildrenCache.StartMode.NORMAL);
 
