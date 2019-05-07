@@ -16,6 +16,7 @@
  */
 package com.alipay.sofa.dashboard.listener;
 
+import com.alipay.sofa.dashboard.constants.SofaDashboardConstants;
 import com.alipay.sofa.dashboard.sync.RegistryDataSyncManager;
 import com.alipay.sofa.rpc.boot.config.RegistryConfigureProcessor;
 import com.alipay.sofa.rpc.boot.config.SofaBootRpcConfigConstants;
@@ -26,7 +27,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
+import org.springframework.core.env.MapPropertySource;
+import org.springframework.core.env.PropertySource;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author bystander
@@ -55,6 +62,14 @@ public class ApplicationStartedListener implements ApplicationListener {
                 } else if (address.startsWith(SOFA_PREFIX)) {
                     registryConfig.setAddress(address.substring(SOFA_PREFIX.length()));
                     registryConfig.setProtocol(SofaBootRpcConfigConstants.DEFAULT_REGISTRY);
+                    // config registry type
+                    Map<String, Object> props = new HashMap<>();
+                    props.put(SofaDashboardConstants.REGISTRY_TYPE,
+                        SofaBootRpcConfigConstants.DEFAULT_REGISTRY);
+                    PropertySource propertySource = new MapPropertySource(
+                        "customRegistryPropertySource", props);
+                    ((ConfigurableEnvironment) environment).getPropertySources().addLast(
+                        propertySource);
                 }
                 registryDataSyncManager.start(registryConfig);
             }

@@ -24,7 +24,6 @@ import com.alipay.sofa.rpc.common.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -92,6 +91,9 @@ public class RegistryDataCacheImpl implements RegistryDataCache {
     @Override
     public void removeProviders(String serviceName, List<RpcProvider> providerList) {
         RpcService rpcService = services.get(serviceName);
+        if (rpcService == null) {
+            return;
+        }
         List<RpcProvider> currentProviderList = providers.get(rpcService);
         for (RpcProvider deleteProvider : providerList) {
             currentProviderList.remove(deleteProvider);
@@ -102,6 +104,9 @@ public class RegistryDataCacheImpl implements RegistryDataCache {
     @Override
     public void removeConsumers(String serviceName, List<RpcConsumer> consumersList) {
         RpcService rpcService = services.get(serviceName);
+        if (rpcService == null) {
+            return;
+        }
         List<RpcConsumer> currentConsumerList = consumers.get(rpcService);
         for (RpcConsumer deleteProvider : consumersList) {
             currentConsumerList.remove(deleteProvider);
@@ -152,7 +157,7 @@ public class RegistryDataCacheImpl implements RegistryDataCache {
     public List<RpcProvider> fetchProvidersByService(String serviceName) {
         List<RpcProvider> result = new ArrayList<>();
         if (StringUtils.isEmpty(serviceName)) {
-            return new ArrayList<>();
+            return result;
         }
         RpcService rpcService = services.get(serviceName);
 
@@ -167,10 +172,9 @@ public class RegistryDataCacheImpl implements RegistryDataCache {
 
     @Override
     public List<RpcConsumer> fetchConsumersByService(String serviceName) {
-
         List<RpcConsumer> result = new ArrayList<>();
         if (StringUtils.isEmpty(serviceName)) {
-            return new ArrayList<>();
+            return result;
         }
         RpcService rpcService = services.get(serviceName);
         if (rpcService != null) {

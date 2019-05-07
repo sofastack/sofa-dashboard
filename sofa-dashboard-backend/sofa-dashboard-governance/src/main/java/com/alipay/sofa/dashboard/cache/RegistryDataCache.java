@@ -39,9 +39,9 @@ public interface RegistryDataCache {
     /**
      * 添加 consumers
      * @param serviceName 服务名
-     * @param consumers consumer 列表
+     * @param consumerList consumer 列表
      */
-    void addConsumers(String serviceName, List<RpcConsumer> consumers);
+    void addConsumers(String serviceName, List<RpcConsumer> consumerList);
 
     /**
      * 移除 providers
@@ -53,9 +53,9 @@ public interface RegistryDataCache {
     /**
      * 移除 consumers
      * @param serviceName 服务名
-     * @param consumers consumer 列表
+     * @param consumerList consumer 列表
      */
-    void removeConsumers(String serviceName, List<RpcConsumer> consumers);
+    void removeConsumers(String serviceName, List<RpcConsumer> consumerList);
 
     /**
      * 更新 providers
@@ -67,9 +67,9 @@ public interface RegistryDataCache {
     /**
      * 更新 consumers
      * @param serviceName 服务名
-     * @param consumers consumer 列表
+     * @param consumerList consumer 列表
      */
-    void updateConsumers(String serviceName, List<RpcConsumer> consumers);
+    void updateConsumers(String serviceName, List<RpcConsumer> consumerList);
 
     /**
      * 添加 RpcService
@@ -79,9 +79,9 @@ public interface RegistryDataCache {
 
     /**
      * 移除 RpcService
-     * @param consumers consumer 列表
+     * @param rpcServices services 列表
      */
-    void removeService(List<RpcService> consumers);
+    void removeService(List<RpcService> rpcServices);
 
     /**
      * 更新 RpcService

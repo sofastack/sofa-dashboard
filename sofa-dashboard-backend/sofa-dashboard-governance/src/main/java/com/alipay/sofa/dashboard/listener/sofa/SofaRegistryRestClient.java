@@ -22,6 +22,7 @@ import com.alipay.sofa.dashboard.domain.RpcConsumer;
 import com.alipay.sofa.dashboard.domain.RpcProvider;
 import com.alipay.sofa.dashboard.domain.RpcService;
 import com.alipay.sofa.rpc.common.utils.StringUtils;
+import com.alipay.sofa.rpc.config.RegistryConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -53,22 +56,40 @@ public class SofaRegistryRestClient {
     @Autowired
     private RestTemplate        restTemplate;
 
-    public List<String> syncAllDataInfoIds(String sessionAddress, int port){
+    private static String       sessionAddress;
+
+    private static int          port;
+
+    public List<String> syncAllDataInfoIds() {
         List<String> dataIds = new ArrayList<>();
-        String httpUrl = buildRequestUrl(sessionAddress,port,REGISTRY_QUERY_DATA_INFO_IDS);
+        String httpUrl = buildRequestUrl(REGISTRY_QUERY_DATA_INFO_IDS);
         try {
             ResponseEntity<List> forEntity = restTemplate.getForEntity(httpUrl, List.class);
             dataIds = forEntity.getBody();
-            if (dataIds == null){
+            if (dataIds == null) {
                 dataIds = new ArrayList<>();
             }
-            addRpcService(dataIds);
-            dataIds.forEach((dataInfoId)-> getSessionDataByDataInfoId(sessionAddress,port,dataInfoId));
-
-        }catch (Throwable t){
-            LOGGER.error("Failed to sync all dataInfoIds from session. query url ["+httpUrl+"]",t);
+        } catch (Throwable t) {
+            LOGGER.error(
+                "Failed to sync all dataInfoIds from session. query url [" + httpUrl + "]", t);
         }
         return dataIds;
+    }
+
+    public void refreshAllSessionDataByDataInfoIds(List<String> dataIds){
+        // 先清理当前缓存中所有的 dataId
+        Map<String, RpcService> serviceMap = registryDataCache.fetchService();
+        if (!serviceMap.isEmpty()){
+            registryDataCache.removeService(new ArrayList<>(serviceMap.values()));
+        }
+        // 重新载入 dataIds
+        addRpcService(dataIds);
+        // 获取 sub 和 pub 数据
+        dataIds.forEach((dataInfoId)->{
+            registryDataCache.removeConsumers(dataInfoId,registryDataCache.fetchConsumersByService(dataInfoId));
+            registryDataCache.removeProviders(dataInfoId,registryDataCache.fetchProvidersByService(dataInfoId));
+            getSessionDataByDataInfoId(dataInfoId);
+        });
     }
 
     private void addRpcService(List<String> dataIds) {
@@ -81,14 +102,13 @@ public class SofaRegistryRestClient {
         registryDataCache.addService(serviceList);
     }
 
-    public void getSessionDataByDataInfoId(String sessionAddress, int port, String dataInfoId) {
-
-        querySubscribers(sessionAddress, port, dataInfoId);
-        queryPublishers(sessionAddress, port, dataInfoId);
+    public void getSessionDataByDataInfoId(String dataInfoId) {
+        querySubscribers(dataInfoId);
+        queryPublishers(dataInfoId);
     }
 
-    public void querySubscribers(String sessionAddress,int port,String dataInfoId){
-        String subUrl = buildRequestUrl(sessionAddress,port,REGISTRY_QUERY_SUB_SESSION_DATA);
+    public void querySubscribers(String dataInfoId){
+        String subUrl = buildRequestUrl(REGISTRY_QUERY_SUB_SESSION_DATA);
         subUrl += "?dataInfoId={1}";
         ResponseEntity<Map> subResponse = restTemplate.getForEntity(subUrl, Map.class,dataInfoId);
         if (subResponse!=null && subResponse.getBody()!=null){
@@ -108,8 +128,8 @@ public class SofaRegistryRestClient {
         }
     }
 
-    public void queryPublishers(String sessionAddress,int port,String dataInfoId){
-        String pubUrl = buildRequestUrl(sessionAddress,port,REGISTRY_QUERY_PUB_SESSION_DATA);
+    public void queryPublishers(String dataInfoId){
+        String pubUrl = buildRequestUrl(REGISTRY_QUERY_PUB_SESSION_DATA);
         pubUrl += "?dataInfoId={1}";
         ResponseEntity<Map> pubResponse = restTemplate.getForEntity(pubUrl, Map.class,dataInfoId);
         if (pubResponse!=null && pubResponse.getBody()!=null){
@@ -185,12 +205,10 @@ public class SofaRegistryRestClient {
 
     /**
      * build query request url
-     * @param sessionAddress
-     * @param port
      * @param resource
      * @return
      */
-    public static String buildRequestUrl(String sessionAddress, int port, String resource) {
+    public static String buildRequestUrl(String resource) {
         StringBuilder sb = new StringBuilder();
         sb.append(SofaDashboardConstants.HTTP_SCHEME).append(sessionAddress)
             .append(SofaDashboardConstants.COLON).append(port);
@@ -219,4 +237,14 @@ public class SofaRegistryRestClient {
         return StringUtils.isBlank(valueStr) ? StringUtils.EMPTY : valueStr;
     }
 
+    public void init(RegistryConfig registryConfig) {
+        String endPointAddress = registryConfig.getAddress();
+        if (!endPointAddress.contains(SofaDashboardConstants.COLON)) {
+            throw new RuntimeException(
+                "Please check your session address.Illegal session address is [" + endPointAddress
+                        + "]");
+        }
+        sessionAddress = endPointAddress.split(SofaDashboardConstants.COLON)[0];
+        port = Integer.valueOf(endPointAddress.split(SofaDashboardConstants.COLON)[1]);
+    }
 }

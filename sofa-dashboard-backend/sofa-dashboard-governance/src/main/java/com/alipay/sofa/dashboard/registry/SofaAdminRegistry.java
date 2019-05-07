@@ -16,12 +16,8 @@
  */
 package com.alipay.sofa.dashboard.registry;
 
-import com.alipay.sofa.dashboard.constants.SofaDashboardConstants;
 import com.alipay.sofa.dashboard.listener.RegistryDataChangeListener;
 import com.alipay.sofa.dashboard.listener.sofa.SofaRegistryRestClient;
-import com.alipay.sofa.registry.client.api.RegistryClientConfig;
-import com.alipay.sofa.registry.client.provider.DefaultRegistryClient;
-import com.alipay.sofa.registry.client.provider.DefaultRegistryClientConfigBuilder;
 import com.alipay.sofa.rpc.config.RegistryConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,17 +42,11 @@ public class SofaAdminRegistry implements AdminRegistry {
     private static ScheduledThreadPoolExecutor executor                 = new ScheduledThreadPoolExecutor(
                                                                             1);
 
-    private DefaultRegistryClient              registryClient;
-
-    public static List<String>                 dataInfoIds              = new CopyOnWriteArrayList<>();
+    private static List<String>                dataInfoIds              = new CopyOnWriteArrayList<>();
 
     private static AtomicInteger               checkSumCode             = new AtomicInteger(0);
 
     private static final String                REGISTRY_QUERY_CHECK_SUM = "/checkSumDataInfoIdList";
-
-    private static String                      sessionAddress;
-
-    private static int                         port;
 
     @Autowired
     private RestTemplate                       restTemplate;
@@ -67,20 +57,9 @@ public class SofaAdminRegistry implements AdminRegistry {
     @Override
     public boolean start(RegistryConfig registryConfig) {
         try {
-            String endPointAddress = registryConfig.getAddress();
-            if (!endPointAddress.contains(SofaDashboardConstants.COLON)) {
-                throw new RuntimeException(
-                    "Please check your session address.Illegal session address is ["
-                            + endPointAddress + "]");
-            }
-            sessionAddress = endPointAddress.split(SofaDashboardConstants.COLON)[0];
-            port = Integer.valueOf(endPointAddress.split(SofaDashboardConstants.COLON)[1]);
-            RegistryClientConfig config = DefaultRegistryClientConfigBuilder.start()
-                .setRegistryEndpoint(sessionAddress).setRegistryEndpointPort(port).build();
-            registryClient = new DefaultRegistryClient(config);
-            registryClient.init();
+            restTemplateClient.init(registryConfig);
             // 开始时初始化一次 dataInfoIds 列表
-            dataInfoIds = restTemplateClient.syncAllDataInfoIds(sessionAddress, port);
+            dataInfoIds = restTemplateClient.syncAllDataInfoIds();
             // 避免初始化之后重新拉取一次
             checkSumCode.compareAndSet(0, checkSum());
             CheckSumTask checkSumTask = new CheckSumTask();
@@ -98,8 +77,7 @@ public class SofaAdminRegistry implements AdminRegistry {
     }
 
     private Integer checkSum() {
-        String pubUrl = SofaRegistryRestClient.buildRequestUrl(sessionAddress, port,
-            REGISTRY_QUERY_CHECK_SUM);
+        String pubUrl = SofaRegistryRestClient.buildRequestUrl(REGISTRY_QUERY_CHECK_SUM);
         ResponseEntity<Integer> checkSumResp = restTemplate.getForEntity(pubUrl, Integer.class);
         return checkSumResp.getBody();
     }
@@ -111,9 +89,13 @@ public class SofaAdminRegistry implements AdminRegistry {
             if (checkSumCode.get() == newCheckVal) {
                 return;
             }
-            restTemplateClient.syncAllDataInfoIds(sessionAddress, port);
+            dataInfoIds = restTemplateClient.syncAllDataInfoIds();
             // update checkSumCode
             checkSumCode.compareAndSet(checkSumCode.get(), newCheckVal);
         }
+    }
+
+    public static List<String> getCachedAllDataInfoIds() {
+        return dataInfoIds;
     }
 }
