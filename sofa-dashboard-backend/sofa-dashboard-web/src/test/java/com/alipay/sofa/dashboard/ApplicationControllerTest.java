@@ -16,7 +16,7 @@
  */
 package com.alipay.sofa.dashboard;
 
-import com.alipay.sofa.dashboard.application.ZookeeperApplicationManager;
+import com.alipay.sofa.dashboard.app.zookeeper.ZookeeperApplicationManager;
 import com.alipay.sofa.dashboard.base.AbstractTestBase;
 import com.alipay.sofa.dashboard.model.Application;
 import com.alipay.sofa.dashboard.utils.ObjectBytesUtil;
@@ -54,7 +54,7 @@ public class ApplicationControllerTest extends AbstractTestBase {
         initAppData();
         // 反射调用，强制获取一次数据
         Class classObj = Class
-            .forName("com.alipay.sofa.dashboard.application.ZookeeperApplicationManager");
+            .forName("com.alipay.sofa.dashboard.app.zookeeper.ZookeeperApplicationManager");
         ZookeeperApplicationManager zookeeperApplicationManager = (ZookeeperApplicationManager) classObj
             .newInstance();
         Method method = classObj.getDeclaredMethod("initApplications");

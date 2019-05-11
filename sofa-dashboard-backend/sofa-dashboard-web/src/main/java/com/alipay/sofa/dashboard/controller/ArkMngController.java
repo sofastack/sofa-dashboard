@@ -16,14 +16,14 @@
  */
 package com.alipay.sofa.dashboard.controller;
 
-import com.alipay.sofa.dashboard.application.ZookeeperApplicationManager;
+import com.alipay.sofa.dashboard.app.zookeeper.ZookeeperApplicationManager;
 import com.alipay.sofa.dashboard.constants.SofaDashboardConstants;
 import com.alipay.sofa.dashboard.impl.ZkHelper;
 import com.alipay.sofa.dashboard.model.AppArkModel;
 import com.alipay.sofa.dashboard.model.ArkPluginDO;
 import com.alipay.sofa.dashboard.model.ArkPluginModel;
 import com.alipay.sofa.dashboard.service.ArkMngService;
-import com.alipay.sofa.dashboard.utils.DateUtil;
+import com.alipay.sofa.dashboard.utils.DashboardUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,7 +94,8 @@ public class ArkMngController {
         String version = map.get(SofaDashboardConstants.VERSION);
         String address = map.get(SofaDashboardConstants.ADDRESS);
         String description = map.get(SofaDashboardConstants.DESCRIPTION);
-        ArkPluginDO arkPluginDO = new ArkPluginDO(pluginName, address, DateUtil.now(), description);
+        ArkPluginDO arkPluginDO = new ArkPluginDO(pluginName, address, DashboardUtil.now(),
+            description);
         return arkMngService.registerPlugin(arkPluginDO, version);
     }
 

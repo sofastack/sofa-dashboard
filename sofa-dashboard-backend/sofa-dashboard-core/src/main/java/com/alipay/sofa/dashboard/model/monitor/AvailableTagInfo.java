@@ -14,17 +14,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alipay.sofa.dashboard.utils;
+package com.alipay.sofa.dashboard.model.monitor;
 
-import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
- * @author: guolei.sgl (guolei.sgl@antfin.com) 19/1/10 下午5:02
+ *
+ * values:
+ *  heap:123
+ *  non-heap:234
+ *
+ * @author: guolei.sgl (guolei.sgl@antfin.com) 2019/5/7 9:29 PM
  * @since:
  **/
-public class DateUtil {
+public class AvailableTagInfo {
 
-    public static Date now() {
-        return new Date(System.currentTimeMillis());
+    private String                    tag;
+
+    private List<Map<String, String>> values;
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
+    public List<Map<String, String>> getValues() {
+        return values;
+    }
+
+    public void setValues(List<Map<String, String>> values) {
+        this.values = values;
     }
 }

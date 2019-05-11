@@ -1,104 +1,528 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Card, Table, Divider } from 'antd';
-import DescriptionList from '@/components/DescriptionList';
+import {Card, Table, Tabs,Collapse} from 'antd';
+
+import {
+    Chart,
+    Geom,
+    Axis,
+    Tooltip,
+    Legend,
+} from "bizcharts";
+
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import styles from './Enviroment.less';
-
-const { Description } = DescriptionList;
+const Panel = Collapse.Panel;
+const TabPane = Tabs.TabPane;
 // profile 的数据会被挂在到 this.props
-@connect(({ config, loading }) => ({
-  config,
-  loading: loading.effects['config/fetchBasic'],
+@connect(({ actuator }) => ({
+    actuator,
+    info: actuator.info,
+    health: actuator.health,
+    threads: actuator.threads,
+    heap: actuator.heap,
+    nonheap: actuator.nonheap,
+    env: actuator.env,
+    loggers: actuator.loggers,
+    mappings: actuator.mappings,
+    threaddump: actuator.threaddump
 }))
 class Enviroment extends Component {
+
   componentDidMount() {
-    const { dispatch } = this.props;
+    const { dispatch, location } = this.props;
+    const queryParams = location.query;
     dispatch({
-      type: 'config/fetchBasic',
+        type: 'actuator/fetch',
+        payload: queryParams
     });
   }
 
-  render() {
-    const { config, loading } = this.props;
-    const { appProps, appSysEnv, appSysProps } = config;
-    let goodsData = [];
-    let appsData = [];
-    let systemPropertiesData = [];
-    if (appProps.length) {
-      appsData = appSysEnv;
-      goodsData = appProps;
-      systemPropertiesData = appSysProps;
+render() {
+    const { dispatch,location } = this.props;
+    const queryParams = location.query.id;
+    function callback(key) {
+        if ( key=== "1") {
+            dispatch({
+                type: 'actuator/fetch',
+                payload:{
+                    id: queryParams,
+                }
+            });
+        }else if (key === "3"){
+            dispatch({
+                type: 'actuator/fetchEnv',
+                payload:{
+                    id: queryParams,
+                }
+            });
+        }else if (key === "4"){
+            dispatch({
+                type: 'actuator/fetchMapping',
+                payload:{
+                    id: queryParams,
+                }
+            });
+        }else if (key === "5"){
+            dispatch({
+                type: 'actuator/fetchThreadDump',
+                payload:{
+                    id: queryParams,
+                }
+            });
+        }
+        else if (key === "6"){
+            dispatch({
+                type: 'actuator/fetchLogger',
+                payload:{
+                    id: queryParams,
+                }
+            });
+        }
     }
-    const renderContent = (value, row, index) => {
-      const obj = {
-        children: value,
-        props: {},
-      };
-      if (index === appProps.length) {
-        obj.props.colSpan = 0;
-      }
-      return obj;
+    // thread 图标数据初始化
+    var threadsDv = new DataSet.View().source(this.props.threads);
+    threadsDv.transform({
+        type: "fold",
+        fields: ["LIVE", "DAEMON","PEAK"],
+        key: "type",
+        nums: "value"
+    });
+    const scale = {
+        nums: {
+            // y 轴从0开始
+            min: 0,
+            alias: "线程数",
+        },
+        time: {
+            range: [0, 1]
+        }
     };
-    const goodsColumns = [
-      {
-        title: '配置名',
-        dataIndex: 'name',
-        key: 'name',
-        render: renderContent,
-      },
-      {
-        title: '配置值',
-        dataIndex: 'value',
-        key: 'value',
-        render: renderContent,
-      },
+
+
+    // memory heap 图标数据初始化
+    const heapDv = new DataSet.View().source(this.props.heap);
+    heapDv.transform({
+        type: "fold",
+        fields: ["size", "used"],
+        key: "type",
+        nums: "value"
+    });
+    const heapScale = {
+        nums: {
+            min: 0,
+            alias: "memory heap",
+        },
+        time: {
+            range: [0, 1]
+        }
+    };
+
+    // memory nonheap 图标数据初始化
+    const nonHeapDv = new DataSet.View().source(this.props.nonheap);
+    nonHeapDv.transform({
+        type: "fold",
+        fields: ["size", "used","metaspace"],
+        key: "type",
+        nums: "value"
+    });
+    const nonHeapScale = {
+        nums: {
+            min: 0,
+            alias: "non-memory heap",
+        },
+        time: {
+            range: [0, 1]
+        }
+    };
+
+    const byteConvert = function (bytes) {
+        if (Math.floor(bytes/(8*1024*1024*1024)) !== 0){
+            return (bytes/(8*1024*1024*1024)).toFixed(2)+" GB";
+        }else if (bytes/(8*1024*1024) !== 0){
+            return (bytes/(8*1024*1024)).toFixed(2)+" MB";
+        }else{
+            return (bytes/(8*1024)).toFixed(2)+" KB";
+        }
+    }
+
+
+    const threadDumpColor = function (threadState) {
+        if (threadState === 'TIMED_WAITING' || threadState === 'WAITING'){
+            return "#ffdd57";
+        }else if (threadState === 'RUNNABLE'){
+            return "#23d160";
+        }else{
+            return "#dbdbdb";
+        }
+    }
+
+    const dispatchCol = [
+        {
+            title: 'predicate',
+            dataIndex: 'predicate',
+            key: 'predicate',
+            className: styles["table-col"],
+            render: text => <div style={{overflow:"auto",width:"180px",wordWrap:"break-word"}}>{text}</div>,
+        },
+        {
+            title: 'methods',
+            dataIndex: 'methods',
+            key: 'methods',
+
+        },
+        {
+            title: 'paramsType',
+            dataIndex: 'paramsType',
+            key: 'paramsType',
+            render: text => <div style={{overflow:"auto",width:"250px",wordWrap:"break-word" }}>{text}</div>,
+        },
+        {
+            title: 'responseType',
+            dataIndex: 'responseType',
+            key: 'responseType',
+            render: text => <div style={{overflow:"auto",width:"150px",wordWrap:"break-word" }}>{text}</div>,
+        },
+        {
+            title: 'handler',
+            dataIndex: 'handler',
+            key: 'handler',
+            render: text => <div style={{overflow:"auto",width:"450px",wordWrap:"break-word" }}>{text}</div>,
+        },
     ];
+
+    const filtersCol = [
+        {
+            title: 'Url Pattern',
+            dataIndex: 'urlPatternMappings',
+            key: 'urlPatternMappings',
+        },
+        {
+            title: 'Servlet Name',
+            dataIndex: 'servletNameMappings',
+            key: 'servletNameMappings',
+        },
+        {
+            title: 'Filter Name',
+            dataIndex: 'name',
+            key: 'name',
+        },
+        {
+            title: 'Class',
+            dataIndex: 'className',
+            key: 'className',
+        },
+    ];
+
+    const servletCol = [
+        {
+            title: 'mappings',
+            dataIndex: 'mappings',
+            key: 'mappings',
+        },
+        {
+            title: 'Servlet Name',
+            dataIndex: 'name',
+            key: 'name',
+        },
+        {
+            title: 'Class',
+            dataIndex: 'className',
+            key: 'className',
+        },
+    ];
+
+
+
     return (
-      <PageHeaderWrapper title="Enviroment">
-        <Card bordered={false}>
-          <DescriptionList size="large" title="Profiles" style={{ marginBottom: 32 }}>
-            <Description term="spring.profile.active">No profiles active</Description>
-          </DescriptionList>
-          <Divider style={{ marginBottom: 32 }} />
-          <DescriptionList size="large" title="server.ports" style={{ marginBottom: 32 }}>
-            <Description term="local.server.port">8083</Description>
-          </DescriptionList>
-          <Divider style={{ marginBottom: 32 }} />
+        <PageHeaderWrapper>
+          <Tabs defaultActiveKey="1" onChange={callback}>
+              <TabPane tab="应用详情" key="1">
+                  <div className={styles["tab-card"]}>
+                      <Card title="Info" bordered={false} style={{ width: "100%" }}>
+                          <div>
+                              {
+                                  Object.keys(this.props.info).map((key) => {
+                                      const item = this.props.info[key];
+                                      return (
+                                              <div key={key} className={styles["item-info"]}>
+                                                  <span className={styles["item-info-span-title"]}>{key}</span>
+                                                  <span className={styles["item-info-span-content"]}>{item}</span>
+                                              </div>
+                                      );
+                                  })
+                              }
+                          </div>
+                      </Card>
+                  </div>
 
-          <div className={styles.title}>applicationConfig: [classpath:/application.properties]</div>
-          <Table
-            style={{ marginBottom: 24 }}
-            pagination={false}
-            loading={loading}
-            dataSource={goodsData}
-            columns={goodsColumns}
-            rowKey="id"
-          />
+                  <div className={styles["tab-card"]}>
+                      <Card title="Health" bordered={false} style={{ width: "100%" }}>
+                          <div className={styles["item-info"]}>
+                              <span className={styles["item-info-span-title"]}>INSTANCE</span>
+                              <span className={styles["item-info-span-content"]} style={{textAlign:"right"}}>{this.props.health.status}</span>
+                          </div>
+                          {
+                              Object.keys(this.props.health).length && this.props.health.details.map(item => {
+                                  return (
+                                      <div key={item.name} className={styles["item-info"]} style={{textIndent:4}}>
+                                          <span className={styles["item-info-span-title"]}>{item.name}</span>
+                                          <span className={styles["item-info-span-content"]} style={{textAlign:"right"}}>{item.status}</span>
+                                          <div>
+                                              {
+                                                  item.details && Object.keys(item.details).map(key =>{
+                                                      const detailItem = item.details[key];
+                                                      if(!(typeof detailItem === "object")){
+                                                          if (typeof detailItem === "number") {
+                                                              return(
+                                                                  <div key={key} className={styles["item-info"]} style={{textIndent:16}}>
+                                                                      {key}<span className={styles["item-info-span-content"]}>{byteConvert(detailItem)}</span>
+                                                                  </div>
+                                                              )
+                                                          }
 
-          <div className={styles.title}>systemEnvironment</div>
-          <Table
-            style={{ marginBottom: 24 }}
-            pagination={false}
-            loading={loading}
-            dataSource={appsData}
-            columns={goodsColumns}
-            rowKey="id"
-          />
+                                                      }
+                                                  })
+                                              }
+                                          </div>
+                                      </div>
+                                  )
+                              })
+                          }
+                      </Card>
+                  </div>
 
-          <div className={styles.title}>systemProperties</div>
-          <Table
-            style={{ marginBottom: 24 }}
-            pagination={false}
-            loading={loading}
-            dataSource={systemPropertiesData}
-            columns={goodsColumns}
-            rowKey="id"
-          />
-        </Card>
-      </PageHeaderWrapper>
+                  <div className={styles["tab-card"]}>
+                      <Card title="Threads" bordered={false} style={{ width: "100%" }}>
+                          <div>
+                              <Chart
+                                  height={280}
+                                  data={threadsDv}
+                                  padding={"auto"}
+                                  scale={scale}
+                                  forceFit
+                              >
+                                  <Tooltip crosshairs />
+                                  <Axis />
+                                  <Legend />
+                                  <Geom type="area" position="time*nums" color="tags" shape="smooth" />
+                                  <Geom
+                                      type="line"
+                                      position="time*nums"
+                                      color="tags"
+                                      shape="smooth"
+                                      size={2}
+                                  />
+                              </Chart>
+                          </div>
+                      </Card>
+                  </div>
+
+                  <div className={styles["tab-card"]}>
+                      <Card title="Memory:Heap" bordered={false} style={{ width: "100%" }}>
+                          <div>
+                              <Chart
+                                  height={280}
+                                  data={heapDv}
+                                  padding={"auto"}
+                                  scale={heapScale}
+                                  forceFit
+                              >
+                                  <Tooltip crosshairs />
+                                  <Axis />
+                                  <Legend />
+                                  <Geom type="area" position="time*nums" color="tags" shape="smooth" />
+                                  <Geom
+                                      type="line"
+                                      position="time*nums"
+                                      color="tags"
+                                      shape="smooth"
+                                      size={2}
+                                  />
+                              </Chart>
+                          </div>
+                      </Card>
+                  </div>
+
+                  <div className={styles["tab-card"]}>
+                      <Card title="Memory:Non Heap" bordered={false} style={{ width: "100%" }}>
+                          <div>
+                              <Chart
+                                  height={280}
+                                  data={nonHeapDv}
+                                  padding={"auto"}
+                                  scale={nonHeapScale}
+                                  forceFit
+                              >
+                                  <Tooltip crosshairs />
+                                  <Axis />
+                                  <Legend />
+                                  <Geom type="area" position="time*nums" color="tags" shape="smooth" />
+                                  <Geom
+                                      type="line"
+                                      position="time*nums"
+                                      color="tags"
+                                      shape="smooth"
+                                      size={2}
+                                  />
+                              </Chart>
+                          </div>
+                      </Card>
+                  </div>
+              </TabPane>
+              <TabPane tab="Environment" key="3">
+                  <div className={styles["tab-env-block"]}>
+                      <Card title="activeProfiles" bordered={false} style={{width: "100%"}}>
+                      {
+                          Object.keys(this.props.env).length && this.props.env["activeProfiles"].map((key,i)=>{
+                              return(
+                                  <div key={i} className={styles["item-info"]}>
+                                      {key}
+                                  </div>
+                               )
+                          })
+                      }
+                      </Card>
+                  </div>
+                      {
+                          Object.keys(this.props.env).length && this.props.env["propertySources"].map((item)=> {
+                              return (
+                                  <div className={styles["tab-env-block"]} key={item.name}>
+                                  <Card title={item.name} bordered={false} style={{width: "100%"}}>
+                                      <div key={item.name}>
+                                          {
+                                              Object.keys(item.properties).length && item.properties.map((property,index)=>{
+                                                  return (
+                                                      <div key={index}>
+                                                          {
+                                                              Object.keys(property).map((itemKey,i)=>{
+                                                                  return(
+                                                                      <div key={i} className={styles["item-info"]}>
+                                                                          <span className={styles["item-info-span-title"]}>{itemKey}</span>
+                                                                          <span className={styles["item-info-span-content"]}>{property[itemKey]}</span>
+                                                                      </div>
+                                                                  )
+                                                              })
+                                                          }
+                                                      </div>
+                                                  )
+                                              })
+                                          }
+                                      </div>
+                                  </Card>
+                                  </div>
+                              )
+                          })
+                      }
+              </TabPane>
+              <TabPane tab="mappings" key="4">
+                  {
+                      Object.keys(this.props.mappings).length &&Object.keys(this.props.mappings).map((appName)=> {
+                          const appItem = this.props.mappings[appName];
+                          return (
+                              <div className={styles["tab-env-block"]} key={appName}>
+                                  <Card title={appName} bordered={false} style={{width: "100%"}}>
+                                      <div className={styles["tab-env-block"]}>
+                                          <Card title="dispatcherServlets" bordered={false}>
+                                              <Table
+                                                  dataSource={appItem.dispatcherServlet}
+                                                  columns={dispatchCol}
+                                                  pagination={ false }
+                                                  rowKey={r => (r.predicate+r.responseType+r.methods)}/>
+                                          </Card>
+                                      </div>
+                                      <div className={styles["tab-env-block"]}>
+                                          <Card title="servletFilters" bordered={false} style={{width: "100%"}}>
+                                              <Table
+                                                  dataSource={appItem.servletFilters}
+                                                  columns={filtersCol}
+                                                  pagination={ false }
+                                                  scroll={{ x: true}}
+                                                  rowKey={r => r.name}/>
+                                          </Card>
+                                      </div>
+
+                                      <div className={styles["tab-env-block"]}>
+                                          <Card title="servlets" bordered={false} style={{width: "100%"}}>
+                                              <Table
+                                                  dataSource={appItem.servlets}
+                                                  columns={servletCol}
+                                                  pagination={ false }
+                                                  scroll={{ x: true}}
+                                                  rowKey={r => r.name}/>
+                                          </Card>
+                                      </div>
+                                  </Card>
+                              </div>
+                          )
+                      })
+                  }
+              </TabPane>
+              <TabPane tab="Threads" key="5">
+                  <Collapse bordered={false} >
+                      {
+                          this.props.threaddump.length && this.props.threaddump.map((thread,i)=> {
+                                  const state = thread.threadState;
+                                  return(
+                                      <Panel header={thread.threadName} key={i} showArrow={false} style={{background:threadDumpColor(state)}}>
+                                              {
+                                                  Object.keys(thread).map((key,index)=> {
+                                                      return(
+                                                          <div key={index} className={styles["item-info"]}>
+                                                              <span className={styles["item-info-span-title"]}>{key}</span>
+                                                              <span className={styles["item-info-span-content"]}>{thread[key]}</span>
+                                                          </div>
+                                                      )
+                                                  })
+                                              }
+                                      </Panel>
+                                  )
+                          })
+                      }
+                  </Collapse>
+              </TabPane>
+              <TabPane tab="Loggers" key="6">
+                  <div className={styles["tab-env-block"]}>
+                      <Card title="levels" bordered={false} style={{width: "100%"}}>
+                          <div className={styles["item-info"]}>
+                          {
+                              Object.keys(this.props.loggers).length && this.props.loggers["levels"].map((key,i)=>{
+                                  // 输出html 必须要 return
+                                  return(
+                                      <span key={i} className={styles["item-info-span-inline"]}> {key}</span>
+                                  )
+                              })
+                          }
+                          </div>
+                      </Card>
+                  </div>
+
+                  {
+                      Object.keys(this.props.loggers).length && Object.keys(this.props.loggers["loggers"]).map((key)=> {
+                          const loggerItem = this.props.loggers["loggers"][key];
+                          return (
+                              <div className={styles["tab-env-block"]} key={key}>
+                                  <Card title={key} bordered={false} style={{width: "100%"}}>
+                                      {
+                                          Object.keys(loggerItem).map((itemKey)=>{
+                                             return(
+                                                 <div key={itemKey} className={styles["item-info"]}>
+                                                     <span className={styles["item-info-span-title"]}>{itemKey}</span>
+                                                     <span className={styles["item-info-span-content"]}>{loggerItem[itemKey]}</span>
+                                                 </div>
+                                             )
+                                          })
+                                      }
+                                  </Card>
+                              </div>
+                          )
+                      })
+                  }
+
+              </TabPane>
+          </Tabs>
+        </PageHeaderWrapper>
     );
   }
 }
-
 export default Enviroment;

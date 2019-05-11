@@ -61,9 +61,37 @@ class BasicList extends PureComponent {
       total: totalCount,
     };
 
+    // goto详情页
+    const gotoDetails = (key, currentItem) => {
+        console.log("key",key)
+        console.log("currentItem",currentItem)
+        if (key === 'jvm') {
+            // 跳转到 jvm 详情页
+        } else if (key == 'env') {
+            // 跳转到 env 详情页
+            window.location.href = '/dashboard/env?id='+currentItem.id;
+        } else if (key == 'thread') {
+            // 跳转到 thread 详情页
+        } else if (key == 'health') {
+            // 跳转到 health 详情页
+        }
+    };
+
     // key -> link 点击选项跳转到具体的详情页面
     const MoreBtn = props => (
-        <span></span>
+        <Dropdown overlay={
+                <Menu onClick={({ key }) => gotoDetails(key, props.current)}>
+                    <Menu.Item key="jvm">Jvm</Menu.Item>
+                    <Menu.Item key="env">Enviroment</Menu.Item>
+                    <Menu.Item key="thread">Threads</Menu.Item>
+                    <Menu.Item key="health">Health</Menu.Item>
+                </Menu>
+            }
+        >
+            <a>
+                details <Icon type="down" />
+            </a>
+        </Dropdown>
     );
 
     // 页面布局部分

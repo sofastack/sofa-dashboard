@@ -105,3 +105,26 @@ export async function pushCommand(params) {
     body: params,
   });
 }
+
+// 应用面版-应用详情
+export async function queryDetails(params) {
+    return request(`/api/actuator/details?${stringify(params)}`);
+}
+
+// 应用面版-应用详情
+export async function queryEnv(params) {
+    return request(`/api/actuator/env?${stringify(params)}`);
+}
+
+export async function queryLogger(params) {
+    return request(`/api/actuator/loggers?${stringify(params)}`);
+}
+
+export async function queryMapping(params) {
+    return request(`/api/actuator/mappings?${stringify(params)}`);
+}
+
+
+export async function queryThreadDump(params) {
+    return request(`/api/actuator/thread-dump?${stringify(params)}`);
+}

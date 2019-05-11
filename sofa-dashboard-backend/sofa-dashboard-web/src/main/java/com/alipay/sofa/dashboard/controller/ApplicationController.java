@@ -16,16 +16,21 @@
  */
 package com.alipay.sofa.dashboard.controller;
 
-import com.alipay.sofa.dashboard.application.ZookeeperApplicationManager;
+import com.alipay.sofa.dashboard.app.zookeeper.ZookeeperApplicationManager;
 import com.alipay.sofa.dashboard.model.AppModel;
 import com.alipay.sofa.dashboard.model.Application;
+import com.alipay.sofa.dashboard.utils.DashboardUtil;
 import com.alipay.sofa.dashboard.vo.ApplicationVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author: guolei.sgl (guolei.sgl@antfin.com) 18/12/7 下午5:15
@@ -36,7 +41,7 @@ import java.util.*;
 public class ApplicationController {
 
     @Autowired
-    ZookeeperApplicationManager zookeeperApplicationManager;
+    private ZookeeperApplicationManager zookeeperApplicationManager;
 
     /**
      * 获取应用列表
@@ -55,6 +60,7 @@ public class ApplicationController {
             for (Set<Application> appList : apps) {
                 for (Application app : appList) {
                     AppModel appModel = new AppModel();
+                    appModel.setId(DashboardUtil.simpleEncode(app.getHostName(), app.getPort()));
                     appModel.setHost(app.getHostName());
                     appModel.setPort(app.getPort());
                     appModel.setName(app.getAppName());

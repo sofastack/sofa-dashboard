@@ -20,7 +20,7 @@ import com.alipay.sofa.dashboard.constants.SofaDashboardConstants;
 import com.alipay.sofa.dashboard.dao.ArkDao;
 import com.alipay.sofa.dashboard.model.*;
 import com.alipay.sofa.dashboard.service.ArkMngService;
-import com.alipay.sofa.dashboard.utils.DateUtil;
+import com.alipay.sofa.dashboard.utils.DashboardUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,7 +108,7 @@ public class ArkMngServiceImpl implements ArkMngService {
         }
         AppArkDO appArkDO = new AppArkDO();
         appArkDO.setAppName(appName);
-        appArkDO.setCreateTime(DateUtil.now());
+        appArkDO.setCreateTime(DashboardUtil.now());
         appArkDO.setModuleId(moduleId);
         arkDao.insertAppArk(appArkDO);
         return appArkDO.getId();
@@ -164,7 +164,7 @@ public class ArkMngServiceImpl implements ArkMngService {
     private int doInsertModuleVersion(int mId, String version, String pluginName) {
         // 向模板版本表中插入数据
         ArkModuleVersionDO arkModuleVersionDO = new ArkModuleVersionDO();
-        arkModuleVersionDO.setCreateTime(DateUtil.now());
+        arkModuleVersionDO.setCreateTime(DashboardUtil.now());
         arkModuleVersionDO.setModuleId(mId);
         arkModuleVersionDO.setModuleVersion(version);
         arkModuleVersionDO.setSourcePath(SofaDashboardConstants.SEPARATOR + version

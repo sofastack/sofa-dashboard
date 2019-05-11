@@ -14,21 +14,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alipay.sofa.dashboard;
-
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.scheduling.annotation.EnableScheduling;
+package com.alipay.sofa.dashboard.model.monitor;
 
 /**
- * @author: guolei.sgl (guolei.sgl@antfin.com) 19/1/10 下午9:36
+ * @author: guolei.sgl (guolei.sgl@antfin.com) 2019/5/9 8:51 PM
  * @since:
  **/
-@SpringBootApplication
-@EnableScheduling
-public class SofaAdminServerApplication {
+public class MemoryNonHeapInfo {
 
-    public static void main(String[] args) {
-        SpringApplication.run(SofaAdminServerApplication.class, args);
+    private DetailsItem used;
+    private DetailsItem size;
+    private DetailsItem metaspace;
+
+    public DetailsItem getUsed() {
+        return used;
+    }
+
+    public void setUsed(DetailsItem used) {
+        this.used = used;
+    }
+
+    public DetailsItem getSize() {
+        return size;
+    }
+
+    public void setSize(DetailsItem size) {
+        this.size = size;
+    }
+
+    public DetailsItem getMetaspace() {
+        return metaspace;
+    }
+
+    public void setMetaspace(DetailsItem metaspace) {
+        this.metaspace = metaspace;
     }
 }
