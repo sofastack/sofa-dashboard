@@ -42,10 +42,14 @@ import java.lang.reflect.Method;
 public class ApplicationControllerTest extends AbstractTestBase {
 
     @Autowired
-    ZkCommandClient zkCommandClient;
+    ZkCommandClient                     zkCommandClient;
+
+    @Autowired
+    private ZookeeperApplicationManager zookeeperApplicationManager;
 
     @Before
     public void before() throws Exception {
+        zookeeperApplicationManager.getApplications().clear();
         restTemplate = new RestTemplate();
         // 初始化 zk 节点
         client = CuratorFrameworkFactory.newClient("localhost:2181", new ExponentialBackoffRetry(

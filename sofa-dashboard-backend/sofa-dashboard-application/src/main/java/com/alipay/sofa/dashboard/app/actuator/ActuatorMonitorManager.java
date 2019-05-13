@@ -65,43 +65,43 @@ public class ActuatorMonitorManager implements MonitorManager {
         if (envMap.isEmpty()){
             return environmentInfo;
         }
-            Object activeProfiles = envMap.get("activeProfiles");
-            if (activeProfiles instanceof List){
-                environmentInfo.setActiveProfiles((List<String>) activeProfiles);
-            }else {
-                environmentInfo.setActiveProfiles(new ArrayList<>());
-            }
-            List<EnvironmentInfo.PropertySourceDescriptor> propertySources = new ArrayList<>();
-            Object propertyList = envMap.get("propertySources");
-            if (propertyList instanceof List){
-                List<Map<String,Object>> propertyDataList=(ArrayList)propertyList;
-                propertyDataList.forEach((item)->{
-                    EnvironmentInfo.PropertySourceDescriptor propertySource = new EnvironmentInfo.PropertySourceDescriptor();
-                    // name
-                    String name = DashboardUtil.getEmptyStringIfNull(item,("name"));
-                    propertySource.setName(name);
-                    // properties
-                    List<Map> properties = new ArrayList<>();
-                    // begin to parse properties
-                    Map propMap = (Map) item.get("properties");
-                    Set keys = propMap.keySet();
-                    keys.forEach((key)->{
-                        Map valItem = new HashMap<>();
-                        Object obj = propMap.get(key);
-                        Object value = null;
-                        if (obj instanceof Map){
-                            Map propertyValueMap = (Map) obj;
-                            value = propertyValueMap.get("value");
-                        }
-                        valItem.put(key,value);
-                        properties.add(valItem);
-                    });
-                    propertySource.setProperties(properties);
-                    propertySources.add(propertySource);
+        Object activeProfiles = envMap.get("activeProfiles");
+        if (activeProfiles instanceof List){
+            environmentInfo.setActiveProfiles((List<String>) activeProfiles);
+        }else {
+            environmentInfo.setActiveProfiles(new ArrayList<>());
+        }
+        List<EnvironmentInfo.PropertySourceDescriptor> propertySources = new ArrayList<>();
+        Object propertyList = envMap.get("propertySources");
+        if (propertyList instanceof List){
+            List<Map<String,Object>> propertyDataList=(ArrayList)propertyList;
+            propertyDataList.forEach((item)->{
+                EnvironmentInfo.PropertySourceDescriptor propertySource = new EnvironmentInfo.PropertySourceDescriptor();
+                // name
+                String name = DashboardUtil.getEmptyStringIfNull(item,("name"));
+                propertySource.setName(name);
+                // properties
+                List<Map> properties = new ArrayList<>();
+                // begin to parse properties
+                Map propMap = (Map) item.get("properties");
+                Set keys = propMap.keySet();
+                keys.forEach((key)->{
+                    Map valItem = new HashMap<>();
+                    Object obj = propMap.get(key);
+                    Object value = null;
+                    if (obj instanceof Map){
+                        Map propertyValueMap = (Map) obj;
+                        value = propertyValueMap.get("value");
+                    }
+                    valItem.put(key,value);
+                    properties.add(valItem);
                 });
+                propertySource.setProperties(properties);
+                propertySources.add(propertySource);
+            });
 
-            }
-            environmentInfo.setPropertySources(propertySources);
+        }
+        environmentInfo.setPropertySources(propertySources);
         return environmentInfo;
     }
 

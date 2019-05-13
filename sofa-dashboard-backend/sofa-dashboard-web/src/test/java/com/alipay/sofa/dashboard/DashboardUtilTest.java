@@ -14,50 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alipay.sofa.dashboard.utils;
+package com.alipay.sofa.dashboard;
 
-import java.util.LinkedList;
+import com.alipay.sofa.dashboard.utils.DashboardUtil;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
- * @author: guolei.sgl (guolei.sgl@antfin.com) 2019/5/9 5:19 PM
+ * @author: guolei.sgl (guolei.sgl@antfin.com) 2019/5/13 7:44 PM
  * @since:
  **/
-public class FixedQueue<E> {
+public class DashboardUtilTest {
 
-    /**
-     * 固定长度
-     */
-    private final int     size;
-
-    private LinkedList<E> queue = new LinkedList<>();
-
-    public FixedQueue(int size) {
-        this.size = size;
-    }
-
-    /**
-     * 入列：当队列大小已满时，把队头的元素poll掉
-     */
-    public void offer(E e) {
-        if (queue.size() >= size) {
-            queue.poll();
-        }
-        queue.offer(e);
-    }
-
-    public E get(int position) {
-        return queue.get(position);
-    }
-
-    public int getSize() {
-        return size;
-    }
-
-    public int size() {
-        return queue.size();
-    }
-
-    public LinkedList<E> getQueue() {
-        return queue;
+    @Test
+    public void testEncode() {
+        String encode = DashboardUtil.simpleEncode("127.0.0.1", 8080);
+        String encodeLocal = DashboardUtil.simpleEncode("localhost", 8080);
+        Assert.assertTrue(encodeLocal.equals(encode));
+        String result = DashboardUtil.simpleDecode(encode);
+        Assert.assertTrue(result.equals("127.0.0.1:8080"));
     }
 }

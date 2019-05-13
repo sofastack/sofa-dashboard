@@ -55,7 +55,6 @@ public class AppDynamicInfoTask {
         appNames.forEach((appName)->{
             Set<Application> appInstances = applications.get(appName);
             appInstances.forEach((app)->{
-                app.setHostName("localhost");
                 doCalculateThreads(app,currentDataKey);
                 doCalculateMemoryHeap(app,currentDataKey);
                 doCalculateMemoryNonHeap(app,currentDataKey);
