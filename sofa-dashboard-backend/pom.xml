@@ -195,9 +195,13 @@
                         </goals>
                     </execution>
                 </executions>
+
                 <configuration>
                     <configFile>${main.user.dir}/tools/codestyle/formatter.xml</configFile>
                     <encoding>UTF-8</encoding>
+                    <excludes>
+                        <exclude>**/*Enum.java</exclude>
+                    </excludes>
                 </configuration>
             </plugin>
             <plugin>

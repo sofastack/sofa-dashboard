@@ -82,7 +82,7 @@ public class DashboardUtil {
     }
 
     public static String simpleEncode(String host, int port) {
-        if (SofaDashboardConstants.LOCALHOST.equals(host)){
+        if (SofaDashboardConstants.LOCALHOST.equals(host)) {
             host = SofaDashboardConstants.LOCALHOST_IP;
         }
         StringBuilder sb = new StringBuilder();
