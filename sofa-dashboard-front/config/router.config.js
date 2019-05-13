@@ -17,11 +17,20 @@ export default [
             name: 'workplace', //工作台，这里因为有国际化原因，保留这里的name值，如果要换，则在国际化配置文件中配置相应的值
             component: './List/BasicList',
           },
-
           {
-            path: '/dashboard/env',
+            path: '/dashboard/details',
             hideInMenu:true,
-            component: './Dashboard/Enviroment',
+            component: './Dashboard/Environment',
+          },
+          {
+              path: '/dashboard/metrics',
+              hideInMenu:true,
+              component: './Dashboard/Metrics',
+          },
+          {
+              path: '/dashboard/traces',
+              hideInMenu:true,
+              component: './Dashboard/Traces',
           },
         ],
       },

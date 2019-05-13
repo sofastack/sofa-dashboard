@@ -22,19 +22,14 @@ package com.alipay.sofa.dashboard.enums;
  **/
 public enum ActuatorPathEnum {
 
-    ENV("/actuator/env", "app env info"), HEALTH("/actuator/health", "health check"), MAPPINGS(
-                                                                                               "/actuator/mappings",
-                                                                                               "mappings"), LOGGERS(
-                                                                                                                    "/actuator/loggers",
-                                                                                                                    "loggers"), THREADDUMP(
-                                                                                                                                           "/actuator/threaddump",
-                                                                                                                                           "threaddump"), METRICS(
-                                                                                                                                                                  "/actuator/metrics",
-                                                                                                                                                                  "metrics"), HTTPTRACE(
-                                                                                                                                                                                        "/actuator/httptrace",
-                                                                                                                                                                                        "httptrace"), INFO(
-                                                                                                                                                                                                           "/actuator/info",
-                                                                                                                                                                                                           "info");
+    ENV("/actuator/env", "app env info"),
+    HEALTH("/actuator/health", "health check"),
+    MAPPINGS("/actuator/mappings","mappings"),
+    LOGGERS("/actuator/loggers","loggers"),
+    THREADDUMP("/actuator/threaddump", "threaddump"),
+    METRICS("/actuator/metrics","metrics"),
+    HTTPTRACE("/actuator/httptrace","httptrace"),
+    INFO("/actuator/info","info");
 
     private String path;
     private String description;

@@ -45,9 +45,5 @@
             <groupId>com.alipay.sofa.common</groupId>
             <artifactId>sofa-common-tools</artifactId>
         </dependency>
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-        </dependency>
     </dependencies>
 </project>

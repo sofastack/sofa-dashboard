@@ -28,7 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,24 +46,24 @@ public class AppActuatorController {
     @RequestMapping("details")
     public Map baseDetails(@RequestParam("id") String targetHost) {
         String source = DashboardUtil.simpleDecode(targetHost);
-        HealthInfo healthInfo = monitorManager.fetchHealth("127.0.0.1:8081");
-        Map map = monitorManager.fetchInfo("127.0.0.1:8081");
-        List<DetailsItem> threads = monitorManager.fetchDetailsThread("127.0.0.1:8081");
-        List<DetailsItem> maps = monitorManager.fetchHeapMemory("127.0.0.1:8081");
-        List<DetailsItem> maps1 = monitorManager.fetchNonHeapMemory("127.0.0.1:8081");
+        HealthInfo healthInfo = monitorManager.fetchHealth(source);
+        Map map = monitorManager.fetchInfo(source);
+        List<DetailsItem> threads = monitorManager.fetchDetailsThread(source);
+        List<DetailsItem> maps = monitorManager.fetchHeapMemory(source);
+        List<DetailsItem> nonHeap = monitorManager.fetchNonHeapMemory(source);
         Map<String, Object> data = new HashMap<>();
         data.put("health", healthInfo);
         data.put("info", map);
         data.put("threads", threads);
         data.put("heap", maps);
-        data.put("nonheap", maps1);
+        data.put("nonheap", nonHeap);
         return data;
     }
 
     @RequestMapping("env")
     public Map env(@RequestParam("id") String targetHost) {
         String source = DashboardUtil.simpleDecode(targetHost);
-        EnvironmentInfo environmentInfo = monitorManager.fetchEnvironment("127.0.0.1:8081");
+        EnvironmentInfo environmentInfo = monitorManager.fetchEnvironment(source);
         Map<String, Object> data = new HashMap<>();
         data.put("env", environmentInfo);
         return data;
@@ -73,7 +72,7 @@ public class AppActuatorController {
     @RequestMapping("loggers")
     public Map loggers(@RequestParam("id") String targetHost) {
         String source = DashboardUtil.simpleDecode(targetHost);
-        LoggersInfo loggersInfo = monitorManager.fetchLoggers("127.0.0.1:8081");
+        LoggersInfo loggersInfo = monitorManager.fetchLoggers(source);
         Map<String, Object> data = new HashMap<>();
         data.put("loggers", loggersInfo);
         return data;
@@ -82,7 +81,7 @@ public class AppActuatorController {
     @RequestMapping("mappings")
     public Map mappings(@RequestParam("id") String targetHost) {
         String source = DashboardUtil.simpleDecode(targetHost);
-        Map<String, MappingsInfo> mappingsInfoMap = monitorManager.fetchMappings("127.0.0.1:8081");
+        Map<String, MappingsInfo> mappingsInfoMap = monitorManager.fetchMappings(source);
         Map<String, Object> data = new HashMap<>();
         data.put("mappings", mappingsInfoMap);
         return data;
@@ -91,7 +90,7 @@ public class AppActuatorController {
     @RequestMapping("thread-dump")
     public Map threadDump(@RequestParam("id") String targetHost) {
         String source = DashboardUtil.simpleDecode(targetHost);
-        List<ThreadDumpInfo> threadDumps = monitorManager.fetchThreadDump("127.0.0.1:8081");
+        List<ThreadDumpInfo> threadDumps = monitorManager.fetchThreadDump(source);
         Map<String, Object> data = new HashMap<>();
         data.put("threaddump", threadDumps);
         return data;

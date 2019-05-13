@@ -11,7 +11,7 @@ import {
 } from "bizcharts";
 
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import styles from './Enviroment.less';
+import styles from './Environment.less';
 const Panel = Collapse.Panel;
 const TabPane = Tabs.TabPane;
 // profile 的数据会被挂在到 this.props
@@ -25,9 +25,9 @@ const TabPane = Tabs.TabPane;
     env: actuator.env,
     loggers: actuator.loggers,
     mappings: actuator.mappings,
-    threaddump: actuator.threaddump
+    threaddump: actuator.threaddump,
 }))
-class Enviroment extends Component {
+class Environment extends Component {
 
   componentDidMount() {
     const { dispatch, location } = this.props;
@@ -38,18 +38,40 @@ class Enviroment extends Component {
     });
   }
 
+
+
 render() {
     const { dispatch,location } = this.props;
     const queryParams = location.query.id;
-    function callback(key) {
-        if ( key=== "1") {
-            dispatch({
+
+    function getThreadData(){
+        dispatch({
+                type: 'actuator/fetchThreadDump',
+                payload:{
+                    id: queryParams,
+                }
+            },
+        )
+    }
+
+    function getInfoData(){
+        dispatch({
                 type: 'actuator/fetch',
                 payload:{
                     id: queryParams,
                 }
-            });
+            },
+        )
+    }
+
+    function callback(key) {
+
+        if ( key=== "1") {
+            // 刷新单位为15s
+            setInterval(getInfoData,15000);
+
         }else if (key === "3"){
+
             dispatch({
                 type: 'actuator/fetchEnv',
                 payload:{
@@ -64,12 +86,8 @@ render() {
                 }
             });
         }else if (key === "5"){
-            dispatch({
-                type: 'actuator/fetchThreadDump',
-                payload:{
-                    id: queryParams,
-                }
-            });
+            // 刷新间隔为3s
+            setInterval(getThreadData,3000);
         }
         else if (key === "6"){
             dispatch({
@@ -149,11 +167,11 @@ render() {
 
     const threadDumpColor = function (threadState) {
         if (threadState === 'TIMED_WAITING' || threadState === 'WAITING'){
-            return "#ffdd57";
+            return "wait-state-color";
         }else if (threadState === 'RUNNABLE'){
-            return "#23d160";
+            return "runnable-color";
         }else{
-            return "#dbdbdb";
+            return "other-color";
         }
     }
 
@@ -163,7 +181,7 @@ render() {
             dataIndex: 'predicate',
             key: 'predicate',
             className: styles["table-col"],
-            render: text => <div style={{overflow:"auto",width:"180px",wordWrap:"break-word"}}>{text}</div>,
+            render: text => <div style={{overflow:"auto",width:"150px",wordWrap:"break-word"}}>{text}</div>,
         },
         {
             title: 'methods',
@@ -175,19 +193,19 @@ render() {
             title: 'paramsType',
             dataIndex: 'paramsType',
             key: 'paramsType',
-            render: text => <div style={{overflow:"auto",width:"250px",wordWrap:"break-word" }}>{text}</div>,
+            render: text => <div style={{overflow:"auto",width:"180px",wordWrap:"break-word" }}>{text}</div>,
         },
         {
             title: 'responseType',
             dataIndex: 'responseType',
             key: 'responseType',
-            render: text => <div style={{overflow:"auto",width:"150px",wordWrap:"break-word" }}>{text}</div>,
+            render: text => <div style={{overflow:"auto",width:"100px",wordWrap:"break-word" }}>{text}</div>,
         },
         {
             title: 'handler',
             dataIndex: 'handler',
             key: 'handler',
-            render: text => <div style={{overflow:"auto",width:"450px",wordWrap:"break-word" }}>{text}</div>,
+            render: text => <div style={{overflow:"auto",width:"300px",wordWrap:"break-word" }}>{text}</div>,
         },
     ];
 
@@ -463,8 +481,9 @@ render() {
                       {
                           this.props.threaddump.length && this.props.threaddump.map((thread,i)=> {
                                   const state = thread.threadState;
+                                  const classNameVal =threadDumpColor(state);
                                   return(
-                                      <Panel header={thread.threadName} key={i} showArrow={false} style={{background:threadDumpColor(state)}}>
+                                      <Panel header={thread.threadName} key={i} showArrow={false} className={styles[classNameVal]}>
                                               {
                                                   Object.keys(thread).map((key,index)=> {
                                                       return(
@@ -525,4 +544,4 @@ render() {
     );
   }
 }
-export default Enviroment;
+export default Environment;

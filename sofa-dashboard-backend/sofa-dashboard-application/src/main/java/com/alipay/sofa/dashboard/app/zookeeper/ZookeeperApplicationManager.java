@@ -49,8 +49,6 @@ public class ZookeeperApplicationManager implements ApplicationManager, Initiali
 
     private static final Logger                  LOGGER       = LoggerFactory
                                                                   .getLogger(ZookeeperApplicationManager.class);
-    private static final String                  LOCALHOST_IP = "127.0.0.1";
-
     @Autowired
     private ZkCommandClient                      zkCommandClient;
 
@@ -220,7 +218,7 @@ public class ZookeeperApplicationManager implements ApplicationManager, Initiali
             Set<Application> instances = applications.get(appName);
             for (Application instance : instances) {
                 // 兼容 "127.0.0.1" 和 真实地址，主要是本地环境下
-                if (LOCALHOST_IP.equals(ip) || instance.getHostName().equals(ip)) {
+                if (SofaDashboardConstants.LOCALHOST_IP.equals(ip) || instance.getHostName().equals(ip)) {
                     Map result = restTemplate.getForObject(getBizStateUrl(instance), Map.class);
                     return parseStateFromMapJSON(result, pluginName, version);
                 }

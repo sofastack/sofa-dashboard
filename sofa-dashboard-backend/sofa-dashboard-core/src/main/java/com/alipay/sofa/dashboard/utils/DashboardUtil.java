@@ -16,8 +16,8 @@
  */
 package com.alipay.sofa.dashboard.utils;
 
+import com.alipay.sofa.dashboard.constants.SofaDashboardConstants;
 import org.springframework.util.StringUtils;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -49,16 +49,16 @@ public class DashboardUtil {
      */
     public static String getEmptyStringIfNull(Map map, String key) {
         if (map == null || map.size() <= 0) {
-            return "";
+            return SofaDashboardConstants.EMPTY;
         }
         Object valueObject = map.get(key);
         String valueStr;
         try {
             valueStr = (String) valueObject;
         } catch (Throwable throwable) {
-            return "";
+            return SofaDashboardConstants.EMPTY;
         }
-        return StringUtils.isEmpty(valueStr) ? "" : valueStr;
+        return StringUtils.isEmpty(valueStr) ? SofaDashboardConstants.EMPTY : valueStr;
     }
 
     /**
@@ -82,8 +82,9 @@ public class DashboardUtil {
     }
 
     public static String simpleEncode(String host, int port) {
-
-        host = "127.0.0.1";
+        if (SofaDashboardConstants.LOCALHOST.equals(host)){
+            host = SofaDashboardConstants.LOCALHOST_IP;
+        }
         StringBuilder sb = new StringBuilder();
         String[] ips = host.split("\\.");
         for (String ip : ips) {
@@ -106,7 +107,7 @@ public class DashboardUtil {
                         sb.append(".");
                     }
                 }
-                sb.append(":").append(Integer.parseInt(split[4], 16));
+                sb.append(SofaDashboardConstants.COLON).append(Integer.parseInt(split[4], 16));
             }
         }
         return sb.toString();
@@ -114,14 +115,10 @@ public class DashboardUtil {
 
     public static String convertToString(List<String> source){
         if(source==null || source.isEmpty()){
-            return "";
+            return SofaDashboardConstants.EMPTY;
         }
-
         StringBuilder sb = new StringBuilder();
-        source.forEach((item)->{
-            sb.append(item).append(",");
-        });
-
+        source.forEach((item)-> sb.append(item).append(","));
         return sb.substring(0,sb.toString().length()-1);
     }
 }

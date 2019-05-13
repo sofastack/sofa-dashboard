@@ -89,7 +89,6 @@ export default {
         },
 
         refreshThreadDumpData(state, action) {
-            console.log("action.payload.threaddump",action.payload.threaddump)
             return {
                 ...state,
                 threaddump: action.payload.threaddump,

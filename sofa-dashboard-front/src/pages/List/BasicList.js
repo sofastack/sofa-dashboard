@@ -65,15 +65,15 @@ class BasicList extends PureComponent {
     const gotoDetails = (key, currentItem) => {
         console.log("key",key)
         console.log("currentItem",currentItem)
-        if (key === 'jvm') {
-            // 跳转到 jvm 详情页
-        } else if (key == 'env') {
+        if (key === 'metrics') {
+            // 跳转到 metric 详情页
+            window.location.href = '/dashboard/metrics?id='+currentItem.id;
+        } else if (key == 'details') {
             // 跳转到 env 详情页
-            window.location.href = '/dashboard/env?id='+currentItem.id;
-        } else if (key == 'thread') {
-            // 跳转到 thread 详情页
-        } else if (key == 'health') {
-            // 跳转到 health 详情页
+            window.location.href = '/dashboard/details?id='+currentItem.id;
+        } else if (key == 'traces') {
+            // 跳转到 traces 详情页
+            window.location.href = '/dashboard/traces?id='+currentItem.id;
         }
     };
 
@@ -81,15 +81,14 @@ class BasicList extends PureComponent {
     const MoreBtn = props => (
         <Dropdown overlay={
                 <Menu onClick={({ key }) => gotoDetails(key, props.current)}>
-                    <Menu.Item key="jvm">Jvm</Menu.Item>
-                    <Menu.Item key="env">Enviroment</Menu.Item>
-                    <Menu.Item key="thread">Threads</Menu.Item>
-                    <Menu.Item key="health">Health</Menu.Item>
+                    <Menu.Item key="details">details</Menu.Item>
+                    <Menu.Item key="metrics">metrics</Menu.Item>
+                    <Menu.Item key="traces">traces</Menu.Item>
                 </Menu>
             }
         >
             <a>
-                details <Icon type="down" />
+                应用信息查看 <Icon type="down" />
             </a>
         </Dropdown>
     );
