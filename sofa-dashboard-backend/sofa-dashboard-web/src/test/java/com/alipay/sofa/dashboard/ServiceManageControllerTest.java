@@ -19,6 +19,7 @@ package com.alipay.sofa.dashboard;
 import com.alipay.sofa.dashboard.base.AbstractTestBase;
 import com.alipay.sofa.dashboard.cache.RegistryDataCache;
 import com.alipay.sofa.dashboard.domain.RpcProvider;
+import com.alipay.sofa.dashboard.domain.RpcService;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
@@ -41,6 +42,8 @@ public class ServiceManageControllerTest extends AbstractTestBase {
     @Autowired
     private RegistryDataCache registryDataCache;
 
+    private static int        tryTimes = 3;
+
     @Before
     public void before() throws Exception {
         restTemplate = new RestTemplate();
@@ -48,7 +51,18 @@ public class ServiceManageControllerTest extends AbstractTestBase {
         client = CuratorFrameworkFactory.newClient("localhost:2181", new ExponentialBackoffRetry(
             1000, 3));
         client.start();
-        initZookeeperRpcData();
+        int index = 0;
+        while (registryDataCache.fetchService().size() == 0 && index++ < tryTimes) {
+            initZookeeperRpcData();
+        }
+
+        if (registryDataCache.fetchService().size() == 0) {
+            List<RpcService> providerList = new ArrayList<>();
+            RpcService rpcService = new RpcService();
+            rpcService.setServiceName("serviceId1");
+            providerList.add(rpcService);
+            registryDataCache.addService(providerList);
+        }
     }
 
     @After
