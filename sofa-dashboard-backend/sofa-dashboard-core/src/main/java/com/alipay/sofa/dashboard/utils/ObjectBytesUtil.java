@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Used to convert an Object into a byte array and a byte array into an object
+ *
  * @author: guolei.sgl (guolei.sgl@antfin.com) 19/1/17 下午5:49
  * @since:
  **/

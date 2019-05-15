@@ -29,12 +29,14 @@ public interface ArkMngService {
 
     /**
      * 获取当前所有注册的 plugin 信息
+     *
      * @return
      */
     List<ArkPluginModel> fetchRegisteredPlugins();
 
     /**
      * 向管控端注册插件
+     *
      * @param model
      * @param version
      * @return
@@ -43,6 +45,7 @@ public interface ArkMngService {
 
     /**
      * 给模块增加新的版本
+     *
      * @param pluginName
      * @param version
      * @return
@@ -51,6 +54,7 @@ public interface ArkMngService {
 
     /**
      * 删除一个模块
+     *
      * @param pluginName
      * @return
      */
@@ -58,6 +62,7 @@ public interface ArkMngService {
 
     /**
      * 通过插件名查询插件
+     *
      * @param pluginName
      * @return
      */
@@ -65,6 +70,7 @@ public interface ArkMngService {
 
     /**
      * 关联应用和插件
+     *
      * @param pluginName
      * @param appName
      * @return
@@ -73,6 +79,7 @@ public interface ArkMngService {
 
     /**
      * 根据插件名查询当前插件关联的应用名
+     *
      * @param pluginName
      * @return
      */
@@ -80,6 +87,7 @@ public interface ArkMngService {
 
     /**
      * 取消
+     *
      * @param appName
      * @param pluginName
      * @return

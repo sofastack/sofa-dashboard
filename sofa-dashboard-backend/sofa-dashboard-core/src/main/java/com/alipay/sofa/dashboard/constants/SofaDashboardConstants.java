@@ -18,6 +18,7 @@ package com.alipay.sofa.dashboard.constants;
 
 /**
  * Global Constants Define
+ *
  * @author: guolei.sgl (guolei.sgl@antfin.com) 2019/4/10 10:26 PM
  * @since:
  **/

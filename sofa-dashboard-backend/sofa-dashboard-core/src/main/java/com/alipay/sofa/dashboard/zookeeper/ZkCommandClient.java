@@ -26,6 +26,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * Provide an instance of the ZooKeeper client in the Spring application environment
+ *
  * @author: guolei.sgl (guolei.sgl@antfin.com) 2019/2/15 11:59 AM
  * @since:
  **/

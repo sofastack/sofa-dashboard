@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -75,18 +76,18 @@ public class SofaRegistryRestClient {
         return dataIds;
     }
 
-    public void refreshAllSessionDataByDataInfoIds(List<String> dataIds){
+    public void refreshAllSessionDataByDataInfoIds(List<String> dataIds) {
         // 先清理当前缓存中所有的 dataId
         Map<String, RpcService> serviceMap = registryDataCache.fetchService();
-        if (!serviceMap.isEmpty()){
+        if (!serviceMap.isEmpty()) {
             registryDataCache.removeService(new ArrayList<>(serviceMap.values()));
         }
         // 重新载入 dataIds
         addRpcService(dataIds);
         // 获取 sub 和 pub 数据
-        dataIds.forEach((dataInfoId)->{
-            registryDataCache.removeConsumers(dataInfoId,registryDataCache.fetchConsumersByService(dataInfoId));
-            registryDataCache.removeProviders(dataInfoId,registryDataCache.fetchProvidersByService(dataInfoId));
+        dataIds.forEach((dataInfoId) -> {
+            registryDataCache.removeConsumers(dataInfoId, registryDataCache.fetchConsumersByService(dataInfoId));
+            registryDataCache.removeProviders(dataInfoId, registryDataCache.fetchProvidersByService(dataInfoId));
             getSessionDataByDataInfoId(dataInfoId);
         });
     }
@@ -99,7 +100,7 @@ public class SofaRegistryRestClient {
 
     private void addRpcService(List<String> dataIds) {
         List<RpcService> serviceList = new ArrayList<>();
-        dataIds.forEach((dataInfoId)-> {
+        dataIds.forEach((dataInfoId) -> {
             RpcService service = new RpcService();
             service.setServiceName(dataInfoId.split(SofaDashboardConstants.DATA_ID_SEPARATOR)[0]);
             serviceList.add(service);
@@ -112,43 +113,43 @@ public class SofaRegistryRestClient {
         queryPublishers(dataInfoId);
     }
 
-    public void querySubscribers(String dataInfoId){
+    public void querySubscribers(String dataInfoId) {
         String subUrl = buildRequestUrl(REGISTRY_QUERY_SUB_SESSION_DATA);
         subUrl += "?dataInfoId={1}";
-        ResponseEntity<Map> subResponse = restTemplate.getForEntity(subUrl, Map.class,dataInfoId);
-        if (subResponse!=null && subResponse.getBody()!=null){
+        ResponseEntity<Map> subResponse = restTemplate.getForEntity(subUrl, Map.class, dataInfoId);
+        if (subResponse != null && subResponse.getBody() != null) {
             Map<String, List<Map>> subMap = subResponse.getBody();
             Set<String> subKeys = subMap.keySet();
-            subKeys.forEach((key)->{
+            subKeys.forEach((key) -> {
                 List<Map> subscriberList = subMap.get(key);
                 List<RpcConsumer> consumers = new ArrayList<>();
                 for (Map subscriberMap : subscriberList) {
                     RpcConsumer consumer = convertRpcConsumerFromMap(subscriberMap);
                     consumers.add(consumer);
                 }
-                if (!consumers.isEmpty()){
-                    registryDataCache.addConsumers(consumers.get(0).getServiceName(),consumers);
+                if (!consumers.isEmpty()) {
+                    registryDataCache.addConsumers(consumers.get(0).getServiceName(), consumers);
                 }
             });
         }
     }
 
-    public void queryPublishers(String dataInfoId){
+    public void queryPublishers(String dataInfoId) {
         String pubUrl = buildRequestUrl(REGISTRY_QUERY_PUB_SESSION_DATA);
         pubUrl += "?dataInfoId={1}";
-        ResponseEntity<Map> pubResponse = restTemplate.getForEntity(pubUrl, Map.class,dataInfoId);
-        if (pubResponse!=null && pubResponse.getBody()!=null){
+        ResponseEntity<Map> pubResponse = restTemplate.getForEntity(pubUrl, Map.class, dataInfoId);
+        if (pubResponse != null && pubResponse.getBody() != null) {
             Map<String, List<Map>> subMap = pubResponse.getBody();
             Set<String> subKeys = subMap.keySet();
-            subKeys.forEach((key)->{
+            subKeys.forEach((key) -> {
                 List<Map> publisherList = subMap.get(key);
                 List<RpcProvider> providers = new ArrayList<>();
                 for (Map publisherMap : publisherList) {
                     RpcProvider provider = convertRpcProviderFromMap(publisherMap);
                     providers.add(provider);
                 }
-                if (!providers.isEmpty()){
-                    registryDataCache.addProviders(providers.get(0).getServiceName(),providers);
+                if (!providers.isEmpty()) {
+                    registryDataCache.addProviders(providers.get(0).getServiceName(), providers);
                 }
             });
         }
@@ -210,6 +211,7 @@ public class SofaRegistryRestClient {
 
     /**
      * build query request url
+     *
      * @param resource
      * @return
      */
@@ -224,6 +226,7 @@ public class SofaRegistryRestClient {
 
     /**
      * Extract value from map ,if null return empty String
+     *
      * @param map
      * @param key
      * @return

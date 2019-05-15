@@ -25,6 +25,7 @@ import com.alipay.sofa.rpc.config.RegistryConfig;
 public interface RegistryDataSyncManager {
     /**
      * 数据同步管理器启动
+     *
      * @param registryConfig
      * @return
      */

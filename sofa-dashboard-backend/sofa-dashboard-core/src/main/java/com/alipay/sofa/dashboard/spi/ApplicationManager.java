@@ -28,6 +28,7 @@ public interface ApplicationManager {
 
     /**
      * 获取当前所有的客户端应用
+     *
      * @return
      */
     List<AppModel> applications();
