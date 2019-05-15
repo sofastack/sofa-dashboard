@@ -68,7 +68,7 @@ public class ActuatorMonitorManager implements MonitorManager {
         Object activeProfiles = envMap.get("activeProfiles");
         if (activeProfiles instanceof List){
             environmentInfo.setActiveProfiles((List<String>) activeProfiles);
-        }else {
+        } else {
             environmentInfo.setActiveProfiles(new ArrayList<>());
         }
         List<EnvironmentInfo.PropertySourceDescriptor> propertySources = new ArrayList<>();
@@ -153,9 +153,7 @@ public class ActuatorMonitorManager implements MonitorManager {
             return data;
         }
         Set<String> keys = infoMap.keySet();
-        keys.forEach((key)->{
-            recursionMap(infoMap,data,key);
-        });
+        keys.forEach((key)-> recursionMap(infoMap,data,key));
         return data;
     }
 
