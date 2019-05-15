@@ -23,10 +23,6 @@
         </dependency>
         <dependency>
             <groupId>com.alipay.sofa</groupId>
-            <artifactId>registry-client-all</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.alipay.sofa</groupId>
             <artifactId>sofa-dashboard-core</artifactId>
         </dependency>
     </dependencies>

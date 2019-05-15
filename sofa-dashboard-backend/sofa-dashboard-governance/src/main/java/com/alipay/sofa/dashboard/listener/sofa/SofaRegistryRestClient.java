@@ -47,6 +47,7 @@ public class SofaRegistryRestClient {
     private static final String REGISTRY_QUERY_SUB_SESSION_DATA = "/sub/data/query";
     private static final String REGISTRY_QUERY_PUB_SESSION_DATA = "/pub/data/query";
     private static final String REGISTRY_QUERY_DATA_INFO_IDS    = "/getDataInfoIdList";
+    private static final String REGISTRY_QUERY_CHECK_SUM        = "/checkSumDataInfoIdList";
 
     @Autowired
     private RegistryDataCache   registryDataCache;
@@ -88,6 +89,12 @@ public class SofaRegistryRestClient {
             registryDataCache.removeProviders(dataInfoId,registryDataCache.fetchProvidersByService(dataInfoId));
             getSessionDataByDataInfoId(dataInfoId);
         });
+    }
+
+    public Integer checkSum() {
+        String pubUrl = SofaRegistryRestClient.buildRequestUrl(REGISTRY_QUERY_CHECK_SUM);
+        ResponseEntity<Integer> checkSumResp = restTemplate.getForEntity(pubUrl, Integer.class);
+        return checkSumResp.getBody();
     }
 
     private void addRpcService(List<String> dataIds) {

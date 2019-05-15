@@ -22,8 +22,6 @@ import com.alipay.sofa.rpc.config.RegistryConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -36,20 +34,14 @@ import java.util.concurrent.atomic.AtomicInteger;
  **/
 public class SofaAdminRegistry implements AdminRegistry {
 
-    private static final Logger                LOGGER                   = LoggerFactory
-                                                                            .getLogger(SofaAdminRegistry.class);
+    private static final Logger                LOGGER       = LoggerFactory
+                                                                .getLogger(SofaAdminRegistry.class);
 
-    private static ScheduledThreadPoolExecutor executor                 = new ScheduledThreadPoolExecutor(
-                                                                            1);
+    private static ScheduledThreadPoolExecutor executor     = new ScheduledThreadPoolExecutor(1);
 
-    private static List<String>                dataInfoIds              = new CopyOnWriteArrayList<>();
+    private static List<String>                dataInfoIds  = new CopyOnWriteArrayList<>();
 
-    private static AtomicInteger               checkSumCode             = new AtomicInteger(0);
-
-    private static final String                REGISTRY_QUERY_CHECK_SUM = "/checkSumDataInfoIdList";
-
-    @Autowired
-    private RestTemplate                       restTemplate;
+    private static AtomicInteger               checkSumCode = new AtomicInteger(0);
 
     @Autowired
     private SofaRegistryRestClient             restTemplateClient;
@@ -61,7 +53,7 @@ public class SofaAdminRegistry implements AdminRegistry {
             // 开始时初始化一次 dataInfoIds 列表
             dataInfoIds = restTemplateClient.syncAllDataInfoIds();
             // 避免初始化之后重新拉取一次
-            checkSumCode.compareAndSet(0, checkSum());
+            checkSumCode.compareAndSet(0, restTemplateClient.checkSum());
             CheckSumTask checkSumTask = new CheckSumTask();
             // 30s
             executor.scheduleWithFixedDelay(checkSumTask, 30, 30, TimeUnit.SECONDS);
@@ -76,16 +68,10 @@ public class SofaAdminRegistry implements AdminRegistry {
         // do nothing
     }
 
-    private Integer checkSum() {
-        String pubUrl = SofaRegistryRestClient.buildRequestUrl(REGISTRY_QUERY_CHECK_SUM);
-        ResponseEntity<Integer> checkSumResp = restTemplate.getForEntity(pubUrl, Integer.class);
-        return checkSumResp.getBody();
-    }
-
     private class CheckSumTask implements Runnable {
         @Override
         public void run() {
-            Integer newCheckVal = checkSum();
+            Integer newCheckVal = restTemplateClient.checkSum();
             if (checkSumCode.get() == newCheckVal) {
                 return;
             }

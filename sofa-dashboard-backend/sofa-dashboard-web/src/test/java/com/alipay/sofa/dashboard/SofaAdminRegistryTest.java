@@ -17,6 +17,9 @@
 package com.alipay.sofa.dashboard;
 
 import com.alipay.sofa.dashboard.cache.RegistryDataCache;
+import com.alipay.sofa.dashboard.constants.SofaDashboardConstants;
+import com.alipay.sofa.dashboard.domain.RpcConsumer;
+import com.alipay.sofa.dashboard.domain.RpcProvider;
 import com.alipay.sofa.dashboard.domain.RpcService;
 import com.alipay.sofa.dashboard.listener.sofa.SofaRegistryRestClient;
 import com.alipay.sofa.dashboard.registry.SofaAdminRegistry;
@@ -31,6 +34,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -70,5 +77,80 @@ public class SofaAdminRegistryTest {
         Assert.assertTrue(sofaAdminRegistry != null);
         Map<String, RpcService> serviceMap = registryDataCache.fetchService();
         Assert.assertTrue(serviceMap.size() == 0);
+
+        List<RpcService> providerList = new ArrayList<>();
+        RpcService rpcService = new RpcService();
+        rpcService.setServiceName("testInterface");
+        providerList.add(rpcService);
+        registryDataCache.addService(providerList);
+
+        List<String> dataIds = new ArrayList<>();
+        dataIds.add("testInterface");
+
+        List<RpcConsumer> consumers = new ArrayList<>();
+        registryDataCache.addConsumers("testInterface", consumers);
+
+        List<RpcProvider> providers = new ArrayList<>();
+        registryDataCache.addProviders("testInterface", providers);
+
+        try {
+            restTemplateClient.refreshAllSessionDataByDataInfoIds(dataIds);
+        } catch (Exception e) {
+            // ignore
+        }
+        Map<String, RpcService> serviceMap1 = registryDataCache.fetchService();
+        Assert.assertTrue(serviceMap1.size() == 1);
+    }
+
+    @Test
+    public void testConvertRpcProviderFromMap() throws Exception {
+        Class<?> classClient = Class
+            .forName("com.alipay.sofa.dashboard.listener.sofa.SofaRegistryRestClient");
+        SofaRegistryRestClient client = (SofaRegistryRestClient) classClient.newInstance();
+        Method method = classClient.getDeclaredMethod("convertRpcProviderFromMap", Map.class);
+        method.setAccessible(true);
+        Map map = new HashMap();
+        map.put(SofaDashboardConstants.REGISTRY_PROCESS_ID_KEY, "127.0.0.1:9603");
+        Object invoke = method.invoke(client, map);
+        Assert.assertTrue((invoke instanceof RpcProvider));
+        RpcProvider provider1 = (RpcProvider) invoke;
+        Assert.assertTrue(provider1.getAddress().equals("127.0.0.1"));
+
+        map.remove(SofaDashboardConstants.REGISTRY_PROCESS_ID_KEY);
+        Map sourceAddress = new HashMap();
+        sourceAddress.put(SofaDashboardConstants.REGISTRY_IP_KEY, "127.0.0.1");
+        sourceAddress.put(SofaDashboardConstants.PORT, 9603);
+        map.put(SofaDashboardConstants.REGISTRY_SOURCE_ADDRESS_KEY, sourceAddress);
+        invoke = method.invoke(client, map);
+        Assert.assertTrue((invoke instanceof RpcProvider));
+        RpcProvider provider2 = (RpcProvider) invoke;
+        Assert.assertTrue(provider2.getAddress().equals("127.0.0.1"));
+
+    }
+
+    @Test
+    public void testConvertRpcConsumerFromMap() throws Exception {
+        Class<?> classClient = Class
+            .forName("com.alipay.sofa.dashboard.listener.sofa.SofaRegistryRestClient");
+        SofaRegistryRestClient client = (SofaRegistryRestClient) classClient.newInstance();
+        Method method = classClient.getDeclaredMethod("convertRpcConsumerFromMap", Map.class);
+        method.setAccessible(true);
+        Map map = new HashMap();
+        map.put(SofaDashboardConstants.REGISTRY_PROCESS_ID_KEY, "127.0.0.1:9603");
+        Object invoke = method.invoke(client, map);
+        Assert.assertTrue((invoke instanceof RpcConsumer));
+        RpcConsumer consumer1 = (RpcConsumer) invoke;
+        Assert.assertTrue(consumer1.getAddress().equals("127.0.0.1"));
+
+        map.remove(SofaDashboardConstants.REGISTRY_PROCESS_ID_KEY);
+        Map sourceAddress = new HashMap();
+        sourceAddress.put(SofaDashboardConstants.REGISTRY_IP_KEY, "127.0.0.1");
+        sourceAddress.put(SofaDashboardConstants.PORT, 9603);
+        map.put(SofaDashboardConstants.REGISTRY_SOURCE_ADDRESS_KEY, sourceAddress);
+        invoke = method.invoke(client, map);
+        Assert.assertTrue((invoke instanceof RpcConsumer));
+        RpcConsumer consumer2 = (RpcConsumer) invoke;
+        Assert.assertTrue(consumer2.getAddress().equals("127.0.0.1"));
+
     }
 }

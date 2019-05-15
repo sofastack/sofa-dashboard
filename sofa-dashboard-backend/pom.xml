@@ -103,12 +103,6 @@
                     </exclusion>
                 </exclusions>
             </dependency>
-
-            <dependency>
-                <groupId>com.alipay.sofa</groupId>
-                <artifactId>registry-client-all</artifactId>
-                <version>${registry.client.version}</version>
-            </dependency>
             <dependency>
                 <groupId>com.alipay.sofa.common</groupId>
                 <artifactId>sofa-common-tools</artifactId>
