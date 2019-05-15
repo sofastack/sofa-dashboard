@@ -30,12 +30,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 /**
  * 应用动态数据定时调度器
+ *
  * @author: guolei.sgl (guolei.sgl@antfin.com) 2019/5/9 5:26 PM
  * @since:
  **/
@@ -52,12 +54,12 @@ public class AppDynamicInfoTask {
         String currentDataKey = DashboardUtil.getCurrentDataKey();
         Map<String, Set<Application>> applications = zookeeperApplicationManager.getApplications();
         Set<String> appNames = applications.keySet();
-        appNames.forEach((appName)->{
+        appNames.forEach((appName) -> {
             Set<Application> appInstances = applications.get(appName);
-            appInstances.forEach((app)->{
-                doCalculateThreads(app,currentDataKey);
-                doCalculateMemoryHeap(app,currentDataKey);
-                doCalculateMemoryNonHeap(app,currentDataKey);
+            appInstances.forEach((app) -> {
+                doCalculateThreads(app, currentDataKey);
+                doCalculateMemoryHeap(app, currentDataKey);
+                doCalculateMemoryNonHeap(app, currentDataKey);
             });
         });
     }

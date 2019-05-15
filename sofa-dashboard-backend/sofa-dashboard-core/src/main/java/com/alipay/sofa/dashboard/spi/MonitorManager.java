@@ -35,6 +35,7 @@ public interface MonitorManager {
 
     /**
      * 获取 Environment
+     *
      * @param source 源
      * @return
      */
@@ -42,6 +43,7 @@ public interface MonitorManager {
 
     /**
      * 获取 Metrics
+     *
      * @param source 源
      * @return
      */
@@ -49,6 +51,7 @@ public interface MonitorManager {
 
     /**
      * 获取 Health
+     *
      * @param source 源
      * @return
      */
@@ -56,6 +59,7 @@ public interface MonitorManager {
 
     /**
      * 获取 Info
+     *
      * @param source
      * @return
      */
@@ -63,6 +67,7 @@ public interface MonitorManager {
 
     /**
      * 获取 Thread
+     *
      * @param source
      * @return
      */
@@ -70,6 +75,7 @@ public interface MonitorManager {
 
     /**
      * 获取 Heap Memory
+     *
      * @param source
      * @return
      */
@@ -77,6 +83,7 @@ public interface MonitorManager {
 
     /**
      * 获取 Non-Heap Memory
+     *
      * @param source
      * @return
      */
@@ -84,6 +91,7 @@ public interface MonitorManager {
 
     /**
      * 获取 Loggers
+     *
      * @param source
      * @return
      */
@@ -91,6 +99,7 @@ public interface MonitorManager {
 
     /**
      * 获取 Mappings
+     *
      * @param source
      * @return
      */
@@ -98,6 +107,7 @@ public interface MonitorManager {
 
     /**
      * 获取 Threaddump
+     *
      * @param source
      * @return
      */

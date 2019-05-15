@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -61,37 +62,36 @@ public class ZkCommandPushManager implements CommandPushManager {
     public void pushCommand(CommandRequest commandRequest) {
         checkRoot();
         // 如果是按照应用维度推送命令，则直接放在 /appName 节点数据中
-        if (commandRequest.getDimension().equals(SofaDashboardConstants.APP)){
-            String path = SofaDashboardConstants.SOFA_ARK_ROOT+SofaDashboardConstants.SEPARATOR+commandRequest.getAppName();
+        if (commandRequest.getDimension().equals(SofaDashboardConstants.APP)) {
+            String path = SofaDashboardConstants.SOFA_ARK_ROOT + SofaDashboardConstants.SEPARATOR + commandRequest.getAppName();
             ArkOperation data = getData(commandRequest);
             try {
                 Stat stat = getClient().checkExists().forPath(path);
-                if (stat == null){
+                if (stat == null) {
                     getClient().create().creatingParentContainersIfNeeded().withMode(CreateMode.EPHEMERAL).forPath(path, convertConfig(data, "").getBytes());
                 } else {
                     String oldData = new String(getClient().getData().forPath(path));
-                    getClient().setData().forPath(path,convertConfig(data, oldData).getBytes());
+                    getClient().setData().forPath(path, convertConfig(data, oldData).getBytes());
                 }
             } catch (Exception e) {
-                LOGGER.error("Failed to install biz module via app dimension.",e);
+                LOGGER.error("Failed to install biz module via app dimension.", e);
             }
-        }else {
+        } else {
             // 如果是按照IP维度推送，则放在 /ip 节点数据中
             List<String> targetHosts = commandRequest.getTargetHost();
-            targetHosts.forEach(targetHost->{
-                String path = SofaDashboardConstants.SOFA_ARK_ROOT+SofaDashboardConstants.SEPARATOR+commandRequest.getAppName()+SofaDashboardConstants.SEPARATOR+targetHost;
+            targetHosts.forEach(targetHost -> {
+                String path = SofaDashboardConstants.SOFA_ARK_ROOT + SofaDashboardConstants.SEPARATOR + commandRequest.getAppName() + SofaDashboardConstants.SEPARATOR + targetHost;
                 ArkOperation data = getData(commandRequest);
 
                 try {
-                    if (getClient().checkExists().forPath(path)==null){
+                    if (getClient().checkExists().forPath(path) == null) {
                         getClient().create().creatingParentContainersIfNeeded().withMode(CreateMode.EPHEMERAL).forPath(path, convertConfig(data, "").getBytes());
-                    }
-                    else {
+                    } else {
                         // 这里应该ark在首次从应用维度初始化之后向自己的节点写入状态数据
                         // 为了保持兼容，这里先从应用维度解析然后进行 merge
-                        if (isSyncAppState.compareAndSet(false,true)){
-                            String appPath = SofaDashboardConstants.SOFA_ARK_ROOT+SofaDashboardConstants.SEPARATOR+commandRequest.getAppName();
-                            String appOldData  = new String(getClient().getData().forPath(appPath));
+                        if (isSyncAppState.compareAndSet(false, true)) {
+                            String appPath = SofaDashboardConstants.SOFA_ARK_ROOT + SofaDashboardConstants.SEPARATOR + commandRequest.getAppName();
+                            String appOldData = new String(getClient().getData().forPath(appPath));
                             getClient().setData().forPath(path, convertConfig(data, appOldData).getBytes());
                         } else {
                             String oldData = new String(getClient().getData().forPath(path));
@@ -99,7 +99,7 @@ public class ZkCommandPushManager implements CommandPushManager {
                         }
                     }
                 } catch (Exception e) {
-                    LOGGER.error("Failed to install biz module via ip dimension.",e);
+                    LOGGER.error("Failed to install biz module via ip dimension.", e);
                 }
             });
         }

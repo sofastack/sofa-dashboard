@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,26 +45,27 @@ public class ZkHelper {
 
     /**
      * 根据应用名获取当前应用的所有实例
+     *
      * @param appName
      * @return
      * @throws Exception
      */
-    public List<Application> getArkAppFromZookeeper(String appName,String pluginName,String version) throws Exception {
+    public List<Application> getArkAppFromZookeeper(String appName, String pluginName, String version) throws Exception {
         List<Application> applications = new ArrayList<>();
         CuratorFramework curatorClient = zkCommandClient.getCuratorClient();
         // 根据应用名获取所有实例信息
-        List<String> apps = curatorClient.getChildren().forPath(SofaDashboardConstants.SOFA_ARK_ROOT+ SofaDashboardConstants.SEPARATOR +appName);
+        List<String> apps = curatorClient.getChildren().forPath(SofaDashboardConstants.SOFA_ARK_ROOT + SofaDashboardConstants.SEPARATOR + appName);
         // 遍历实例IP，生成应用元数据
-        apps.forEach((ip)->{
+        apps.forEach((ip) -> {
             try {
                 Application application = new Application();
                 application.setAppName(appName);
                 application.setHostName(ip);
                 // 这里通过 actuator 方式获取状态
-                application.setAppState(getAppState(appName,ip,pluginName,version));
+                application.setAppState(getAppState(appName, ip, pluginName, version));
                 applications.add(application);
             } catch (Exception e) {
-                LOGGER.error("Failed to get ark app.",e);
+                LOGGER.error("Failed to get ark app.", e);
             }
         });
         return applications;
@@ -71,6 +73,7 @@ public class ZkHelper {
 
     /**
      * 获取当前应用实例的个数
+     *
      * @return
      */
     public int getArkAppCount(String appName) throws Exception {
@@ -82,6 +85,7 @@ public class ZkHelper {
 
     /**
      * 获取应用插件状态
+     *
      * @param appName
      * @param ip
      * @param pluginName

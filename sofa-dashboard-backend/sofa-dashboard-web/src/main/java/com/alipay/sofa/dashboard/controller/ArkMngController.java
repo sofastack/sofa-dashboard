@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -57,22 +58,23 @@ public class ArkMngController {
 
     /**
      * 获取 ark plugin 数据
+     *
      * @return
      */
     @RequestMapping("/plugin-list")
     public List<ArkPluginModel> queryArkPluginList() {
         List<ArkPluginModel> list = arkMngService.fetchRegisteredPlugins();
-        list.forEach((item)->{
+        list.forEach((item) -> {
             List<String> appNames = arkMngService.queryAppsByPlugin(item.getPluginName());
             List<AppArkModel> appArkList = new ArrayList<>();
-            appNames.forEach((appName)->{
+            appNames.forEach((appName) -> {
                 try {
-                AppArkModel appArkModel = new AppArkModel();
-                appArkModel.setAppName(appName);
-                appArkModel.setInstanceNum(zkHelper.getArkAppCount(appName));
-                appArkList.add(appArkModel);
+                    AppArkModel appArkModel = new AppArkModel();
+                    appArkModel.setAppName(appName);
+                    appArkModel.setInstanceNum(zkHelper.getArkAppCount(appName));
+                    appArkList.add(appArkModel);
                 } catch (Exception e) {
-                    LOGGER.error("Failed to calculate ark app count.",e);
+                    LOGGER.error("Failed to calculate ark app count.", e);
                 }
             });
             item.setAppArkList(appArkList);
@@ -82,6 +84,7 @@ public class ArkMngController {
 
     /**
      * register module
+     *
      * @param map
      * @return
      */

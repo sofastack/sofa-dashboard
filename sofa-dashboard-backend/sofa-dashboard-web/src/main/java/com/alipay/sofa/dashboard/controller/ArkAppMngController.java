@@ -54,15 +54,15 @@ public class ArkAppMngController {
         AppModuleModel appModuleModel = new AppModuleModel();
         List<String> versions = new ArrayList<>();
         // 如果插件名为空，则返回空
-        if (StringUtils.isEmpty(pluginName)){
+        if (StringUtils.isEmpty(pluginName)) {
             return appModuleModel;
         }
 
         List<ArkPluginModel> arkPluginModels = arkMngService.fetchPluginsByName(pluginName);
-        arkPluginModels.forEach((item)-> versions.addAll(item.getVersions()));
+        arkPluginModels.forEach((item) -> versions.addAll(item.getVersions()));
 
         // 版本为空，则插件当前插件的所有版本，然后选择一个默认的
-        if (StringUtils.isEmpty(version) && !versions.isEmpty()){
+        if (StringUtils.isEmpty(version) && !versions.isEmpty()) {
             version = versions.get(0);
         }
         appModuleModel.setDefaultVersion(version);
@@ -72,13 +72,13 @@ public class ArkAppMngController {
         // 从数据库中拿到所有绑定的应用名
         List<String> appNames = arkMngService.queryAppsByPlugin(pluginName);
 
-        for (String appName:appNames) {
+        for (String appName : appNames) {
             ArkAppModel arkAppModel = new ArkAppModel();
             arkAppModel.setAppName(appName);
             arkAppModel.setPluginName(pluginName);
             arkAppModel.setPluginVersion(version);
             // 这里需要去匹配当前注册到zk上应用名为appName的所有实例信息
-            List<Application> applications = zkHelper.getArkAppFromZookeeper(appName,pluginName,version);
+            List<Application> applications = zkHelper.getArkAppFromZookeeper(appName, pluginName, version);
             arkAppModel.setIpUnitList(getAppUnitModel(applications));
             list.add(arkAppModel);
         }
@@ -109,10 +109,10 @@ public class ArkAppMngController {
 
     private List<AppUnitModel> getAppUnitModel(List<Application> applications) {
         List<AppUnitModel> list = new ArrayList<>();
-        if (applications==null||applications.isEmpty()){
+        if (applications == null || applications.isEmpty()) {
             return list;
         }
-        applications.forEach((item)->{
+        applications.forEach((item) -> {
             AppUnitModel appUnitModel = new AppUnitModel();
             appUnitModel.setIp(item.getHostName());
             appUnitModel.setStatue(item.getAppState());

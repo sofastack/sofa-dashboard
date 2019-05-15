@@ -24,11 +24,17 @@ import java.util.List;
  * @since:
  **/
 public class AppModuleModel {
-    /** 默认版本 */
+    /**
+     * 默认版本
+     */
     private String            defaultVersion;
-    /** 默认版本下使用的所有应用列表 */
+    /**
+     * 默认版本下使用的所有应用列表
+     */
     private List<ArkAppModel> appList     = new ArrayList<>();
-    /** 版本列表 */
+    /**
+     * 版本列表
+     */
     private List<String>      versionList = new ArrayList<>();
 
     public String getDefaultVersion() {

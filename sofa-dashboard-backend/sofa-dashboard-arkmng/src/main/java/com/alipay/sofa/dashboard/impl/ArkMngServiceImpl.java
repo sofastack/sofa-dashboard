@@ -30,11 +30,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * data for ark mng
+ *
  * @author: guolei.sgl (guolei.sgl@antfin.com) 18/12/19 上午11:14
  * @since:
  **/
@@ -153,12 +155,11 @@ public class ArkMngServiceImpl implements ArkMngService {
 
     /**
      * 构建版本信息，此处会生成默认的 版本地址,与插件地址组合之后可以唯一确定当前 插件包的地址
-     *
+     * <p>
      * 如 插件地址 为 ：http://ip:port/sofa/ark
-     *    版本地址 为 ：/1.0.0/test-plugin-1.0.0-ark-biz.jar
-     *
+     * 版本地址 为 ：/1.0.0/test-plugin-1.0.0-ark-biz.jar
+     * <p>
      * 则 最终地址为 http://ip:port/sofa/ark/1.0.0/test-plugin-1.0.0-ark-biz.jar
-     *
      *
      * @param mId
      * @param version

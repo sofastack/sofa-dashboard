@@ -19,8 +19,8 @@ package com.alipay.sofa.dashboard.model;
 import java.util.Date;
 
 /**
- *
  * 应用-ark 关联关系
+ *
  * @author: guolei.sgl (guolei.sgl@antfin.com) 19/1/18 下午5:51
  * @since:
  **/

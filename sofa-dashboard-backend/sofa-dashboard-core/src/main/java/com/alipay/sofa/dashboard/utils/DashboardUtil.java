@@ -18,6 +18,7 @@ package com.alipay.sofa.dashboard.utils;
 
 import com.alipay.sofa.dashboard.constants.SofaDashboardConstants;
 import org.springframework.util.StringUtils;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -43,6 +44,7 @@ public class DashboardUtil {
 
     /**
      * Extract value from map ,if null return empty String
+     *
      * @param map
      * @param key
      * @return
@@ -63,6 +65,7 @@ public class DashboardUtil {
 
     /**
      * Extract value from map ,if null return defaultValue
+     *
      * @param map
      * @param key
      * @return
@@ -113,12 +116,12 @@ public class DashboardUtil {
         return sb.toString();
     }
 
-    public static String convertToString(List<String> source){
-        if(source==null || source.isEmpty()){
+    public static String convertToString(List<String> source) {
+        if (source == null || source.isEmpty()) {
             return SofaDashboardConstants.EMPTY;
         }
         StringBuilder sb = new StringBuilder();
-        source.forEach((item)-> sb.append(item).append(","));
-        return sb.substring(0,sb.toString().length()-1);
+        source.forEach((item) -> sb.append(item).append(","));
+        return sb.substring(0, sb.toString().length() - 1);
     }
 }

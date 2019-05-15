@@ -26,6 +26,7 @@ public interface RegistryDataChangeListener {
 
     /**
      * 数据变更时回调
+     *
      * @param type
      * @param data
      */

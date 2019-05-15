@@ -32,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 import static com.alipay.sofa.rpc.common.utils.StringUtils.CONTEXT_SEP;
 
 /**
@@ -91,9 +92,9 @@ public class ZookeeperAdminRegistry implements AdminRegistry {
         }
         RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, 3);
         zkClient = CuratorFrameworkFactory.builder().connectString(address)
-            .sessionTimeoutMs(registryConfig.getConnectTimeout() * 3)
-            .connectionTimeoutMs(registryConfig.getConnectTimeout()).canBeReadOnly(false)
-            .retryPolicy(retryPolicy).defaultData(null).build();
+                .sessionTimeoutMs(registryConfig.getConnectTimeout() * 3)
+                .connectionTimeoutMs(registryConfig.getConnectTimeout()).canBeReadOnly(false)
+                .retryPolicy(retryPolicy).defaultData(null).build();
 
         zkClient.getConnectionStateListenable().addListener((client, newState) -> {
 

@@ -33,6 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringBootVersion;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -54,7 +55,9 @@ public class ZookeeperApplicationManager implements ApplicationManager, Initiali
 
     private RestTemplate                         restTemplate = new RestTemplate();
 
-    /** 内存中缓存一份应用实例信息 key:appName  value**/
+    /**
+     * 内存中缓存一份应用实例信息 key:appName  value
+     **/
     private static Map<String, Set<Application>> applications = new LinkedHashMap<>();
 
     @Override
@@ -69,16 +72,16 @@ public class ZookeeperApplicationManager implements ApplicationManager, Initiali
 
     private void initApplications() {
         try {
-            String appsPath = SofaDashboardConstants.SOFA_BOOT_CLIENT_ROOT+SofaDashboardConstants.SOFA_BOOT_CLIENT_INSTANCE;
+            String appsPath = SofaDashboardConstants.SOFA_BOOT_CLIENT_ROOT + SofaDashboardConstants.SOFA_BOOT_CLIENT_INSTANCE;
             List<String> appNames = zkCommandClient.getCuratorClient().getChildren().forPath(appsPath);
-            if (appNames!=null && !appNames.isEmpty()){
-                appNames.forEach((item)->{
+            if (appNames != null && !appNames.isEmpty()) {
+                appNames.forEach((item) -> {
                     String instancePath = appsPath + SofaDashboardConstants.SEPARATOR + item;
                     try {
                         List<String> instances = zkCommandClient.getCuratorClient().getChildren().forPath(instancePath);
                         Set<Application> instanceList = new HashSet<>();
-                        instances.forEach(instance->{
-                            String appInstance = appsPath + SofaDashboardConstants.SEPARATOR + item +SofaDashboardConstants.SEPARATOR +instance;
+                        instances.forEach(instance -> {
+                            String appInstance = appsPath + SofaDashboardConstants.SEPARATOR + item + SofaDashboardConstants.SEPARATOR + instance;
                             try {
                                 byte[] bytes = zkCommandClient.getCuratorClient().getData().forPath(appInstance);
                                 Application application = ObjectBytesUtil.convertFromBytes(bytes, Application.class);
@@ -87,12 +90,12 @@ public class ZookeeperApplicationManager implements ApplicationManager, Initiali
                                 LOGGER.error("Error to get app instance from Zookeeper.", e);
                             }
                         });
-                        applications.put(item,instanceList);
+                        applications.put(item, instanceList);
                     } catch (Exception e) {
                         LOGGER.error("Error to get instances from Zookeeper.", e);
                     }
                 });
-                LOGGER.info("dashboard client init success.current app count is "+applications.size());
+                LOGGER.info("dashboard client init success.current app count is " + applications.size());
             }
         } catch (Exception e) {
             LOGGER.error("Error to get applications from Zookeeper.", e);
@@ -100,7 +103,7 @@ public class ZookeeperApplicationManager implements ApplicationManager, Initiali
     }
 
     private void addListener(final TreeCache cache) throws Exception {
-        TreeCacheListener listener = (client,event)-> {
+        TreeCacheListener listener = (client, event) -> {
             switch (event.getType()) {
                 case NODE_ADDED:
                     doUpdateApplications(event);
@@ -120,7 +123,7 @@ public class ZookeeperApplicationManager implements ApplicationManager, Initiali
                     break;
                 default:
                     break;
-             }
+            }
         };
         cache.getListenable().addListener(listener);
         cache.start();

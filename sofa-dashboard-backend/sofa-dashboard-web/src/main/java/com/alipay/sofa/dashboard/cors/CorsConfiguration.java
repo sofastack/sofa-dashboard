@@ -23,6 +23,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 /**
  * CORSConfiguration
  * 解决跨域问题
+ *
  * @version 1.0
  * @author: guolei.sgl
  **/
