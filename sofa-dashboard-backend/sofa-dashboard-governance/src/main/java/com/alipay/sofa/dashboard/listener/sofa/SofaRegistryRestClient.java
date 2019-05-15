@@ -29,7 +29,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -45,10 +44,13 @@ public class SofaRegistryRestClient {
     private static final Logger LOGGER                          = LoggerFactory
                                                                     .getLogger(SofaRegistryRestClient.class);
 
-    private static final String REGISTRY_QUERY_SUB_SESSION_DATA = "/sub/data/query";
-    private static final String REGISTRY_QUERY_PUB_SESSION_DATA = "/pub/data/query";
-    private static final String REGISTRY_QUERY_DATA_INFO_IDS    = "/getDataInfoIdList";
-    private static final String REGISTRY_QUERY_CHECK_SUM        = "/checkSumDataInfoIdList";
+    private static final String DATA_PREFIX                     = "digest";
+    private static final String REGISTRY_QUERY_SUB_SESSION_DATA = DATA_PREFIX + "/sub/data/query";
+    private static final String REGISTRY_QUERY_PUB_SESSION_DATA = DATA_PREFIX + "/pub/data/query";
+    private static final String REGISTRY_QUERY_DATA_INFO_IDS    = DATA_PREFIX
+                                                                  + "/getDataInfoIdList";
+    private static final String REGISTRY_QUERY_CHECK_SUM        = DATA_PREFIX
+                                                                  + "/checkSumDataInfoIdList";
 
     @Autowired
     private RegistryDataCache   registryDataCache;
@@ -93,7 +95,7 @@ public class SofaRegistryRestClient {
     }
 
     public Integer checkSum() {
-        String pubUrl = SofaRegistryRestClient.buildRequestUrl(REGISTRY_QUERY_CHECK_SUM);
+        String pubUrl = buildRequestUrl(REGISTRY_QUERY_CHECK_SUM);
         ResponseEntity<Integer> checkSumResp = restTemplate.getForEntity(pubUrl, Integer.class);
         return checkSumResp.getBody();
     }
@@ -215,12 +217,11 @@ public class SofaRegistryRestClient {
      * @param resource
      * @return
      */
-    public static String buildRequestUrl(String resource) {
+    private String buildRequestUrl(String resource) {
         StringBuilder sb = new StringBuilder();
         sb.append(SofaDashboardConstants.HTTP_SCHEME).append(sessionAddress)
             .append(SofaDashboardConstants.COLON).append(port);
-        sb.append(SofaDashboardConstants.SEPARATOR).append(SofaDashboardConstants.DATA_PREFIX);
-        sb.append(resource);
+        sb.append(SofaDashboardConstants.SEPARATOR).append(resource);
         return sb.toString();
     }
 

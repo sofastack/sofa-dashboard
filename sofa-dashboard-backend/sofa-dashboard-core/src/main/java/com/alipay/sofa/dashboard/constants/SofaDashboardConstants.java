@@ -58,8 +58,6 @@ public class SofaDashboardConstants {
     public static final String SEMICOLON                   = ";";
     public static final String HORIZONTAL                  = "-";
 
-    public static final String DATA_PREFIX                 = "digest";
-
     public static final String DATA_ID_SEPARATOR           = "#@#";
     public static final String REGISTRY_DATA_ID_KEY        = "dataId";
     public static final String REGISTRY_IP_KEY             = "ipAddress";
