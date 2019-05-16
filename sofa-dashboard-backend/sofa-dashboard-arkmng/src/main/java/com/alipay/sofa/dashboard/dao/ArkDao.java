@@ -34,6 +34,7 @@ public interface ArkDao {
 
     /**
      * 插件入库
+     *
      * @param arkPluginDO
      * @return
      */
@@ -41,6 +42,7 @@ public interface ArkDao {
 
     /**
      * 插件模块版本入库
+     *
      * @param arkModuleVersionDO
      * @return
      */
@@ -48,6 +50,7 @@ public interface ArkDao {
 
     /**
      * 模块关联负责人入库
+     *
      * @param arkModuleUserDO
      * @return
      */
@@ -55,6 +58,7 @@ public interface ArkDao {
 
     /**
      * 根据插件名查询插件信息
+     *
      * @param pluginName
      * @return
      */
@@ -62,24 +66,28 @@ public interface ArkDao {
 
     /**
      * 移除插件
+     *
      * @param mId
      */
     void remove(int mId);
 
     /**
      * 删除插件的所有版本
+     *
      * @param mId
      */
     void removeModuleVersion(int mId);
 
     /**
      * 删除插件所有的关联负责人
+     *
      * @param mId
      */
     void removeModuleUser(int mId);
 
     /**
      * 根据插件吗查询插件详情
+     *
      * @param pluginName
      * @return
      */
@@ -87,6 +95,7 @@ public interface ArkDao {
 
     /**
      * 根据插件ID 查询所有插件版本
+     *
      * @param id
      * @return
      */
@@ -94,6 +103,7 @@ public interface ArkDao {
 
     /**
      * 插件关联应用信息入库
+     *
      * @param appArkDO
      * @return
      */
@@ -101,6 +111,7 @@ public interface ArkDao {
 
     /**
      * 查询所有关联插件的应用
+     *
      * @param moduleId
      * @return
      */
@@ -108,6 +119,7 @@ public interface ArkDao {
 
     /**
      * 根据模块ID和应用名删除关联应用
+     *
      * @param moduleId
      * @param appName
      * @return
@@ -117,6 +129,7 @@ public interface ArkDao {
 
     /**
      * 根据插件名查询插件ID
+     *
      * @param pluginName
      * @return
      */
@@ -124,6 +137,7 @@ public interface ArkDao {
 
     /**
      * 根据插件版本和插件ID查询插件版本详情
+     *
      * @param moduleId
      * @param moduleVersion
      * @return

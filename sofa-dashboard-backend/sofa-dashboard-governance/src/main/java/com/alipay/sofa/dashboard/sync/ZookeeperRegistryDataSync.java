@@ -16,31 +16,30 @@
  */
 package com.alipay.sofa.dashboard.sync;
 
-import com.alipay.sofa.dashboard.constants.GovernanceConstants;
-import com.alipay.sofa.dashboard.registry.AdminRegistry;
+import com.alipay.sofa.dashboard.constants.SofaDashboardConstants;
+import com.alipay.sofa.dashboard.registry.ZookeeperAdminRegistry;
 import com.alipay.sofa.rpc.config.RegistryConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 /**
  * @author bystander
  * @version $Id: ZookeeperRegistryDataSync.java, v 0.1 2018年12月10日 23:39 bystander Exp $
  */
-@Service
 public class ZookeeperRegistryDataSync implements RegistryDataSync {
-    private final static Logger LOGGER = LoggerFactory.getLogger(ZookeeperRegistryDataSync.class);
+    private final static Logger    LOGGER = LoggerFactory
+                                              .getLogger(ZookeeperRegistryDataSync.class);
 
     @Autowired
-    private AdminRegistry       zookeeperAdminRegistry;
+    private ZookeeperAdminRegistry zookeeperAdminRegistry;
 
     @Override
     public boolean start(RegistryConfig registryConfig) {
 
         LOGGER.info("start zookeeper registry data sync,config is {}", registryConfig.getAddress());
         zookeeperAdminRegistry.start(registryConfig);
-        zookeeperAdminRegistry.subscribe(GovernanceConstants.DEFAULT_GROUP,
+        zookeeperAdminRegistry.subscribe(SofaDashboardConstants.DEFAULT_GROUP,
                 (type, data) -> LOGGER.info("data add,data is {}", data));
         return true;
     }

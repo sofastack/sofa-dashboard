@@ -19,7 +19,6 @@ package com.alipay.sofa.dashboard.spi;
 import com.alipay.sofa.dashboard.model.CommandRequest;
 
 /**
- *
  * CommandPushManager can be extended by any other external user to implement push of ark commands,
  * such as zookeeper-based push by default, or you can implement it based on Apollo.
  *
@@ -30,6 +29,7 @@ public interface CommandPushManager {
 
     /**
      * 命令推送扩展接口
+     *
      * @param command
      */
     void pushCommand(CommandRequest command);
