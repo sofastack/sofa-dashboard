@@ -1,7 +1,7 @@
 ## SOFADashboard
 
-[![Build Status](https://travis-ci.com/alipay/sofa-dashboard.svg?branch=master)](https://travis-ci.com/alipay/sofa-dashboard)
-[![Coverage Status](https://codecov.io/gh/alipay/sofa-dashboard/branch/master/graph/badge.svg)](https://codecov.io/gh/alipay/sofa-dashboard)
+[![Build Status](https://travis-ci.com/sofastack/sofa-dashboard.svg?branch=master)](https://travis-ci.com/sofastack/sofa-dashboard)
+[![Coverage Status](https://codecov.io/gh/sofastack/sofa-dashboard/branch/master/graph/badge.svg)](https://codecov.io/gh/sofastack/sofa-dashboard)
 ![license](https://img.shields.io/badge/license-Apache--2.0-green.svg)
 
 SOFADashboard 致力于对 SOFA 框架中组件进行统一管理，包括服务治理、SOFAArk 管控等。SOFADashboard 本身所用技术栈均基于开源社区产品来开发构建，包括：Ant Design Pro、SOFABoot、Spring、MyBatis 等
@@ -10,7 +10,7 @@ SOFADashboard 致力于对 SOFA 框架中组件进行统一管理，包括服务
 
 - 应用面板功能，用于查看应用信息
 - 基于 Zookeeper 的服务治理功能
-- [SOFAArk](https://github.com/alipay/sofa-ark)多模块管理功能
+- [SOFAArk](https://github.com/sofastack/sofa-ark)多模块管理功能
 
 ## 运行依赖
 
