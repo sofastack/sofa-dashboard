@@ -88,10 +88,22 @@ public class SofaRegistryRestClient {
         addRpcService(dataIds);
         // 获取 sub 和 pub 数据
         dataIds.forEach((dataInfoId) -> {
-            registryDataCache.removeConsumers(dataInfoId, registryDataCache.fetchConsumersByService(dataInfoId));
-            registryDataCache.removeProviders(dataInfoId, registryDataCache.fetchProvidersByService(dataInfoId));
+            String dataId = extractDataId(dataInfoId);
+            registryDataCache.removeConsumers(dataId, registryDataCache.fetchConsumersByService(dataId));
+            registryDataCache.removeProviders(dataId, registryDataCache.fetchProvidersByService(dataId));
             getSessionDataByDataInfoId(dataInfoId);
         });
+    }
+
+    private String extractDataId(String dataInfoId) {
+        if (StringUtils.isBlank(dataInfoId)) {
+            return SofaDashboardConstants.EMPTY;
+        }
+        if (dataInfoId.contains(SofaDashboardConstants.DATA_ID_SEPARATOR)) {
+            String[] split = dataInfoId.split(SofaDashboardConstants.DATA_ID_SEPARATOR);
+            return split[0];
+        }
+        return SofaDashboardConstants.EMPTY;
     }
 
     public Integer checkSum() {
