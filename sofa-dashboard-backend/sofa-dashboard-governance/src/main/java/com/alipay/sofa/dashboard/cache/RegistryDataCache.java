@@ -87,9 +87,9 @@ public interface RegistryDataCache {
     /**
      * 移除 RpcService
      *
-     * @param consumers consumer 列表
+     * @param rpcServices
      */
-    void removeService(List<RpcService> consumers);
+    void removeService(List<RpcService> rpcServices);
 
     /**
      * 更新 RpcService

@@ -16,9 +16,9 @@
  */
 package com.alipay.sofa.dashboard.listener.zookeeper;
 
+import com.alipay.sofa.common.utils.StringUtil;
 import com.alipay.sofa.dashboard.cache.RegistryDataCache;
 import com.alipay.sofa.dashboard.domain.RpcProvider;
-import com.alipay.sofa.common.utils.StringUtil;
 import com.alipay.sofa.rpc.client.ProviderHelper;
 import com.alipay.sofa.rpc.client.ProviderInfo;
 import com.alipay.sofa.rpc.client.ProviderInfoAttrs;
@@ -69,7 +69,7 @@ public class ProviderNodeChangeListener implements PathChildrenCacheListener {
                 String removeProviderData = StringUtil.substringAfterLast(path, "/");
                 String removeServiceName = StringUtil.substringBetween(path, "/sofa-rpc/",
                     "/providers/");
-                removeProviders.add(convert2Provider(removeProviderData, removeServiceName));
+                removeProviders.add(convert2Provider(removeServiceName, removeProviderData));
                 registryDataCache.removeProviders(removeServiceName, removeProviders);
                 break;
             case CHILD_UPDATED:
@@ -78,7 +78,7 @@ public class ProviderNodeChangeListener implements PathChildrenCacheListener {
                 String updateProviderData = StringUtil.substringAfterLast(path, "/");
                 String updateServiceName = StringUtil.substringBetween(path, "/sofa-rpc/",
                     "/providers/");
-                updateProviders.add(convert2Provider(updateProviderData, updateServiceName));
+                updateProviders.add(convert2Provider(updateServiceName, updateProviderData));
                 registryDataCache.updateProviders(updateServiceName, updateProviders);
                 break;
 
