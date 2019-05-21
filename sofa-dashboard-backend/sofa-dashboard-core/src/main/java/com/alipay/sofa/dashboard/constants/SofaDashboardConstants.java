@@ -57,9 +57,9 @@ public class SofaDashboardConstants {
     public static final String Q_MARK                      = "?";
     public static final String SEMICOLON                   = ";";
     public static final String HORIZONTAL                  = "-";
-    public static final String EMPTY                     = "";
-    public static final String LOCALHOST                 = "localhost";
-    public static final String LOCALHOST_IP              = "127.0.0.1";
+    public static final String EMPTY                       = "";
+    public static final String LOCALHOST                   = "localhost";
+    public static final String LOCALHOST_IP                = "127.0.0.1";
 
     public static final String DATA_ID_SEPARATOR           = "#@#";
     public static final String REGISTRY_DATA_ID_KEY        = "dataId";
