@@ -19,6 +19,7 @@ package com.alipay.sofa.dashboard.domain;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author bystander
@@ -142,5 +143,27 @@ public class RpcConsumer implements Serializable {
         sb.append(", port=").append(port);
         sb.append('}');
         return sb.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        RpcConsumer that = (RpcConsumer) o;
+        return enabled == that.enabled && dynamic == that.dynamic && cell == that.cell
+               && port == that.port && Objects.equals(serviceName, that.serviceName)
+               && Objects.equals(parameters, that.parameters)
+               && Objects.equals(address, that.address)
+               && Objects.equals(overrides, that.overrides)
+               && Objects.equals(appName, that.appName)
+               && Objects.equals(providers, that.providers) && Objects.equals(router, that.router);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(serviceName, parameters, address, overrides, appName, enabled, dynamic,
+            providers, router, cell, port);
     }
 }

@@ -26,6 +26,7 @@ public interface RegistryDataSync {
 
     /**
      * 开始数据同步
+     *
      * @param registryConfig
      * @return
      */

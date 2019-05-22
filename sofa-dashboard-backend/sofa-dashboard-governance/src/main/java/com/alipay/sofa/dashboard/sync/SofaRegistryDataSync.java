@@ -16,18 +16,28 @@
  */
 package com.alipay.sofa.dashboard.sync;
 
+import com.alipay.sofa.dashboard.registry.SofaAdminRegistry;
 import com.alipay.sofa.rpc.config.RegistryConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * @author bystander
- * @version $Id: RegistryDataSyncManager.java, v 0.1 2018年12月11日 17:10 bystander Exp $
- */
-public interface RegistryDataSyncManager {
-    /**
-     * 数据同步管理器启动
-     *
-     * @param registryConfig
-     * @return
-     */
-    boolean start(RegistryConfig registryConfig);
+ * @author: guolei.sgl (guolei.sgl@antfin.com) 2019/5/6 11:13 AM
+ * @since:
+ **/
+public class SofaRegistryDataSync implements RegistryDataSync {
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(SofaRegistryDataSync.class);
+
+    @Autowired
+    private SofaAdminRegistry   sofaAdminRegistry;
+
+    @Override
+    public boolean start(RegistryConfig registryConfig) {
+
+        LOGGER.info("start sofa registry data sync,config is {}", registryConfig.getAddress());
+        sofaAdminRegistry.start(registryConfig);
+        return true;
+    }
 }

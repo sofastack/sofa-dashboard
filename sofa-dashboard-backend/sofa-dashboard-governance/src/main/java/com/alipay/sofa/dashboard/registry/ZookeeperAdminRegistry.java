@@ -16,6 +16,7 @@
  */
 package com.alipay.sofa.dashboard.registry;
 
+import com.alipay.sofa.dashboard.constants.SofaDashboardConstants;
 import com.alipay.sofa.dashboard.listener.RegistryDataChangeListener;
 import com.alipay.sofa.dashboard.listener.zookeeper.RootNodeChangeListener;
 import com.alipay.sofa.rpc.common.utils.StringUtils;
@@ -32,19 +33,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 import static com.alipay.sofa.rpc.common.utils.StringUtils.CONTEXT_SEP;
 
 /**
  * @author bystander
  * @version $Id: ZookeeperAdminRegistry.java, v 0.1 2018年12月11日 17:35 bystander Exp $
  */
-@Component
 public class ZookeeperAdminRegistry implements AdminRegistry {
 
-    private static final Logger    LOGGER    = LoggerFactory
-                                                 .getLogger(ZookeeperAdminRegistry.class);
-
-    private final static String    SEPARATOR = "/";
+    private static final Logger    LOGGER = LoggerFactory.getLogger(ZookeeperAdminRegistry.class);
 
     /**
      * 注册中心服务配置
@@ -91,9 +89,9 @@ public class ZookeeperAdminRegistry implements AdminRegistry {
         }
         RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, 3);
         zkClient = CuratorFrameworkFactory.builder().connectString(address)
-            .sessionTimeoutMs(registryConfig.getConnectTimeout() * 3)
-            .connectionTimeoutMs(registryConfig.getConnectTimeout()).canBeReadOnly(false)
-            .retryPolicy(retryPolicy).defaultData(null).build();
+                .sessionTimeoutMs(registryConfig.getConnectTimeout() * 3)
+                .connectionTimeoutMs(registryConfig.getConnectTimeout()).canBeReadOnly(false)
+                .retryPolicy(retryPolicy).defaultData(null).build();
 
         zkClient.getConnectionStateListenable().addListener((client, newState) -> {
 
@@ -130,7 +128,7 @@ public class ZookeeperAdminRegistry implements AdminRegistry {
         // 注册Consumer节点
         try {
             PathChildrenCache pathChildrenCache = new PathChildrenCache(zkClient,
-                SEPARATOR + group, true);
+                SofaDashboardConstants.SEPARATOR + group, true);
 
             pathChildrenCache.start(PathChildrenCache.StartMode.NORMAL);
 

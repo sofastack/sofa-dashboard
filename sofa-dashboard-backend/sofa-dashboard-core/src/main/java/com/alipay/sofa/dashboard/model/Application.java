@@ -20,6 +20,7 @@ import java.util.Objects;
 
 /**
  * 客户端注册上来的应用模型
+ *
  * @author: guolei.sgl (guolei.sgl@antfin.com) 19/1/19 上午11:48
  * @since:
  **/

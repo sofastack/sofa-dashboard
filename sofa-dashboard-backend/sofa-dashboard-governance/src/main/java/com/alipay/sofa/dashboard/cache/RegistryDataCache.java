@@ -31,72 +31,83 @@ public interface RegistryDataCache {
 
     /**
      * 添加 providers
-     * @param serviceName 服务名
+     *
+     * @param serviceName  服务名
      * @param providerList provider 列表
      */
     void addProviders(String serviceName, List<RpcProvider> providerList);
 
     /**
      * 添加 consumers
-     * @param serviceName 服务名
-     * @param consumers consumer 列表
+     *
+     * @param serviceName  服务名
+     * @param consumerList consumer 列表
      */
-    void addConsumers(String serviceName, List<RpcConsumer> consumers);
+    void addConsumers(String serviceName, List<RpcConsumer> consumerList);
 
     /**
      * 移除 providers
-     * @param serviceName 服务名
+     *
+     * @param serviceName  服务名
      * @param providerList provider 列表
      */
     void removeProviders(String serviceName, List<RpcProvider> providerList);
 
     /**
      * 移除 consumers
-     * @param serviceName 服务名
-     * @param consumers consumer 列表
+     *
+     * @param serviceName  服务名
+     * @param consumerList consumer 列表
      */
-    void removeConsumers(String serviceName, List<RpcConsumer> consumers);
+    void removeConsumers(String serviceName, List<RpcConsumer> consumerList);
 
     /**
      * 更新 providers
-     * @param serviceName 服务名
+     *
+     * @param serviceName  服务名
      * @param providerList provider 列表
      */
     void updateProviders(String serviceName, List<RpcProvider> providerList);
 
     /**
      * 更新 consumers
-     * @param serviceName 服务名
-     * @param consumers consumer 列表
+     *
+     * @param serviceName  服务名
+     * @param consumerList consumer 列表
      */
-    void updateConsumers(String serviceName, List<RpcConsumer> consumers);
+    void updateConsumers(String serviceName, List<RpcConsumer> consumerList);
 
     /**
      * 添加 RpcService
+     *
      * @param providerList provider 列表
      */
     void addService(List<RpcService> providerList);
 
     /**
      * 移除 RpcService
-     * @param consumers consumer 列表
+     *
+     * @param rpcServices services 列表
      */
-    void removeService(List<RpcService> consumers);
+    void removeService(List<RpcService> rpcServices);
 
     /**
      * 更新 RpcService
+     *
      * @param rpcService
      */
     void updateService(RpcService rpcService);
 
     /**
      * 获取 RpcService
+     *
      * @return
      */
     Map<String, RpcService> fetchService();
 
     /**
      * 获取 Providers
+     *
      * @param serviceName 服务名
      * @return
      */
@@ -104,6 +115,7 @@ public interface RegistryDataCache {
 
     /**
      * 获取 Consumers
+     *
      * @param serviceName 服务名
      * @return
      */

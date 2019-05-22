@@ -17,7 +17,7 @@
 package com.alipay.sofa.dashboard.listener.zookeeper;
 
 import com.alipay.sofa.dashboard.cache.RegistryDataCache;
-import com.alipay.sofa.dashboard.constants.GovernanceConstants;
+import com.alipay.sofa.dashboard.constants.SofaDashboardConstants;
 import com.alipay.sofa.dashboard.domain.RpcService;
 import com.alipay.sofa.rpc.common.utils.StringUtils;
 import org.apache.curator.framework.CuratorFramework;
@@ -63,7 +63,8 @@ public class RootNodeChangeListener implements PathChildrenCacheListener {
                 RpcService service = new RpcService();
 
                 serviceName = StringUtils.substringAfter(addPath,
-                    "/" + GovernanceConstants.DEFAULT_GROUP + "/");
+                    SofaDashboardConstants.SEPARATOR + SofaDashboardConstants.DEFAULT_GROUP
+                            + SofaDashboardConstants.SEPARATOR);
                 service.setServiceName(serviceName);
                 services.add(service);
                 registryDataCache.addService(services);
@@ -82,7 +83,8 @@ public class RootNodeChangeListener implements PathChildrenCacheListener {
                 List<RpcService> rpcServices = new ArrayList<>();
                 RpcService removeServices = new RpcService();
                 serviceName = StringUtils.substringAfter(removePath,
-                    "/" + GovernanceConstants.DEFAULT_GROUP + "/");
+                    SofaDashboardConstants.SEPARATOR + SofaDashboardConstants.DEFAULT_GROUP
+                            + SofaDashboardConstants.SEPARATOR);
 
                 removeServices.setServiceName(serviceName);
                 rpcServices.add(removeServices);
@@ -97,7 +99,8 @@ public class RootNodeChangeListener implements PathChildrenCacheListener {
                 String updatePath = event.getData().getPath();
                 RpcService updateServices = new RpcService();
                 serviceName = StringUtils.substringAfter(updatePath,
-                    "/" + GovernanceConstants.DEFAULT_GROUP + "/");
+                    SofaDashboardConstants.SEPARATOR + SofaDashboardConstants.DEFAULT_GROUP
+                            + SofaDashboardConstants.SEPARATOR);
                 updateServices.setServiceName(serviceName);
                 registryDataCache.updateService(updateServices);
 
