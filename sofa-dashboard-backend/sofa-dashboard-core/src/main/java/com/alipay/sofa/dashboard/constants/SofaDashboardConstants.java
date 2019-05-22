@@ -69,5 +69,4 @@ public class SofaDashboardConstants {
     public static final String REGISTRY_PROCESS_ID_KEY     = "processId";
     public static final String REGISTRY_ATTRIBUTES         = "attributes";
     public static final String REGISTRY_TYPE               = "registry.type";
-    public static final String EMPTY                       = "";
 }
