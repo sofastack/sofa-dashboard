@@ -72,7 +72,9 @@ public class ServiceManageController {
         for (Map.Entry<String, RpcService> rpcServiceEntry : rpcServices.entrySet()) {
             final String serviceName = rpcServiceEntry.getKey();
             ServiceModel model = fetchServiceModel(serviceName);
-            data.add(model);
+            if (model != null) {
+                data.add(model);
+            }
         }
 
         return data;
@@ -157,6 +159,11 @@ public class ServiceManageController {
                 .setServiceProviderAppName(StringUtils.joinWithComma(appSet.toArray(new String[0])));
         }
         model.setServiceProviderAppNum(providerNum);
+        // 服务提供方和服务消费方都没有，则不展示
+        if (model.getServiceConsumerAppNum().equals("0")
+            && model.getServiceProviderAppNum().equals("0")) {
+            return null;
+        }
         return model;
     }
 
