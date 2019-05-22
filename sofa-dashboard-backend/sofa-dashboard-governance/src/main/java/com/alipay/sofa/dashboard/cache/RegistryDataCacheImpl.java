@@ -24,7 +24,6 @@ import com.alipay.sofa.rpc.common.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
 import javax.annotation.concurrent.NotThreadSafe;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +62,12 @@ public class RegistryDataCacheImpl implements RegistryDataCache {
         if (currentProviderList == null) {
             providers.put(rpcService, providerList);
         } else {
-            currentProviderList.addAll(providerList);
+            for (RpcProvider provider : providerList) {
+                if (currentProviderList.contains(provider)) {
+                    continue;
+                }
+                currentProviderList.add(provider);
+            }
         }
 
         LOGGER.info("receive provider registry data add, data is {}", providerList);
@@ -84,7 +88,12 @@ public class RegistryDataCacheImpl implements RegistryDataCache {
         if (currentConsumerList == null) {
             consumers.put(rpcService, consumersList);
         } else {
-            currentConsumerList.addAll(consumersList);
+            for (RpcConsumer consumer : consumersList) {
+                if (currentConsumerList.contains(consumer)) {
+                    continue;
+                }
+                currentConsumerList.add(consumer);
+            }
         }
 
         LOGGER.info("receive consumer registry data add, data is {}", consumers);
@@ -94,26 +103,22 @@ public class RegistryDataCacheImpl implements RegistryDataCache {
     @Override
     public void removeProviders(String serviceName, List<RpcProvider> providerList) {
         RpcService rpcService = services.get(serviceName);
-        if (rpcService == null) {
+        if (rpcService == null || providerList == null) {
             return;
         }
         List<RpcProvider> currentProviderList = providers.get(rpcService);
-        for (RpcProvider deleteProvider : providerList) {
-            currentProviderList.remove(deleteProvider);
-        }
+        currentProviderList.removeAll(providerList);
         LOGGER.info("receive provider registry data remove, data is {}", providerList);
     }
 
     @Override
     public void removeConsumers(String serviceName, List<RpcConsumer> consumersList) {
         RpcService rpcService = services.get(serviceName);
-        if (rpcService == null) {
+        if (rpcService == null || consumersList == null) {
             return;
         }
         List<RpcConsumer> currentConsumerList = consumers.get(rpcService);
-        for (RpcConsumer deleteProvider : consumersList) {
-            currentConsumerList.remove(deleteProvider);
-        }
+        currentConsumerList.removeAll(consumersList);
         LOGGER.info("receive consumer registry data remove, data is {}", consumersList);
     }
 
