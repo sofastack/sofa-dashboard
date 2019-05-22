@@ -89,9 +89,11 @@ public class SofaRegistryRestClient {
         // 获取 sub 和 pub 数据
         dataIds.forEach((dataInfoId) -> {
             String dataId = extractDataId(dataInfoId);
-            registryDataCache.removeConsumers(dataId, registryDataCache.fetchConsumersByService(dataId));
-            registryDataCache.removeProviders(dataId, registryDataCache.fetchProvidersByService(dataId));
-            getSessionDataByDataInfoId(dataInfoId);
+            if (StringUtils.isNotBlank(dataId)){
+                registryDataCache.removeConsumers(dataId, registryDataCache.fetchConsumersByService(dataId));
+                registryDataCache.removeProviders(dataId, registryDataCache.fetchProvidersByService(dataId));
+                getSessionDataByDataInfoId(dataInfoId);
+            }
         });
     }
 
