@@ -17,7 +17,7 @@
 package com.alipay.sofa.dashboard.controller;
 
 import com.alipay.sofa.common.utils.StringUtil;
-import com.alipay.sofa.dashboard.cache.RegistryDataService;
+import com.alipay.sofa.dashboard.cache.RegistryDataCache;
 import com.alipay.sofa.dashboard.domain.RpcConsumer;
 import com.alipay.sofa.dashboard.domain.RpcProvider;
 import com.alipay.sofa.dashboard.domain.RpcService;
@@ -46,7 +46,7 @@ import java.util.Set;
 public class ServiceManageController {
 
     @Autowired
-    private RegistryDataService registryDataService;
+    private RegistryDataCache registryDataCache;
 
     /**
      * 获取服务列表
@@ -56,7 +56,7 @@ public class ServiceManageController {
     @GetMapping("all")
     public List<ServiceModel> queryServiceList() {
         List<ServiceModel> data = new ArrayList<>();
-        Map<String, RpcService> rpcServices = registryDataService.fetchService();
+        Map<String, RpcService> rpcServices = registryDataCache.fetchService();
         for (Map.Entry<String, RpcService> rpcServiceEntry : rpcServices.entrySet()) {
             final String serviceName = rpcServiceEntry.getKey();
             ServiceModel model = fetchServiceModel(serviceName);
@@ -69,11 +69,11 @@ public class ServiceManageController {
     }
 
     private List<RpcProvider> fetchProviderData(String serviceName) {
-        return registryDataService.fetchProvidersByService(serviceName);
+        return registryDataCache.fetchProvidersByService(serviceName);
     }
 
     private List<RpcConsumer> fetchConsumerData(String serviceName) {
-        return registryDataService.fetchConsumersByService(serviceName);
+        return registryDataCache.fetchConsumersByService(serviceName);
     }
 
     /**
@@ -107,7 +107,7 @@ public class ServiceManageController {
     public List<ServiceModel> queryService(@RequestParam("serviceName") String serviceName) {
         List<ServiceModel> data = new ArrayList<>();
 
-        Map<String, RpcService> rpcServices = registryDataService.fetchService();
+        Map<String, RpcService> rpcServices = registryDataCache.fetchService();
         for (Map.Entry<String, RpcService> rpcServiceEntry : rpcServices.entrySet()) {
             final String currentServiceName = rpcServiceEntry.getKey();
             if (StringUtil.contains(currentServiceName, serviceName)) {
@@ -130,12 +130,12 @@ public class ServiceManageController {
         model.setServiceId(serviceName);
         String consumerNum = "0";
         String providerNum = "0";
-        List<RpcConsumer> consumerSize = registryDataService.fetchConsumersByService(serviceName);
+        List<RpcConsumer> consumerSize = registryDataCache.fetchConsumersByService(serviceName);
         if (consumerSize != null) {
             consumerNum = String.valueOf(consumerSize.size());
         }
         model.setServiceConsumerAppNum(consumerNum);
-        List<RpcProvider> providerSize = registryDataService.fetchProvidersByService(serviceName);
+        List<RpcProvider> providerSize = registryDataCache.fetchProvidersByService(serviceName);
         if (providerSize != null) {
             providerNum = String.valueOf(providerSize.size());
             Set<String> appSet = new HashSet<>();

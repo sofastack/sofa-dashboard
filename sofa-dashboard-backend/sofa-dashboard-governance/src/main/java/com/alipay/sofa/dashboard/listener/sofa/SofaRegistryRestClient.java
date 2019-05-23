@@ -16,9 +16,11 @@
  */
 package com.alipay.sofa.dashboard.listener.sofa;
 
+import com.alipay.sofa.dashboard.cache.RegistryDataCache;
 import com.alipay.sofa.dashboard.constants.SofaDashboardConstants;
 import com.alipay.sofa.dashboard.domain.RpcConsumer;
 import com.alipay.sofa.dashboard.domain.RpcProvider;
+import com.alipay.sofa.dashboard.domain.RpcService;
 import com.alipay.sofa.rpc.common.utils.StringUtils;
 import com.alipay.sofa.rpc.config.RegistryConfig;
 import org.slf4j.Logger;
@@ -49,6 +51,10 @@ public class SofaRegistryRestClient {
                                                                   + "/checkSumDataInfoIdList";
     private static final String REGISTRY_QUERY_SUB_SESSION_DATA = DATA_PREFIX + "/sub/data/query";
     private static final String REGISTRY_QUERY_PUB_SESSION_DATA = DATA_PREFIX + "/pub/data/query";
+
+    @Autowired
+    RegistryDataCache           registryDataCache;
+
     @Autowired
     private RestTemplate        restTemplate;
 
@@ -56,8 +62,8 @@ public class SofaRegistryRestClient {
 
     private static int          port;
 
-    public List<String> syncAllDataInfoIds() {
-        List<String> dataIds = new ArrayList<>();
+    public void syncAllSessionData() {
+        List<String> dataIds;
         String httpUrl = buildRequestUrl(REGISTRY_QUERY_DATA_INFO_IDS);
         try {
             ResponseEntity<List> forEntity = restTemplate.getForEntity(httpUrl, List.class);
@@ -65,11 +71,21 @@ public class SofaRegistryRestClient {
             if (dataIds == null) {
                 dataIds = new ArrayList<>();
             }
+            List<RpcService> service = new ArrayList<>();
+            for (String dataInfoId : dataIds) {
+                RpcService rpcService = new RpcService();
+                rpcService.setServiceName(dataInfoId);
+                service.add(rpcService);
+                List<RpcProvider> providers = syncProviders(dataInfoId);
+                registryDataCache.addProviders(dataInfoId, providers);
+                List<RpcConsumer> consumers = syncConsumers(dataInfoId);
+                registryDataCache.addConsumers(dataInfoId, consumers);
+            }
+            registryDataCache.addService(service);
         } catch (Throwable t) {
             LOGGER.error(
                 "Failed to sync all dataInfoIds from session. query url [" + httpUrl + "]", t);
         }
-        return dataIds;
     }
 
     public Integer checkSum() {
@@ -78,7 +94,7 @@ public class SofaRegistryRestClient {
         return checkSumResp.getBody();
     }
 
-    public List<RpcProvider> queryProviders(String dataInfoId){
+    private List<RpcProvider> syncProviders(String dataInfoId) {
         String pubUrl = buildRequestUrl(REGISTRY_QUERY_PUB_SESSION_DATA);
         pubUrl += "?dataInfoId={1}";
         ResponseEntity<Map> pubResponse = restTemplate.getForEntity(pubUrl, Map.class, dataInfoId);
@@ -98,7 +114,7 @@ public class SofaRegistryRestClient {
         return providers;
     }
 
-    public List<RpcConsumer> queryConsumers(String dataInfoId){
+    private List<RpcConsumer> syncConsumers(String dataInfoId) {
         String subUrl = buildRequestUrl(REGISTRY_QUERY_SUB_SESSION_DATA);
         List<RpcConsumer> consumers = new ArrayList<>();
         subUrl += "?dataInfoId={1}";

@@ -28,7 +28,7 @@ import java.util.Map;
  * @author bystander
  * @version $Id: RegistryDataCache.java, v 0.1 2018年12月10日 23:57 bystander Exp $
  */
-public interface RegistryDataService {
+public interface RegistryDataCache {
 
     /**
      * 添加 providers
@@ -36,7 +36,8 @@ public interface RegistryDataService {
      * @param serviceName  服务名
      * @param providerList provider 列表
      */
-    default void addProviders(String serviceName, List<RpcProvider> providerList){}
+    default void addProviders(String serviceName, List<RpcProvider> providerList) {
+    }
 
     /**
      * 添加 consumers
@@ -44,7 +45,8 @@ public interface RegistryDataService {
      * @param serviceName  服务名
      * @param consumerList consumer 列表
      */
-    default void addConsumers(String serviceName, List<RpcConsumer> consumerList){}
+    default void addConsumers(String serviceName, List<RpcConsumer> consumerList) {
+    }
 
     /**
      * 移除 providers
@@ -52,7 +54,8 @@ public interface RegistryDataService {
      * @param serviceName  服务名
      * @param providerList provider 列表
      */
-    default void removeProviders(String serviceName, List<RpcProvider> providerList){}
+    default void removeProviders(String serviceName, List<RpcProvider> providerList) {
+    }
 
     /**
      * 移除 consumers
@@ -60,7 +63,8 @@ public interface RegistryDataService {
      * @param serviceName  服务名
      * @param consumerList consumer 列表
      */
-    default void removeConsumers(String serviceName, List<RpcConsumer> consumerList){}
+    default void removeConsumers(String serviceName, List<RpcConsumer> consumerList) {
+    }
 
     /**
      * 更新 providers
@@ -68,7 +72,8 @@ public interface RegistryDataService {
      * @param serviceName  服务名
      * @param providerList provider 列表
      */
-    default void updateProviders(String serviceName, List<RpcProvider> providerList){}
+    default void updateProviders(String serviceName, List<RpcProvider> providerList) {
+    }
 
     /**
      * 更新 consumers
@@ -76,35 +81,39 @@ public interface RegistryDataService {
      * @param serviceName  服务名
      * @param consumerList consumer 列表
      */
-    default void updateConsumers(String serviceName, List<RpcConsumer> consumerList){}
+    default void updateConsumers(String serviceName, List<RpcConsumer> consumerList) {
+    }
 
     /**
      * 添加 RpcService
      *
      * @param providerList provider 列表
      */
-    default void addService(List<RpcService> providerList){}
+    default void addService(List<RpcService> providerList) {
+    }
 
     /**
      * 移除 RpcService
      *
      * @param rpcServices services 列表
      */
-    default void removeService(List<RpcService> rpcServices){}
+    default void removeService(List<RpcService> rpcServices) {
+    }
 
     /**
      * 更新 RpcService
      *
      * @param rpcService
      */
-    default void updateService(RpcService rpcService){}
+    default void updateService(RpcService rpcService) {
+    }
 
     /**
      * 获取 RpcService
      *
      * @return
      */
-    default Map<String, RpcService> fetchService(){
+    default Map<String, RpcService> fetchService() {
         return new HashMap<>();
     }
 
@@ -114,7 +123,7 @@ public interface RegistryDataService {
      * @param serviceName 服务名
      * @return
      */
-    default List<RpcProvider> fetchProvidersByService(String serviceName){
+    default List<RpcProvider> fetchProvidersByService(String serviceName) {
         return new ArrayList<>();
     }
 
@@ -124,7 +133,7 @@ public interface RegistryDataService {
      * @param serviceName 服务名
      * @return
      */
-    default List<RpcConsumer> fetchConsumersByService(String serviceName){
+    default List<RpcConsumer> fetchConsumersByService(String serviceName) {
         return new ArrayList<>();
     }
 }

@@ -16,7 +16,7 @@
  */
 package com.alipay.sofa.dashboard.listener.zookeeper;
 
-import com.alipay.sofa.dashboard.cache.RegistryDataService;
+import com.alipay.sofa.dashboard.cache.RegistryDataCache;
 import com.alipay.sofa.dashboard.constants.SofaDashboardConstants;
 import com.alipay.sofa.dashboard.domain.RpcService;
 import com.alipay.sofa.rpc.common.utils.StringUtils;
@@ -43,7 +43,7 @@ public class RootNodeChangeListener implements PathChildrenCacheListener {
                                                  .getLogger(RootNodeChangeListener.class);
 
     @Autowired
-    private RegistryDataService       registryDataService;
+    private RegistryDataCache         registryDataCache;
 
     @Autowired
     private ServiceNodeChangeListener serviceNodeChangeListener;
@@ -67,7 +67,7 @@ public class RootNodeChangeListener implements PathChildrenCacheListener {
                             + SofaDashboardConstants.SEPARATOR);
                 service.setServiceName(serviceName);
                 services.add(service);
-                registryDataService.addService(services);
+                registryDataCache.addService(services);
 
                 PathChildrenCache pathChildrenCache = new PathChildrenCache(client, addPath, true);
                 pathChildrenCache.getListenable().addListener(serviceNodeChangeListener);
@@ -88,7 +88,7 @@ public class RootNodeChangeListener implements PathChildrenCacheListener {
 
                 removeServices.setServiceName(serviceName);
                 rpcServices.add(removeServices);
-                registryDataService.removeService(rpcServices);
+                registryDataCache.removeService(rpcServices);
 
                 break;
             // 更新一个Provider
@@ -102,7 +102,7 @@ public class RootNodeChangeListener implements PathChildrenCacheListener {
                     SofaDashboardConstants.SEPARATOR + SofaDashboardConstants.DEFAULT_GROUP
                             + SofaDashboardConstants.SEPARATOR);
                 updateServices.setServiceName(serviceName);
-                registryDataService.updateService(updateServices);
+                registryDataCache.updateService(updateServices);
 
                 break;
             default:

@@ -16,7 +16,7 @@
  */
 package com.alipay.sofa.dashboard.listener.zookeeper;
 
-import com.alipay.sofa.dashboard.cache.RegistryDataService;
+import com.alipay.sofa.dashboard.cache.RegistryDataCache;
 import com.alipay.sofa.dashboard.domain.RpcConsumer;
 import com.alipay.sofa.common.utils.StringUtil;
 import com.alipay.sofa.rpc.client.ProviderHelper;
@@ -46,7 +46,7 @@ public class ConsumerNodeChangeListener implements PathChildrenCacheListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConsumerNodeChangeListener.class);
 
     @Autowired
-    private RegistryDataService registryDataService;
+    private RegistryDataCache   registryDataCache;
 
     @Override
     public void childEvent(CuratorFramework client, PathChildrenCacheEvent event) {
@@ -67,7 +67,7 @@ public class ConsumerNodeChangeListener implements PathChildrenCacheListener {
 
                 List<RpcConsumer> addConsumers = new ArrayList<>();
                 addConsumers.add(convert2Consumer(addServiceName, addConsumerData));
-                registryDataService.addConsumers(addServiceName, addConsumers);
+                registryDataCache.addConsumers(addServiceName, addConsumers);
                 break;
             case CHILD_REMOVED:
 
@@ -77,7 +77,7 @@ public class ConsumerNodeChangeListener implements PathChildrenCacheListener {
 
                 List<RpcConsumer> removeConsumers = new ArrayList<>();
                 removeConsumers.add(convert2Consumer(removeServiceName, removeConsumerData));
-                registryDataService.removeConsumers(removeServiceName, removeConsumers);
+                registryDataCache.removeConsumers(removeServiceName, removeConsumers);
 
                 break;
             case CHILD_UPDATED:
@@ -88,7 +88,7 @@ public class ConsumerNodeChangeListener implements PathChildrenCacheListener {
 
                 List<RpcConsumer> updateConsumers = new ArrayList<>();
                 updateConsumers.add(convert2Consumer(updateServiceName, updateConsumerData));
-                registryDataService.updateConsumers(updateServiceName, updateConsumers);
+                registryDataCache.updateConsumers(updateServiceName, updateConsumers);
                 break;
 
             default:

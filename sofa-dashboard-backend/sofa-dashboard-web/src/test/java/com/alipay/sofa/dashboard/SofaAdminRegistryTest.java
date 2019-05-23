@@ -16,7 +16,7 @@
  */
 package com.alipay.sofa.dashboard;
 
-import com.alipay.sofa.dashboard.cache.RegistryDataService;
+import com.alipay.sofa.dashboard.cache.RegistryDataCache;
 import com.alipay.sofa.dashboard.constants.SofaDashboardConstants;
 import com.alipay.sofa.dashboard.domain.RpcConsumer;
 import com.alipay.sofa.dashboard.domain.RpcProvider;
@@ -33,9 +33,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -53,7 +56,7 @@ public class SofaAdminRegistryTest {
     private SofaAdminRegistry    sofaAdminRegistry;
 
     @Autowired
-    private RegistryDataService  registryDataService;
+    private RegistryDataCache    registryDataCache;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -70,10 +73,14 @@ public class SofaAdminRegistryTest {
     @Test
     public void testSofaAdminRegistry() {
         Assert.assertTrue(sofaAdminRegistry != null);
-        Map<String, RpcService> serviceMap = registryDataService.fetchService();
+        Map<String, RpcService> serviceMap = registryDataCache.fetchService();
         Assert.assertTrue(serviceMap.size() == 0);
-        SofaAdminRegistry.getCachedAllDataInfoIds().add("test1");
-        Map<String, RpcService> serviceMap1 = registryDataService.fetchService();
+        List<RpcService> services = new ArrayList<>();
+        RpcService rpcService = new RpcService();
+        rpcService.setServiceName("test1");
+        services.add(rpcService);
+        registryDataCache.addService(services);
+        Map<String, RpcService> serviceMap1 = registryDataCache.fetchService();
         Assert.assertTrue(serviceMap1.size() == 1);
     }
 

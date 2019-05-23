@@ -17,7 +17,7 @@
 package com.alipay.sofa.dashboard.listener.zookeeper;
 
 import com.alipay.sofa.common.utils.StringUtil;
-import com.alipay.sofa.dashboard.cache.RegistryDataService;
+import com.alipay.sofa.dashboard.cache.RegistryDataCache;
 import com.alipay.sofa.dashboard.domain.RpcProvider;
 import com.alipay.sofa.rpc.client.ProviderHelper;
 import com.alipay.sofa.rpc.client.ProviderInfo;
@@ -45,7 +45,7 @@ public class ProviderNodeChangeListener implements PathChildrenCacheListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProviderNodeChangeListener.class);
 
     @Autowired
-    private RegistryDataService registryDataService;
+    private RegistryDataCache   registryDataCache;
 
     @Override
     public void childEvent(CuratorFramework client, PathChildrenCacheEvent event) throws Exception {
@@ -61,7 +61,7 @@ public class ProviderNodeChangeListener implements PathChildrenCacheListener {
                 String serviceName = StringUtil.substringBetween(path, "/sofa-rpc/", "/providers/");
                 List<RpcProvider> providerDataList = new ArrayList<>();
                 providerDataList.add(convert2Provider(serviceName, providerData));
-                registryDataService.addProviders(serviceName, providerDataList);
+                registryDataCache.addProviders(serviceName, providerDataList);
                 break;
             case CHILD_REMOVED:
 
@@ -70,7 +70,7 @@ public class ProviderNodeChangeListener implements PathChildrenCacheListener {
                 String removeServiceName = StringUtil.substringBetween(path, "/sofa-rpc/",
                     "/providers/");
                 removeProviders.add(convert2Provider(removeServiceName, removeProviderData));
-                registryDataService.removeProviders(removeServiceName, removeProviders);
+                registryDataCache.removeProviders(removeServiceName, removeProviders);
                 break;
             case CHILD_UPDATED:
 
@@ -79,7 +79,7 @@ public class ProviderNodeChangeListener implements PathChildrenCacheListener {
                 String updateServiceName = StringUtil.substringBetween(path, "/sofa-rpc/",
                     "/providers/");
                 updateProviders.add(convert2Provider(updateServiceName, updateProviderData));
-                registryDataService.updateProviders(updateServiceName, updateProviders);
+                registryDataCache.updateProviders(updateServiceName, updateProviders);
                 break;
 
             default:

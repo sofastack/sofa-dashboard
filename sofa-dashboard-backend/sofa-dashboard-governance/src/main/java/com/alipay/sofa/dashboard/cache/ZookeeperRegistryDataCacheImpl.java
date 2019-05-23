@@ -32,10 +32,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author bystander
  * @version $Id: RegistryDataCache.java, v 0.1 2018年12月10日 23:57 bystander Exp $
  */
-public class ZookeeperRegistryDataServiceImpl implements RegistryDataService {
+public class ZookeeperRegistryDataCacheImpl implements RegistryDataCache {
 
     private static final Logger                LOGGER    = LoggerFactory
-                                                             .getLogger(ZookeeperRegistryDataServiceImpl.class);
+                                                             .getLogger(ZookeeperRegistryDataCacheImpl.class);
 
     private Map<String, RpcService>            services  = new ConcurrentHashMap<>();
 

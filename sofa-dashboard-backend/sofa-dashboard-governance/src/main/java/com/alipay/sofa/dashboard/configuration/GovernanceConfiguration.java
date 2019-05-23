@@ -16,9 +16,9 @@
  */
 package com.alipay.sofa.dashboard.configuration;
 
-import com.alipay.sofa.dashboard.cache.RegistryDataService;
-import com.alipay.sofa.dashboard.cache.SofaRegistryDataServiceImpl;
-import com.alipay.sofa.dashboard.cache.ZookeeperRegistryDataServiceImpl;
+import com.alipay.sofa.dashboard.cache.RegistryDataCache;
+import com.alipay.sofa.dashboard.cache.SofaRegistryDataCacheImpl;
+import com.alipay.sofa.dashboard.cache.ZookeeperRegistryDataCacheImpl;
 import com.alipay.sofa.dashboard.constants.SofaDashboardConstants;
 import com.alipay.sofa.dashboard.listener.ApplicationStartedListener;
 import com.alipay.sofa.dashboard.registry.SofaAdminRegistry;
@@ -86,12 +86,12 @@ public class GovernanceConfiguration {
     }
 
     @Bean
-    public RegistryDataService registryDataService() {
+    public RegistryDataCache registryDataCache() {
         if (environment.getProperty(SofaDashboardConstants.KEY).contains(
             SofaDashboardConstants.SOFA_PREFIX)) {
-            return new SofaRegistryDataServiceImpl();
+            return new SofaRegistryDataCacheImpl();
         } else {
-            return new ZookeeperRegistryDataServiceImpl();
+            return new ZookeeperRegistryDataCacheImpl();
         }
     }
 }
