@@ -45,6 +45,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * 应用监控管理器，基于 Spring Boot Actuator 实现
+ *
  * @author: guolei.sgl (guolei.sgl@antfin.com) 2019/5/7 10:34 PM
  * @since:
  **/

@@ -36,7 +36,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * 应用动态数据定时调度器
+ * 应用动态数据定时调度器，主要用于同步应用监控数据中的实时动态数据，如内存使用、线程状态等
  *
  * @author: guolei.sgl (guolei.sgl@antfin.com) 2019/5/9 5:26 PM
  * @since:
@@ -64,6 +64,11 @@ public class AppDynamicInfoTask {
         });
     }
 
+    /**
+     * 获取线程状态数据
+     * @param app
+     * @param time
+     */
     private void doCalculateThreads(Application app, String time) {
         Map threadsLiveMap = ActuatorMonitorManager.doRequest(
             app.getHostName() + SofaDashboardConstants.COLON + app.getPort(),
@@ -124,6 +129,11 @@ public class AppDynamicInfoTask {
         return 0;
     }
 
+    /**
+     * 获取堆内存数据
+     * @param app
+     * @param time
+     */
     private void doCalculateMemoryHeap(Application app, String time) {
         String appId = DashboardUtil.simpleEncode(app.getHostName(), app.getPort());
         FixedQueue<MemoryHeapInfo> queue = ActuatorMonitorManager.cacheHeapMemory.get(appId);
@@ -156,6 +166,11 @@ public class AppDynamicInfoTask {
         ActuatorMonitorManager.cacheHeapMemory.put(appId, queue);
     }
 
+    /**
+     * 获取非堆区数据
+     * @param app
+     * @param time
+     */
     private void doCalculateMemoryNonHeap(Application app, String time) {
         String appId = DashboardUtil.simpleEncode(app.getHostName(), app.getPort());
         FixedQueue<MemoryNonHeapInfo> queue = ActuatorMonitorManager.cacheNonHeapMemory.get(appId);

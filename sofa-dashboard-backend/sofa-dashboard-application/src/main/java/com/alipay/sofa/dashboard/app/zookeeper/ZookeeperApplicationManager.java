@@ -42,6 +42,19 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ *
+ * 基于 Zookeeper 的应用管理器，Dashboard 会监控 Zookeeper apps 目录下的节点，其结构如下：
+ *
+ * -apps
+ *  -instances
+ *   -appName1
+ *     -ip1
+ *     -ip2
+*    -appName2
+ *     -ip3
+ *
+ * ZookeeperApplicationManager 会缓存一份应用数据在内存中，key 为当前应用名，value 为实例信息
+ *
  * @author: guolei.sgl (guolei.sgl@antfin.com) 2019/2/18 2:21 PM
  * @since:
  **/

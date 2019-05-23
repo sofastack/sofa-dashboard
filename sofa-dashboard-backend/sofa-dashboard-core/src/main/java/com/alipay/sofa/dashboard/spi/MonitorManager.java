@@ -28,6 +28,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ *
+ * 应用监控管理器接口，定义一组获取应用监控数据的方法，引用数据源理论上是多样的，比如一个 rest 请求地址、文件、或者其他第三方服务
+ *
+ * 这里 source 类型使用 Object 对象用于描述数据来源，各个实现可以基于具体源定义具体类型，比如 ActuatorMonitorManager 实现 source 是请求地址，
+ *
+ * 其 source 类型即为 String 类型；这样可以提供更加丰富的选择性。
+ *
  * @author: guolei.sgl (guolei.sgl@antfin.com) 2019/5/7 9:19 PM
  * @since:
  **/
