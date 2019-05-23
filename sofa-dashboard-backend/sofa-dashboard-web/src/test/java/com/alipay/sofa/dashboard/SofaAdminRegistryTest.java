@@ -16,7 +16,7 @@
  */
 package com.alipay.sofa.dashboard;
 
-import com.alipay.sofa.dashboard.cache.RegistryDataCache;
+import com.alipay.sofa.dashboard.cache.RegistryDataService;
 import com.alipay.sofa.dashboard.constants.SofaDashboardConstants;
 import com.alipay.sofa.dashboard.domain.RpcConsumer;
 import com.alipay.sofa.dashboard.domain.RpcProvider;
@@ -33,12 +33,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -50,16 +47,13 @@ import java.util.Map;
 @TestPropertySource(locations = "classpath:application-test-sofa.properties")
 public class SofaAdminRegistryTest {
 
-    private static TestingServer   server;
+    private static TestingServer server;
 
     @Autowired
-    private SofaAdminRegistry      sofaAdminRegistry;
+    private SofaAdminRegistry    sofaAdminRegistry;
 
     @Autowired
-    private RegistryDataCache      registryDataCache;
-
-    @Autowired
-    private SofaRegistryRestClient restTemplateClient;
+    private RegistryDataService  registryDataService;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -76,30 +70,10 @@ public class SofaAdminRegistryTest {
     @Test
     public void testSofaAdminRegistry() {
         Assert.assertTrue(sofaAdminRegistry != null);
-        Map<String, RpcService> serviceMap = registryDataCache.fetchService();
+        Map<String, RpcService> serviceMap = registryDataService.fetchService();
         Assert.assertTrue(serviceMap.size() == 0);
-
-        List<RpcService> providerList = new ArrayList<>();
-        RpcService rpcService = new RpcService();
-        rpcService.setServiceName("testInterface");
-        providerList.add(rpcService);
-        registryDataCache.addService(providerList);
-
-        List<String> dataIds = new ArrayList<>();
-        dataIds.add("testInterface");
-
-        List<RpcConsumer> consumers = new ArrayList<>();
-        registryDataCache.addConsumers("testInterface", consumers);
-
-        List<RpcProvider> providers = new ArrayList<>();
-        registryDataCache.addProviders("testInterface", providers);
-
-        try {
-            restTemplateClient.refreshAllSessionDataByDataInfoIds(dataIds);
-        } catch (Exception e) {
-            // ignore
-        }
-        Map<String, RpcService> serviceMap1 = registryDataCache.fetchService();
+        SofaAdminRegistry.getCachedAllDataInfoIds().add("test1");
+        Map<String, RpcService> serviceMap1 = registryDataService.fetchService();
         Assert.assertTrue(serviceMap1.size() == 1);
     }
 

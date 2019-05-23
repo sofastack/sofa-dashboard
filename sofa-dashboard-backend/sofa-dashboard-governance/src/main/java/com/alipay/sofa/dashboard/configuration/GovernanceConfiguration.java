@@ -16,6 +16,10 @@
  */
 package com.alipay.sofa.dashboard.configuration;
 
+import com.alipay.sofa.dashboard.cache.RegistryDataService;
+import com.alipay.sofa.dashboard.cache.SofaRegistryDataServiceImpl;
+import com.alipay.sofa.dashboard.cache.ZookeeperRegistryDataServiceImpl;
+import com.alipay.sofa.dashboard.constants.SofaDashboardConstants;
 import com.alipay.sofa.dashboard.listener.ApplicationStartedListener;
 import com.alipay.sofa.dashboard.registry.SofaAdminRegistry;
 import com.alipay.sofa.dashboard.registry.ZookeeperAdminRegistry;
@@ -23,11 +27,12 @@ import com.alipay.sofa.dashboard.sync.RegistryDataSync;
 import com.alipay.sofa.dashboard.sync.SofaRegistryDataSync;
 import com.alipay.sofa.dashboard.sync.ZookeeperRegistryDataSync;
 import com.alipay.sofa.rpc.boot.config.SofaBootRpcConfigConstants;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.web.client.RestTemplate;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,6 +42,9 @@ import java.util.Map;
  **/
 @Configuration
 public class GovernanceConfiguration {
+
+    @Autowired
+    private Environment environment;
 
     @Bean(name = "registrySyncMap")
     public Map<String, RegistryDataSync> configureRegistrySyncMap() {
@@ -75,5 +83,15 @@ public class GovernanceConfiguration {
     @ConditionalOnMissingBean
     public RestTemplate restTemplate() {
         return new RestTemplate();
+    }
+
+    @Bean
+    public RegistryDataService registryDataService() {
+        if (environment.getProperty(SofaDashboardConstants.KEY).contains(
+            SofaDashboardConstants.SOFA_PREFIX)) {
+            return new SofaRegistryDataServiceImpl();
+        } else {
+            return new ZookeeperRegistryDataServiceImpl();
+        }
     }
 }

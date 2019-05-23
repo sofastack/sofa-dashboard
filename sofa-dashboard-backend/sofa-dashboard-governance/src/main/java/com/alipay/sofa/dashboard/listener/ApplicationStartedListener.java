@@ -31,7 +31,6 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.PropertySource;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,9 +39,6 @@ import java.util.Map;
  * @version $Id: ApplicationStartedListener.java, v 0.1 2018年12月11日 17:15 bystander Exp $
  */
 public class ApplicationStartedListener implements ApplicationListener {
-    private static final String     KEY              = "com.alipay.sofa.dashboard.registry";
-    private static final String     ZOOKEEPER_PREFIX = "zookeeper://";
-    private static final String     SOFA_PREFIX      = "sofa://";
 
     @Autowired
     private RegistryDataSyncManager registryDataSyncManager;
@@ -53,14 +49,15 @@ public class ApplicationStartedListener implements ApplicationListener {
     @Override
     public void onApplicationEvent(ApplicationEvent event) {
         if (event instanceof ContextRefreshedEvent) {
-            String address = environment.getProperty(KEY);
+            String address = environment.getProperty(SofaDashboardConstants.KEY);
             if (StringUtils.isNotBlank(address)) {
                 RegistryConfig registryConfig = new RegistryConfig();
-                if (address.startsWith(ZOOKEEPER_PREFIX)) {
+                if (address.startsWith(SofaDashboardConstants.ZOOKEEPER_PREFIX)) {
                     RegistryConfigureProcessor processor = new ZookeeperConfigurator();
                     registryConfig = processor.buildFromAddress(address);
-                } else if (address.startsWith(SOFA_PREFIX)) {
-                    registryConfig.setAddress(address.substring(SOFA_PREFIX.length()));
+                } else if (address.startsWith(SofaDashboardConstants.SOFA_PREFIX)) {
+                    registryConfig.setAddress(address.substring(SofaDashboardConstants.SOFA_PREFIX
+                        .length()));
                     registryConfig.setProtocol(SofaBootRpcConfigConstants.DEFAULT_REGISTRY);
                     // config registry type
                     Map<String, Object> props = new HashMap<>();

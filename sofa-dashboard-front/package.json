@@ -76,7 +76,7 @@
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^6.1.2",
     "eslint-plugin-markdown": "^1.0.0-beta.6",
-    "eslint-plugin-react": "^7.11.1",
+    "eslint-plugin-react": "^7.13.0",
     "gh-pages": "^2.0.1",
     "husky": "^1.2.0",
     "jest-puppeteer": "^3.5.1",
@@ -109,10 +109,5 @@
     "> 1%",
     "last 2 versions",
     "not ie <= 10"
-  ],
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run lint-staged"
-    }
-  }
+  ]
 }

@@ -17,7 +17,7 @@
 package com.alipay.sofa.dashboard;
 
 import com.alipay.sofa.dashboard.base.AbstractTestBase;
-import com.alipay.sofa.dashboard.cache.RegistryDataCache;
+import com.alipay.sofa.dashboard.cache.RegistryDataService;
 import com.alipay.sofa.dashboard.domain.RpcProvider;
 import com.alipay.sofa.dashboard.domain.RpcService;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -40,9 +40,9 @@ import java.util.List;
 public class ServiceManageControllerTest extends AbstractTestBase {
 
     @Autowired
-    private RegistryDataCache registryDataCache;
+    private RegistryDataService registryDataService;
 
-    private static int        tryTimes = 3;
+    private static int          tryTimes = 3;
 
     @Before
     public void before() throws Exception {
@@ -52,16 +52,16 @@ public class ServiceManageControllerTest extends AbstractTestBase {
             1000, 3));
         client.start();
         int index = 0;
-        while (registryDataCache.fetchService().size() == 0 && index++ < tryTimes) {
+        while (registryDataService.fetchService().size() == 0 && index++ < tryTimes) {
             initZookeeperRpcData();
         }
 
-        if (registryDataCache.fetchService().size() == 0) {
+        if (registryDataService.fetchService().size() == 0) {
             List<RpcService> providerList = new ArrayList<>();
             RpcService rpcService = new RpcService();
             rpcService.setServiceName("serviceId1");
             providerList.add(rpcService);
-            registryDataCache.addService(providerList);
+            registryDataService.addService(providerList);
         }
     }
 
@@ -103,7 +103,7 @@ public class ServiceManageControllerTest extends AbstractTestBase {
         RpcProvider provider = new RpcProvider();
         provider.setServiceName("serviceId1");
         providerList.add(provider);
-        registryDataCache.addProviders("serviceId1", providerList);
+        registryDataService.addProviders("serviceId1", providerList);
         String request = "http://localhost:" + definedPort
                          + "/api/service/query/providers?dataid={1}";
         ArrayList list = restTemplate.getForObject(request, ArrayList.class, "serviceId1");

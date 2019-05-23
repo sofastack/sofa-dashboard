@@ -19,7 +19,8 @@ package com.alipay.sofa.dashboard.cache;
 import com.alipay.sofa.dashboard.domain.RpcConsumer;
 import com.alipay.sofa.dashboard.domain.RpcProvider;
 import com.alipay.sofa.dashboard.domain.RpcService;
-
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +28,7 @@ import java.util.Map;
  * @author bystander
  * @version $Id: RegistryDataCache.java, v 0.1 2018年12月10日 23:57 bystander Exp $
  */
-public interface RegistryDataCache {
+public interface RegistryDataService {
 
     /**
      * 添加 providers
@@ -35,7 +36,7 @@ public interface RegistryDataCache {
      * @param serviceName  服务名
      * @param providerList provider 列表
      */
-    void addProviders(String serviceName, List<RpcProvider> providerList);
+    default void addProviders(String serviceName, List<RpcProvider> providerList){}
 
     /**
      * 添加 consumers
@@ -43,7 +44,7 @@ public interface RegistryDataCache {
      * @param serviceName  服务名
      * @param consumerList consumer 列表
      */
-    void addConsumers(String serviceName, List<RpcConsumer> consumerList);
+    default void addConsumers(String serviceName, List<RpcConsumer> consumerList){}
 
     /**
      * 移除 providers
@@ -51,7 +52,7 @@ public interface RegistryDataCache {
      * @param serviceName  服务名
      * @param providerList provider 列表
      */
-    void removeProviders(String serviceName, List<RpcProvider> providerList);
+    default void removeProviders(String serviceName, List<RpcProvider> providerList){}
 
     /**
      * 移除 consumers
@@ -59,7 +60,7 @@ public interface RegistryDataCache {
      * @param serviceName  服务名
      * @param consumerList consumer 列表
      */
-    void removeConsumers(String serviceName, List<RpcConsumer> consumerList);
+    default void removeConsumers(String serviceName, List<RpcConsumer> consumerList){}
 
     /**
      * 更新 providers
@@ -67,7 +68,7 @@ public interface RegistryDataCache {
      * @param serviceName  服务名
      * @param providerList provider 列表
      */
-    void updateProviders(String serviceName, List<RpcProvider> providerList);
+    default void updateProviders(String serviceName, List<RpcProvider> providerList){}
 
     /**
      * 更新 consumers
@@ -75,35 +76,37 @@ public interface RegistryDataCache {
      * @param serviceName  服务名
      * @param consumerList consumer 列表
      */
-    void updateConsumers(String serviceName, List<RpcConsumer> consumerList);
+    default void updateConsumers(String serviceName, List<RpcConsumer> consumerList){}
 
     /**
      * 添加 RpcService
      *
      * @param providerList provider 列表
      */
-    void addService(List<RpcService> providerList);
+    default void addService(List<RpcService> providerList){}
 
     /**
      * 移除 RpcService
      *
      * @param rpcServices services 列表
      */
-    void removeService(List<RpcService> rpcServices);
+    default void removeService(List<RpcService> rpcServices){}
 
     /**
      * 更新 RpcService
      *
      * @param rpcService
      */
-    void updateService(RpcService rpcService);
+    default void updateService(RpcService rpcService){}
 
     /**
      * 获取 RpcService
      *
      * @return
      */
-    Map<String, RpcService> fetchService();
+    default Map<String, RpcService> fetchService(){
+        return new HashMap<>();
+    }
 
     /**
      * 获取 Providers
@@ -111,7 +114,9 @@ public interface RegistryDataCache {
      * @param serviceName 服务名
      * @return
      */
-    List<RpcProvider> fetchProvidersByService(String serviceName);
+    default List<RpcProvider> fetchProvidersByService(String serviceName){
+        return new ArrayList<>();
+    }
 
     /**
      * 获取 Consumers
@@ -119,6 +124,7 @@ public interface RegistryDataCache {
      * @param serviceName 服务名
      * @return
      */
-    List<RpcConsumer> fetchConsumersByService(String serviceName);
-
+    default List<RpcConsumer> fetchConsumersByService(String serviceName){
+        return new ArrayList<>();
+    }
 }
