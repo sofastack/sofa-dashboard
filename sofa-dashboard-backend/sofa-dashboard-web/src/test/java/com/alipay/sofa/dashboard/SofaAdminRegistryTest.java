@@ -71,6 +71,37 @@ public class SofaAdminRegistryTest {
     }
 
     @Test
+    public void testCacheData(){
+        String serviceName = "test1";
+        List<RpcConsumer> consumers = new ArrayList<>();
+        RpcConsumer consumer = new RpcConsumer();
+        consumer.setServiceName(serviceName);
+        consumers.add(consumer);
+        registryDataCache.addConsumers(serviceName,consumers);
+        List<RpcConsumer> consumersResult = registryDataCache.fetchConsumersByService(serviceName);
+        Assert.assertTrue(consumersResult.size()==1);
+
+
+        List<RpcProvider> providers= new ArrayList<>();
+        RpcProvider provider = new RpcProvider();
+        provider.setServiceName(serviceName);
+        providers.add(provider);
+        registryDataCache.addProviders(serviceName,providers);
+        List<RpcProvider> providersResult = registryDataCache.fetchProvidersByService(serviceName);
+        Assert.assertTrue(providersResult.size()==1);
+
+        String serviceName1 = "test2";
+        registryDataCache.addConsumers(serviceName1,null);
+        List<RpcConsumer> consumers1 = registryDataCache.fetchConsumersByService(serviceName1);
+        Assert.assertTrue(consumers1.size()==0);
+
+        registryDataCache.addProviders(serviceName1,null);
+        List<RpcProvider> providers1 = registryDataCache.fetchProvidersByService(serviceName1);
+        Assert.assertTrue(providers1.size()==0);
+    }
+
+
+    @Test
     public void testSofaAdminRegistry() {
         Assert.assertTrue(sofaAdminRegistry != null);
         Map<String, RpcService> serviceMap = registryDataCache.fetchService();

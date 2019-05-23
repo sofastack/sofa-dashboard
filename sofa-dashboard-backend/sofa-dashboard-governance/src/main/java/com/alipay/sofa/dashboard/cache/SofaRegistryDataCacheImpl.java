@@ -47,25 +47,34 @@ public class SofaRegistryDataCacheImpl implements RegistryDataCache {
 
     @Override
     public List<RpcProvider> fetchProvidersByService(String serviceName) {
+        List<RpcProvider> result = null;
         try {
-            return providerMap.get(serviceName);
+            result = providerMap.get(serviceName);
         } catch (Exception e) {
+            // catch ,避免界面出现 500
             LOGGER.error("Filed to fetchProvidersByService.", e);
+        } finally {
+            // do not return null to front
+            if (result == null){
+                result = new ArrayList<>();
+            }
         }
-        // use default
-        return new ArrayList<>();
+        return result;
     }
 
     @Override
     public List<RpcConsumer> fetchConsumersByService(String serviceName) {
-
+        List<RpcConsumer> result = null;
         try {
-            return consumerMap.get(serviceName);
+            result =  consumerMap.get(serviceName);
         } catch (Exception e) {
             LOGGER.error("Filed to fetchConsumersByService.", e);
+        } finally {
+            if (result == null){
+                result = new ArrayList<>();
+            }
         }
-        // use default
-        return new ArrayList<>();
+        return result;
     }
 
     @Override
