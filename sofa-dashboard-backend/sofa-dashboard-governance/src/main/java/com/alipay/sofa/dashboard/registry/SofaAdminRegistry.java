@@ -64,13 +64,18 @@ public class SofaAdminRegistry implements AdminRegistry {
     private class CheckSumTask implements Runnable {
         @Override
         public void run() {
-            Integer newCheckVal = restTemplateClient.checkSum();
-            if (checkSumCode.get() == newCheckVal) {
-                return;
+            try {
+                Integer newCheckVal = restTemplateClient.checkSum();
+                if (checkSumCode.get() == newCheckVal) {
+                    return;
+                }
+                restTemplateClient.syncAllSessionData();
+                // update checkSumCode
+                checkSumCode.compareAndSet(checkSumCode.get(), newCheckVal);
+            } catch (Exception e) {
+                // catch the exception ,avoid scheduler task interrupt
+                LOGGER.error("Filed to execute CheckSumTask.", e);
             }
-            restTemplateClient.syncAllSessionData();
-            // update checkSumCode
-            checkSumCode.compareAndSet(checkSumCode.get(), newCheckVal);
         }
     }
 

@@ -55,7 +55,7 @@ public class SofaRegistryDataCacheImpl implements RegistryDataCache {
             LOGGER.error("Filed to fetchProvidersByService.", e);
         } finally {
             // do not return null to front
-            if (result == null){
+            if (result == null) {
                 result = new ArrayList<>();
             }
         }
@@ -66,11 +66,11 @@ public class SofaRegistryDataCacheImpl implements RegistryDataCache {
     public List<RpcConsumer> fetchConsumersByService(String serviceName) {
         List<RpcConsumer> result = null;
         try {
-            result =  consumerMap.get(serviceName);
+            result = consumerMap.get(serviceName);
         } catch (Exception e) {
             LOGGER.error("Filed to fetchConsumersByService.", e);
         } finally {
-            if (result == null){
+            if (result == null) {
                 result = new ArrayList<>();
             }
         }
