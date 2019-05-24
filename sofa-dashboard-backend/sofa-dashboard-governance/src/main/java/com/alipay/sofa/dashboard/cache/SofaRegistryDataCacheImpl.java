@@ -42,11 +42,11 @@ public class SofaRegistryDataCacheImpl implements RegistryDataCache {
 
     @Override
     public List<RpcProvider> fetchProvidersByService(String serviceName) {
-        List<RpcProvider> result = null ;
-        if (StringUtils.isNotBlank(serviceName)){
+        List<RpcProvider> result = null;
+        if (StringUtils.isNotBlank(serviceName)) {
             result = providerMap.get(serviceName);
         }
-        if (result == null){
+        if (result == null) {
             result = new ArrayList<>();
         }
         return result;
@@ -54,11 +54,11 @@ public class SofaRegistryDataCacheImpl implements RegistryDataCache {
 
     @Override
     public List<RpcConsumer> fetchConsumersByService(String serviceName) {
-        List<RpcConsumer> result = null ;
-        if (StringUtils.isNotBlank(serviceName)){
+        List<RpcConsumer> result = null;
+        if (StringUtils.isNotBlank(serviceName)) {
             result = consumerMap.get(serviceName);
         }
-        if (result == null){
+        if (result == null) {
             result = new ArrayList<>();
         }
         return result;
