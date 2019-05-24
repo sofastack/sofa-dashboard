@@ -57,8 +57,6 @@ public class SofaDashboardConstants {
     public static final String Q_MARK                      = "?";
     public static final String SEMICOLON                   = ";";
     public static final String HORIZONTAL                  = "-";
-
-    public static final String DATA_ID_SEPARATOR           = "#@#";
     public static final String REGISTRY_DATA_ID_KEY        = "dataId";
     public static final String REGISTRY_IP_KEY             = "ipAddress";
     public static final String PORT                        = "port";
@@ -66,5 +64,8 @@ public class SofaDashboardConstants {
     public static final String REGISTRY_PROCESS_ID_KEY     = "processId";
     public static final String REGISTRY_ATTRIBUTES         = "attributes";
     public static final String REGISTRY_TYPE               = "registry.type";
-    public static final String EMPTY                       = "";
+    public static final String KEY                         = "com.alipay.sofa.dashboard.registry";
+    public static final String ZOOKEEPER_PREFIX            = "zookeeper://";
+    public static final String SOFA_PREFIX                 = "sofa://";
+
 }
