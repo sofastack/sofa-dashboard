@@ -23,8 +23,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -40,8 +38,6 @@ public class SofaAdminRegistry implements AdminRegistry {
 
     private static ScheduledThreadPoolExecutor executor     = new ScheduledThreadPoolExecutor(1);
 
-    private static List<String>                dataInfoIds  = new CopyOnWriteArrayList<>();
-
     private static AtomicInteger               checkSumCode = new AtomicInteger(0);
 
     @Autowired
@@ -51,13 +47,9 @@ public class SofaAdminRegistry implements AdminRegistry {
     public boolean start(RegistryConfig registryConfig) {
         try {
             restTemplateClient.init(registryConfig);
-            // 开始时初始化一次 dataInfoIds 列表
-            dataInfoIds = restTemplateClient.syncAllDataInfoIds();
-            // 避免初始化之后重新拉取一次
-            checkSumCode.compareAndSet(0, restTemplateClient.checkSum());
             CheckSumTask checkSumTask = new CheckSumTask();
-            // 30s
-            executor.scheduleWithFixedDelay(checkSumTask, 30, 30, TimeUnit.SECONDS);
+            // 60s
+            executor.scheduleWithFixedDelay(checkSumTask, 0, 60, TimeUnit.SECONDS);
         } catch (Throwable t) {
             LOGGER.error("Failed to start sofa registry.", t);
         }
@@ -72,17 +64,19 @@ public class SofaAdminRegistry implements AdminRegistry {
     private class CheckSumTask implements Runnable {
         @Override
         public void run() {
-            Integer newCheckVal = restTemplateClient.checkSum();
-            if (checkSumCode.get() == newCheckVal) {
-                return;
+            try {
+                Integer newCheckVal = restTemplateClient.checkSum();
+                if (checkSumCode.get() == newCheckVal) {
+                    return;
+                }
+                restTemplateClient.syncAllSessionData();
+                // update checkSumCode
+                checkSumCode.compareAndSet(checkSumCode.get(), newCheckVal);
+            } catch (Throwable t) {
+                // catch the exception ,avoid scheduler task interrupt
+                LOGGER.error("Filed to execute CheckSumTask.", t);
             }
-            dataInfoIds = restTemplateClient.syncAllDataInfoIds();
-            // update checkSumCode
-            checkSumCode.compareAndSet(checkSumCode.get(), newCheckVal);
         }
     }
 
-    public static List<String> getCachedAllDataInfoIds() {
-        return dataInfoIds;
-    }
 }

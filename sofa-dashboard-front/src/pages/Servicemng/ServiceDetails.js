@@ -72,16 +72,21 @@ class ServiceDetails extends Component {
   componentDidMount() {
     const { dispatch, location } = this.props;
     const queryParams = location.query;
+    const hash = location.hash;
     this.setState({
-      dataid: queryParams.dataid,
+      dataid: queryParams.dataid+hash,
     });
     dispatch({
       type: 'servicemng/fetchProviderDetails',
-      payload: queryParams,
+      payload: {
+        dataid: encodeURIComponent(queryParams.dataid+hash),
+      }
     });
     dispatch({
       type: 'servicemng/fetchConsumerDetails',
-      payload: queryParams,
+      payload: {
+          dataid: encodeURIComponent(queryParams.dataid+hash),
+      }
     });
   }
 

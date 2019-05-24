@@ -23,8 +23,6 @@ import com.alipay.sofa.rpc.common.utils.CommonUtils;
 import com.alipay.sofa.rpc.common.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-import javax.annotation.concurrent.NotThreadSafe;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -34,12 +32,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author bystander
  * @version $Id: RegistryDataCache.java, v 0.1 2018年12月10日 23:57 bystander Exp $
  */
-@Service
-@NotThreadSafe
-public class RegistryDataCacheImpl implements RegistryDataCache {
+public class ZookeeperRegistryDataCacheImpl implements RegistryDataCache {
 
     private static final Logger                LOGGER    = LoggerFactory
-                                                             .getLogger(RegistryDataCacheImpl.class);
+                                                             .getLogger(ZookeeperRegistryDataCacheImpl.class);
 
     private Map<String, RpcService>            services  = new ConcurrentHashMap<>();
 

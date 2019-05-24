@@ -16,24 +16,19 @@
  */
 package com.alipay.sofa.dashboard.controller;
 
+import com.alipay.sofa.common.utils.StringUtil;
 import com.alipay.sofa.dashboard.cache.RegistryDataCache;
-import com.alipay.sofa.dashboard.constants.SofaDashboardConstants;
 import com.alipay.sofa.dashboard.domain.RpcConsumer;
 import com.alipay.sofa.dashboard.domain.RpcProvider;
 import com.alipay.sofa.dashboard.domain.RpcService;
-import com.alipay.sofa.dashboard.listener.sofa.SofaRegistryRestClient;
 import com.alipay.sofa.dashboard.model.ServiceModel;
-import com.alipay.sofa.common.utils.StringUtil;
-import com.alipay.sofa.dashboard.registry.SofaAdminRegistry;
-import com.alipay.sofa.rpc.boot.config.SofaBootRpcConfigConstants;
 import com.alipay.sofa.rpc.common.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -51,13 +46,7 @@ import java.util.Set;
 public class ServiceManageController {
 
     @Autowired
-    private RegistryDataCache      registryDataCache;
-
-    @Autowired
-    private Environment            environment;
-
-    @Autowired
-    private SofaRegistryRestClient sofaRegistryRestClient;
+    private RegistryDataCache registryDataCache;
 
     /**
      * 获取服务列表
@@ -66,7 +55,6 @@ public class ServiceManageController {
      */
     @GetMapping("all")
     public List<ServiceModel> queryServiceList() {
-        doRefreshCache();
         List<ServiceModel> data = new ArrayList<>();
         Map<String, RpcService> rpcServices = registryDataCache.fetchService();
         for (Map.Entry<String, RpcService> rpcServiceEntry : rpcServices.entrySet()) {
@@ -81,12 +69,10 @@ public class ServiceManageController {
     }
 
     private List<RpcProvider> fetchProviderData(String serviceName) {
-        doRefreshCache();
         return registryDataCache.fetchProvidersByService(serviceName);
     }
 
     private List<RpcConsumer> fetchConsumerData(String serviceName) {
-        doRefreshCache();
         return registryDataCache.fetchConsumersByService(serviceName);
     }
 
@@ -97,7 +83,8 @@ public class ServiceManageController {
      */
     @RequestMapping("query/providers")
     public List<RpcProvider> queryServiceProviders(@RequestParam("dataid") String serviceName) {
-        return fetchProviderData(serviceName);
+        String dataId = URLDecoder.decode(serviceName);
+        return fetchProviderData(dataId);
     }
 
     /**
@@ -107,7 +94,8 @@ public class ServiceManageController {
      */
     @RequestMapping("query/consumers")
     public List<RpcConsumer> queryServiceConsumers(@RequestParam("dataid") String serviceName) {
-        return fetchConsumerData(serviceName);
+        String dataId = URLDecoder.decode(serviceName);
+        return fetchConsumerData(dataId);
     }
 
     /**
@@ -165,16 +153,5 @@ public class ServiceManageController {
             return null;
         }
         return model;
-    }
-
-    /**
-     * 注册中心是 SOFARegistry 的情况下，服务信息的获取走 rest; 页面刷新时需刷新 DataCache
-     */
-    public void doRefreshCache() {
-        if (SofaBootRpcConfigConstants.DEFAULT_REGISTRY.equals(environment
-            .getProperty(SofaDashboardConstants.REGISTRY_TYPE))) {
-            sofaRegistryRestClient.refreshAllSessionDataByDataInfoIds(SofaAdminRegistry
-                .getCachedAllDataInfoIds());
-        }
     }
 }

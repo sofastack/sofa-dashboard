@@ -50,16 +50,13 @@ import java.util.Map;
 @TestPropertySource(locations = "classpath:application-test-sofa.properties")
 public class SofaAdminRegistryTest {
 
-    private static TestingServer   server;
+    private static TestingServer server;
 
     @Autowired
-    private SofaAdminRegistry      sofaAdminRegistry;
+    private SofaAdminRegistry    sofaAdminRegistry;
 
     @Autowired
-    private RegistryDataCache      registryDataCache;
-
-    @Autowired
-    private SofaRegistryRestClient restTemplateClient;
+    private RegistryDataCache    registryDataCache;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -74,31 +71,44 @@ public class SofaAdminRegistryTest {
     }
 
     @Test
+    public void testCacheData() {
+        String serviceName = "test1";
+        List<RpcConsumer> consumers = new ArrayList<>();
+        RpcConsumer consumer = new RpcConsumer();
+        consumer.setServiceName(serviceName);
+        consumers.add(consumer);
+        registryDataCache.addConsumers(serviceName, consumers);
+        List<RpcConsumer> consumersResult = registryDataCache.fetchConsumersByService(serviceName);
+        Assert.assertTrue(consumersResult.size() == 1);
+
+        List<RpcProvider> providers = new ArrayList<>();
+        RpcProvider provider = new RpcProvider();
+        provider.setServiceName(serviceName);
+        providers.add(provider);
+        registryDataCache.addProviders(serviceName, providers);
+        List<RpcProvider> providersResult = registryDataCache.fetchProvidersByService(serviceName);
+        Assert.assertTrue(providersResult.size() == 1);
+
+        String serviceName1 = "test2";
+        registryDataCache.addConsumers(serviceName1, null);
+        List<RpcConsumer> consumers1 = registryDataCache.fetchConsumersByService(serviceName1);
+        Assert.assertTrue(consumers1.size() == 0);
+
+        registryDataCache.addProviders(serviceName1, null);
+        List<RpcProvider> providers1 = registryDataCache.fetchProvidersByService(serviceName1);
+        Assert.assertTrue(providers1.size() == 0);
+    }
+
+    @Test
     public void testSofaAdminRegistry() {
         Assert.assertTrue(sofaAdminRegistry != null);
         Map<String, RpcService> serviceMap = registryDataCache.fetchService();
         Assert.assertTrue(serviceMap.size() == 0);
-
-        List<RpcService> providerList = new ArrayList<>();
+        List<RpcService> services = new ArrayList<>();
         RpcService rpcService = new RpcService();
-        rpcService.setServiceName("testInterface");
-        providerList.add(rpcService);
-        registryDataCache.addService(providerList);
-
-        List<String> dataIds = new ArrayList<>();
-        dataIds.add("testInterface");
-
-        List<RpcConsumer> consumers = new ArrayList<>();
-        registryDataCache.addConsumers("testInterface", consumers);
-
-        List<RpcProvider> providers = new ArrayList<>();
-        registryDataCache.addProviders("testInterface", providers);
-
-        try {
-            restTemplateClient.refreshAllSessionDataByDataInfoIds(dataIds);
-        } catch (Exception e) {
-            // ignore
-        }
+        rpcService.setServiceName("test1");
+        services.add(rpcService);
+        registryDataCache.addService(services);
         Map<String, RpcService> serviceMap1 = registryDataCache.fetchService();
         Assert.assertTrue(serviceMap1.size() == 1);
     }
