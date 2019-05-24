@@ -72,9 +72,9 @@ public class SofaAdminRegistry implements AdminRegistry {
                 restTemplateClient.syncAllSessionData();
                 // update checkSumCode
                 checkSumCode.compareAndSet(checkSumCode.get(), newCheckVal);
-            } catch (Exception e) {
+            } catch (Throwable t) {
                 // catch the exception ,avoid scheduler task interrupt
-                LOGGER.error("Filed to execute CheckSumTask.", e);
+                LOGGER.error("Filed to execute CheckSumTask.", t);
             }
         }
     }
