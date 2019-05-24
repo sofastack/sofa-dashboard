@@ -20,8 +20,6 @@ import com.alipay.sofa.dashboard.domain.RpcConsumer;
 import com.alipay.sofa.dashboard.domain.RpcProvider;
 import com.alipay.sofa.dashboard.domain.RpcService;
 import com.alipay.sofa.rpc.common.utils.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -32,9 +30,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since:
  **/
 public class SofaRegistryDataCacheImpl implements RegistryDataCache {
-
-    private static final Logger            LOGGER      = LoggerFactory
-                                                           .getLogger(SofaRegistryDataCacheImpl.class);
 
     private Map<String, RpcService>        serviceMap  = new ConcurrentHashMap<>();
     private Map<String, List<RpcConsumer>> consumerMap = new ConcurrentHashMap<>();
@@ -47,32 +42,24 @@ public class SofaRegistryDataCacheImpl implements RegistryDataCache {
 
     @Override
     public List<RpcProvider> fetchProvidersByService(String serviceName) {
-        List<RpcProvider> result = null;
-        try {
+        List<RpcProvider> result = null ;
+        if (StringUtils.isNotBlank(serviceName)){
             result = providerMap.get(serviceName);
-        } catch (Exception e) {
-            // catch ,避免界面出现 500
-            LOGGER.error("Filed to fetchProvidersByService.", e);
-        } finally {
-            // do not return null to front
-            if (result == null) {
-                result = new ArrayList<>();
-            }
+        }
+        if (result == null){
+            result = new ArrayList<>();
         }
         return result;
     }
 
     @Override
     public List<RpcConsumer> fetchConsumersByService(String serviceName) {
-        List<RpcConsumer> result = null;
-        try {
+        List<RpcConsumer> result = null ;
+        if (StringUtils.isNotBlank(serviceName)){
             result = consumerMap.get(serviceName);
-        } catch (Exception e) {
-            LOGGER.error("Filed to fetchConsumersByService.", e);
-        } finally {
-            if (result == null) {
-                result = new ArrayList<>();
-            }
+        }
+        if (result == null){
+            result = new ArrayList<>();
         }
         return result;
     }
