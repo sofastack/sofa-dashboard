@@ -95,6 +95,7 @@ public interface ArkDao {
 
     /**
      * 根据插件名查询插件详情
+     *
      * @param pluginName
      * @return
      */

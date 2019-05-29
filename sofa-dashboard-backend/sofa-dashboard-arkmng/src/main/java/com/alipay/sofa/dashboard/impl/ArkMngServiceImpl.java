@@ -141,7 +141,7 @@ public class ArkMngServiceImpl implements ArkMngService {
             ArkPluginModel temp = new ArkPluginModel();
             List<ArkModuleVersionDO> arkModuleVersionDOList = arkDao.queryVersionsByMid(item.getId());
             List<ArkPluginModel.Version> versions = new ArrayList<>();
-            arkModuleVersionDOList.forEach( ver ->{
+            arkModuleVersionDOList.forEach(ver -> {
                 ArkPluginModel.Version version = new ArkPluginModel.Version();
                 version.setSourcePath(ver.getSourcePath());
                 version.setVersion(ver.getModuleVersion());
