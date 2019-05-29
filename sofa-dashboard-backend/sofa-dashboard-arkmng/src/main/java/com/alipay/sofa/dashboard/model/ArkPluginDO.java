@@ -25,7 +25,6 @@ import java.util.Date;
 public class ArkPluginDO {
     private Integer id;
     private String  pluginName;
-    private String  pluginUrl;
     private Date    createTime;
     private String  description;
 
@@ -45,14 +44,6 @@ public class ArkPluginDO {
         this.pluginName = pluginName;
     }
 
-    public String getPluginUrl() {
-        return pluginUrl;
-    }
-
-    public void setPluginUrl(String pluginUrl) {
-        this.pluginUrl = pluginUrl;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -69,9 +60,8 @@ public class ArkPluginDO {
         this.createTime = createTime;
     }
 
-    public ArkPluginDO(String pluginName, String pluginUrl, Date createTime, String description) {
+    public ArkPluginDO(String pluginName, Date createTime, String description) {
         this.pluginName = pluginName;
-        this.pluginUrl = pluginUrl;
         this.createTime = createTime;
         this.description = description;
     }
@@ -81,8 +71,7 @@ public class ArkPluginDO {
 
     @Override
     public String toString() {
-        return "ArkPluginDO{" + "id=" + id + ", pluginName='" + pluginName + '\'' + ", pluginUrl='"
-               + pluginUrl + '\'' + ", createTime=" + createTime + ", description='" + description
-               + '\'' + '}';
+        return "ArkPluginDO{" + "id=" + id + ", pluginName='" + pluginName + '\'' + ", createTime="
+               + createTime + ", description='" + description + '\'' + '}';
     }
 }

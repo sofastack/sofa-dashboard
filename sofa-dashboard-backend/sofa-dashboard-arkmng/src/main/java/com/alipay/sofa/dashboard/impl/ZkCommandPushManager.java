@@ -203,20 +203,16 @@ public class ZkCommandPushManager implements CommandPushManager {
     }
 
     private String getBizPluginFileUrl(CommandRequest commandRequest) {
-        List<ArkPluginDO> arkPluginList = arkDao.queryModuleInfoByName(commandRequest
+        List<ArkPluginDO> arkPluginList = arkDao.queryModuleInfoByNameStrict(commandRequest
             .getPluginName());
         if (arkPluginList.size() > 1) {
             throw new RuntimeException("Multiple modules with the same name coexist.");
         }
         if (arkPluginList.size() == 1) {
             ArkPluginDO arkPlugin = arkPluginList.get(0);
-            String pluginUrl = arkPlugin.getPluginUrl();
             ArkModuleVersionDO arkModuleVersion = arkDao.queryByModuleIdAndModuleVersion(
                 arkPlugin.getId(), commandRequest.getPluginVersion());
-            if (pluginUrl.endsWith(SofaDashboardConstants.SEPARATOR)) {
-                pluginUrl = pluginUrl.substring(0, pluginUrl.length() - 1);
-            }
-            return pluginUrl + arkModuleVersion.getSourcePath();
+            return arkModuleVersion.getSourcePath();
         }
         return null;
     }

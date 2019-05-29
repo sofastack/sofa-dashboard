@@ -59,7 +59,11 @@ public class ArkAppMngController {
         }
 
         List<ArkPluginModel> arkPluginModels = arkMngService.fetchPluginsByName(pluginName);
-        arkPluginModels.forEach((item) -> versions.addAll(item.getVersions()));
+        arkPluginModels.forEach((item) ->
+            item.getVersions().forEach((versionItem->{
+                versions.add(versionItem.getVersion());
+            }))
+        );
 
         // 版本为空，则插件当前插件的所有版本，然后选择一个默认的
         if (StringUtils.isEmpty(version) && !versions.isEmpty()) {

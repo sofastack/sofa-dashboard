@@ -9,9 +9,9 @@
 			SELECT LAST_INSERT_ID() AS id
 		</selectKey>
     	INSERT INTO ark_module_info
-    		(plugin_name,plugin_url,create_time,description)
+    		(plugin_name,create_time,description)
     	VALUES
-    		(#{pluginName},#{pluginUrl},#{createTime},#{description})
+    		(#{pluginName},#{createTime},#{description})
     </insert>
 
 	<insert id="insertModuleVersion" parameterType="com.alipay.sofa.dashboard.model.ArkModuleVersionDO">
@@ -62,8 +62,16 @@
 		</if>
 	</select>
 
-	<select id="queryVersionsByMid" parameterType="int" resultType="String">
-		select module_version from ark_module_version where module_id = #{mId}
+    <select id="queryModuleInfoByNameStrict" parameterType="java.lang.String" resultType="com.alipay.sofa.dashboard.model.ArkPluginDO">
+        select * from ark_module_info
+        WHERE 1=1
+        <if test="pluginName != null and pluginName != ''" >
+            AND plugin_name = #{pluginName}
+        </if>
+    </select>
+
+	<select id="queryVersionsByMid" parameterType="int" resultType="com.alipay.sofa.dashboard.model.ArkModuleVersionDO">
+		select * from ark_module_version where module_id = #{mId}
 	</select>
 
 	<insert id="insertAppArk" parameterType="com.alipay.sofa.dashboard.model.AppArkDO">
