@@ -38,19 +38,19 @@ public interface ArkMngService {
      * 向管控端注册插件
      *
      * @param model
-     * @param version
      * @return
      */
-    boolean registerPlugin(ArkPluginDO model, String version);
+    boolean registerPlugin(ArkPluginDO model);
 
     /**
      * 给模块增加新的版本
      *
      * @param pluginName
      * @param version
+     * @param address
      * @return
      */
-    boolean addNewVersion(String pluginName, String version);
+    boolean addNewVersion(String pluginName, String version, String address);
 
     /**
      * 删除一个模块

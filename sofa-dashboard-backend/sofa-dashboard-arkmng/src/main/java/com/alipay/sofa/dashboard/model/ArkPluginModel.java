@@ -25,7 +25,7 @@ import java.util.List;
 public class ArkPluginModel {
     private int               id;
     private String            pluginName;
-    private List<String>      versions;
+    private List<Version>     versions;
     private String            address;
     private String            description;
     private List<AppArkModel> appArkList;
@@ -44,14 +44,6 @@ public class ArkPluginModel {
 
     public void setPluginName(String pluginName) {
         this.pluginName = pluginName;
-    }
-
-    public List<String> getVersions() {
-        return versions;
-    }
-
-    public void setVersions(List<String> versions) {
-        this.versions = versions;
     }
 
     public String getAddress() {
@@ -76,5 +68,36 @@ public class ArkPluginModel {
 
     public void setAppArkList(List<AppArkModel> appArkList) {
         this.appArkList = appArkList;
+    }
+
+    public List<Version> getVersions() {
+        return versions;
+    }
+
+    public void setVersions(List<Version> versions) {
+        this.versions = versions;
+    }
+
+    public static class Version {
+
+        private String version;
+
+        private String sourcePath;
+
+        public String getVersion() {
+            return version;
+        }
+
+        public void setVersion(String version) {
+            this.version = version;
+        }
+
+        public String getSourcePath() {
+            return sourcePath;
+        }
+
+        public void setSourcePath(String sourcePath) {
+            this.sourcePath = sourcePath;
+        }
     }
 }

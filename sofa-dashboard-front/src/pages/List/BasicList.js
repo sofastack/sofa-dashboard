@@ -61,9 +61,36 @@ class BasicList extends PureComponent {
       total: totalCount,
     };
 
+    // goto详情页
+    const gotoDetails = (key, currentItem) => {
+        console.log("key",key)
+        console.log("currentItem",currentItem)
+        if (key === 'metrics') {
+            // 跳转到 metric 详情页
+            window.location.href = '/dashboard/metrics?id='+currentItem.id;
+        } else if (key == 'details') {
+            // 跳转到 env 详情页
+            window.location.href = '/dashboard/details?id='+currentItem.id;
+        } else if (key == 'traces') {
+            // 跳转到 traces 详情页
+            window.location.href = '/dashboard/traces?id='+currentItem.id;
+        }
+    };
+
     // key -> link 点击选项跳转到具体的详情页面
     const MoreBtn = props => (
-        <span></span>
+        <Dropdown overlay={
+                <Menu onClick={({ key }) => gotoDetails(key, props.current)}>
+                    <Menu.Item key="details">details</Menu.Item>
+                    <Menu.Item key="metrics">metrics</Menu.Item>
+                    <Menu.Item key="traces">traces</Menu.Item>
+                </Menu>
+            }
+        >
+            <a>
+                应用信息查看 <Icon type="down" />
+            </a>
+        </Dropdown>
     );
 
     // 页面布局部分
