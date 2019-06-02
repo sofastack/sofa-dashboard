@@ -1,0 +1,44 @@
+version: '2'
+
+services:
+  sofa-dashboard-quick-start:
+    image: sofastack/sofa-dashboard-web:1.0.0-SNAPSHOT
+    container_name: sofa-dashboard-quick-start
+    depends_on:
+      - sofa-dashboard-db
+      - sofa-dashboard-zk
+    ports:
+      - "8080:8080"
+    links:
+      - sofa-dashboard-zk
+      - sofa-dashboard-db
+
+  sofa-dashboard-zk:
+    image: zookeeper:3.4.14
+    container_name: sofa-dashboard-zk
+    environment:
+      ZOO_MY_ID: 1
+      ZOO_SERVERS: server.1=0.0.0.0:2888:3888
+    ports:
+      - "2181:2181"
+
+  sofa-dashboard-db:
+    image: mysql:5.7
+    container_name: sofa-dashboard-db
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    depends_on:
+      - sofa-dashboard-dbdata
+    ports:
+      - "3306:3306"
+    volumes:
+      - ../../sql:/docker-entrypoint-initdb.d
+    volumes_from:
+      - sofa-dashboard-dbdata
+
+  sofa-dashboard-dbdata:
+    image: alpine:latest
+    container_name: sofa-dashboard-dbdata
+    volumes:
+      - /var/lib/mysql

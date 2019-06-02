@@ -71,7 +71,7 @@ export default {
   },
 
   // build path
-  outputPath: '/home/admin/release/run/target/static',
+  outputPath: 'target',
 
   externals: {
     '@antv/data-set': 'DataSet',
