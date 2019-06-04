@@ -108,7 +108,7 @@
             <build>
                 <resources>
                     <resource>
-                        <directory>../../sofa-dashboard-front/target</directory>
+                        <directory>../../sofa-dashboard-front/target/dist</directory>
                         <targetPath>static</targetPath>
                     </resource>
                     <resource>
