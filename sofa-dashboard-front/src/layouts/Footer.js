@@ -16,7 +16,7 @@ const FooterView = () => (
         {
           key: 'github',
           title: <Icon type="github" />,
-          href: 'https://github.com/alipay',
+          href: 'https://github.com/sofastack/sofa-dashboard',
           blankTarget: true,
         },
       ]}

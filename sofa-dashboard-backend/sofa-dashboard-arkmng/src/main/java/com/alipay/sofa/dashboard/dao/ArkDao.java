@@ -86,7 +86,7 @@ public interface ArkDao {
     void removeModuleUser(int mId);
 
     /**
-     * 根据插件吗查询插件详情
+     * 根据插件名查询插件详情-模糊查询
      *
      * @param pluginName
      * @return
@@ -94,12 +94,20 @@ public interface ArkDao {
     List<ArkPluginDO> queryModuleInfoByName(@Param("pluginName") String pluginName);
 
     /**
+     * 根据插件名查询插件详情
+     *
+     * @param pluginName
+     * @return
+     */
+    List<ArkPluginDO> queryModuleInfoByNameStrict(@Param("pluginName") String pluginName);
+
+    /**
      * 根据插件ID 查询所有插件版本
      *
      * @param id
      * @return
      */
-    List<String> queryVersionsByMid(int id);
+    List<ArkModuleVersionDO> queryVersionsByMid(int id);
 
     /**
      * 插件关联应用信息入库

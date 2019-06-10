@@ -16,9 +16,12 @@
  */
 package com.alipay.sofa.dashboard.impl;
 
-import com.alipay.sofa.dashboard.constants.SofaDashboardConstants;
 import com.alipay.sofa.dashboard.dao.ArkDao;
-import com.alipay.sofa.dashboard.model.*;
+import com.alipay.sofa.dashboard.model.AppArkDO;
+import com.alipay.sofa.dashboard.model.ArkModuleUserDO;
+import com.alipay.sofa.dashboard.model.ArkModuleVersionDO;
+import com.alipay.sofa.dashboard.model.ArkPluginDO;
+import com.alipay.sofa.dashboard.model.ArkPluginModel;
 import com.alipay.sofa.dashboard.service.ArkMngService;
 import com.alipay.sofa.dashboard.utils.DateUtil;
 import org.slf4j.Logger;
@@ -51,14 +54,12 @@ public class ArkMngServiceImpl implements ArkMngService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public boolean registerPlugin(ArkPluginDO model, String version) {
+    public boolean registerPlugin(ArkPluginDO model) {
         try {
             // 向模块表中插入一条数据
             arkDao.insert(model);
             int mId = model.getId();
-            // 向模板版本表中插入数据
-            doInsertModuleVersion(mId, version, model.getPluginName());
-            // 向模板Owner表中插入数据
+            // 向模板 Owner 表中插入数据
             ArkModuleUserDO arkModuleUserDO = new ArkModuleUserDO();
             arkModuleUserDO.setModuleId(mId);
             // -1 不需要权限校验即可访问使用
@@ -73,10 +74,10 @@ public class ArkMngServiceImpl implements ArkMngService {
     }
 
     @Override
-    public boolean addNewVersion(String pluginName, String version) {
+    public boolean addNewVersion(String pluginName, String version, String address) {
         int mId = arkDao.queryModuleIdByName(pluginName);
         // 向模板版本表中插入数据
-        return doInsertModuleVersion(mId, version, pluginName) > 0;
+        return doInsertModuleVersion(mId, version, address) > 0;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -138,10 +139,16 @@ public class ArkMngServiceImpl implements ArkMngService {
         List<ArkPluginDO> list = arkDao.queryModuleInfoByName(pluginName);
         for (ArkPluginDO item : list) {
             ArkPluginModel temp = new ArkPluginModel();
-            List<String> versions = arkDao.queryVersionsByMid(item.getId());
+            List<ArkModuleVersionDO> arkModuleVersionDOList = arkDao.queryVersionsByMid(item.getId());
+            List<ArkPluginModel.Version> versions = new ArrayList<>();
+            arkModuleVersionDOList.forEach(ver -> {
+                ArkPluginModel.Version version = new ArkPluginModel.Version();
+                version.setSourcePath(ver.getSourcePath());
+                version.setVersion(ver.getModuleVersion());
+                versions.add(version);
+            });
             temp.setVersions(versions);
             temp.setId(item.getId());
-            temp.setAddress(item.getPluginUrl());
             temp.setDescription(item.getDescription());
             temp.setPluginName(item.getPluginName());
             result.add(temp);
@@ -150,28 +157,18 @@ public class ArkMngServiceImpl implements ArkMngService {
     }
 
     /**
-     * 构建版本信息，此处会生成默认的 版本地址,与插件地址组合之后可以唯一确定当前 插件包的地址
-     * <p>
-     * 如 插件地址 为 ：http://ip:port/sofa/ark
-     * 版本地址 为 ：/1.0.0/test-plugin-1.0.0-ark-biz.jar
-     * <p>
-     * 则 最终地址为 http://ip:port/sofa/ark/1.0.0/test-plugin-1.0.0-ark-biz.jar
-     *
      * @param mId
      * @param version
-     * @param pluginName
+     * @param address
      * @return
      */
-    private int doInsertModuleVersion(int mId, String version, String pluginName) {
+    private int doInsertModuleVersion(int mId, String version, String address) {
         // 向模板版本表中插入数据
         ArkModuleVersionDO arkModuleVersionDO = new ArkModuleVersionDO();
         arkModuleVersionDO.setCreateTime(DateUtil.now());
         arkModuleVersionDO.setModuleId(mId);
         arkModuleVersionDO.setModuleVersion(version);
-        arkModuleVersionDO.setSourcePath(SofaDashboardConstants.SEPARATOR + version
-                                         + SofaDashboardConstants.SEPARATOR + pluginName
-                                         + SofaDashboardConstants.HORIZONTAL + version
-                                         + "-ark-biz.jar");
+        arkModuleVersionDO.setSourcePath(address);
         arkModuleVersionDO.setIsRelease((byte) 0);
         arkDao.insertModuleVersion(arkModuleVersionDO);
         return arkModuleVersionDO.getId();

@@ -23,7 +23,6 @@ DROP TABLE IF EXISTS `ark_module_info`;
 CREATE TABLE `ark_module_info` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '模块主键',
   `plugin_name` varchar(128) NOT NULL COMMENT '模块名',
-  `plugin_url` varchar(256) DEFAULT '' COMMENT '模块地址',
   `description` varchar(128) DEFAULT '' COMMENT '模块描述',
   `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '模块创建时间',
   PRIMARY KEY (`id`)
@@ -49,7 +48,7 @@ CREATE TABLE `ark_module_version` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '模块版本表主键',
   `module_id` int(11) NOT NULL COMMENT '模块id',
   `module_version` varchar(64) NOT NULL COMMENT '模块版本',
-  `source_path` varchar(64) DEFAULT '' COMMENT '资源路径',
+  `source_path` varchar(1024) DEFAULT '' COMMENT '资源路径',
   `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `is_release` tinyint(4) DEFAULT 0 COMMENT '是否发布',
   PRIMARY KEY (`id`)

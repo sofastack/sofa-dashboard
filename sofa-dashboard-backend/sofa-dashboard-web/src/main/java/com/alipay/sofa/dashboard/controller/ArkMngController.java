@@ -94,11 +94,9 @@ public class ArkMngController {
             return false;
         }
         String pluginName = map.get(SofaDashboardConstants.PLUGIN_NAME);
-        String version = map.get(SofaDashboardConstants.VERSION);
-        String address = map.get(SofaDashboardConstants.ADDRESS);
         String description = map.get(SofaDashboardConstants.DESCRIPTION);
-        ArkPluginDO arkPluginDO = new ArkPluginDO(pluginName, address, DateUtil.now(), description);
-        return arkMngService.registerPlugin(arkPluginDO, version);
+        ArkPluginDO arkPluginDO = new ArkPluginDO(pluginName, DateUtil.now(), description);
+        return arkMngService.registerPlugin(arkPluginDO);
     }
 
     @RequestMapping("/registerNewVersion")
@@ -108,7 +106,8 @@ public class ArkMngController {
         }
         String version = map.get(SofaDashboardConstants.VERSION);
         String pluginName = map.get(SofaDashboardConstants.PLUGIN_NAME);
-        return arkMngService.addNewVersion(pluginName, version);
+        String address = map.get(SofaDashboardConstants.ADDRESS);
+        return arkMngService.addNewVersion(pluginName, version, address);
     }
 
     @RequestMapping("/deletePluginModel")
