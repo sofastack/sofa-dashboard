@@ -14,29 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alipay.sofa.dashboard.spi;
-
-import com.alipay.sofa.dashboard.model.AppInfo;
-
-import java.util.List;
-
 /**
- * @author: guolei.sgl (guolei.sgl@antfin.com) 19/1/10 下午9:31
+ * @author: guolei.sgl (guolei.sgl@antfin.com) 2019/7/14 10:35 AM
  * @since:
  **/
-public interface ApplicationManager {
-
-    /**
-     * 根据应用名获取应用实例列表
-     * @param applicationName
-     * @return
-     * @throws Exception
-     */
-    List<AppInfo> appInfoList(String applicationName);
-
-    /**
-     * 获取所有应用名
-     * @return
-     */
-    List<String> applicationNames();
-}
+package com.alipay.sofa.dashboard;

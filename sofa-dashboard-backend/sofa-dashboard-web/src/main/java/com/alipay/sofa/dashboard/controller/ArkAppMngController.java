@@ -82,7 +82,7 @@ public class ArkAppMngController {
             arkAppModel.setPluginName(pluginName);
             arkAppModel.setPluginVersion(version);
             // 这里需要去匹配当前注册到zk上应用名为appName的所有实例信息
-            List<Application> applications = zkHelper.getArkAppFromZookeeper(appName, pluginName, version);
+            List<AppInfo> applications = zkHelper.getArkAppFromZookeeper(appName, pluginName, version);
             arkAppModel.setIpUnitList(getAppUnitModel(applications));
             list.add(arkAppModel);
         }
@@ -111,7 +111,7 @@ public class ArkAppMngController {
         return request;
     }
 
-    private List<AppUnitModel> getAppUnitModel(List<Application> applications) {
+    private List<AppUnitModel> getAppUnitModel(List<AppInfo> applications) {
         List<AppUnitModel> list = new ArrayList<>();
         if (applications == null || applications.isEmpty()) {
             return list;

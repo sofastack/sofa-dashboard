@@ -16,21 +16,16 @@
  */
 package com.alipay.sofa.dashboard.controller;
 
+import com.alipay.sofa.dashboard.application.ApplicationService;
 import com.alipay.sofa.dashboard.application.ZookeeperApplicationManager;
-import com.alipay.sofa.dashboard.model.AppModel;
-import com.alipay.sofa.dashboard.model.Application;
-import com.alipay.sofa.dashboard.vo.ApplicationVO;
+import com.alipay.sofa.dashboard.model.ApplicationInfo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * @author: guolei.sgl (guolei.sgl@antfin.com) 18/12/7 下午5:15
@@ -43,60 +38,17 @@ public class ApplicationController {
     @Autowired
     ZookeeperApplicationManager zookeeperApplicationManager;
 
-    /**
-     * 获取应用列表
-     *
-     * @return
-     */
-    @GetMapping("/list")
-    public ApplicationVO getList() {
-        ApplicationVO applicationVO = new ApplicationVO();
-        Map<String, Set<Application>> applications = zookeeperApplicationManager.getApplications();
-        Collection<Set<Application>> apps = applications.values();
-        int total = 0;
-        int success = 0;
-        int fail = 0;
-        List<AppModel> data = new ArrayList<>();
-        if (!apps.isEmpty()) {
-            for (Set<Application> appList : apps) {
-                for (Application app : appList) {
-                    AppModel appModel = new AppModel();
-                    appModel.setHost(app.getHostName());
-                    appModel.setPort(app.getPort());
-                    appModel.setName(app.getAppName());
-                    appModel.setState(app.getAppState());
-                    if ("UP".equals(app.getAppState())) {
-                        success += 1;
-                    } else {
-                        fail += 1;
-                    }
-                    data.add(appModel);
-                }
-                total += appList.size();
-            }
-        }
-        applicationVO.setData(data);
-        applicationVO.setTotalCount(total);
-        applicationVO.setSuccessCount(success);
-        applicationVO.setFailCount(fail);
-        return applicationVO;
-    }
+    @Autowired
+    private ApplicationService  applicationService;
 
     /**
-     * 移除应用
-     *
-     * @param name
-     * @return
+     * 获取所有应用列表
      */
-    @RequestMapping("/remove")
-    public Boolean remove(@RequestParam("name") String name) {
-        List<AppModel> applications = zookeeperApplicationManager.applications();
-        for (AppModel app : applications) {
-            if (app.getName().equals(name)) {
-                applications.remove(app);
-                return true;
-            }
+    @RequestMapping("/list")
+    public List<ApplicationInfo> getApplications(@RequestParam("applicationName") String applicationName) {
+        if (StringUtils.isEmpty(applicationName)) {
+            return applicationService.applications();
         }
-        return false;
+        return applicationService.applicationsByMatch(applicationName);
     }
 }

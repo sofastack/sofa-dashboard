@@ -16,6 +16,7 @@
         <module>sofa-dashboard-web</module>
         <module>sofa-dashboard-arkmng</module>
         <module>sofa-dashboard-governance</module>
+        <module>sofa-dashboard-application</module>
     </modules>
 
     <properties>
