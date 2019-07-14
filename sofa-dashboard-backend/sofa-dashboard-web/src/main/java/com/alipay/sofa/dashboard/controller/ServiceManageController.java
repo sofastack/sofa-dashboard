@@ -21,6 +21,7 @@ import com.alipay.sofa.dashboard.cache.RegistryDataCache;
 import com.alipay.sofa.dashboard.domain.RpcConsumer;
 import com.alipay.sofa.dashboard.domain.RpcProvider;
 import com.alipay.sofa.dashboard.domain.RpcService;
+import com.alipay.sofa.dashboard.model.ServiceAppModel;
 import com.alipay.sofa.dashboard.model.ServiceModel;
 import com.alipay.sofa.rpc.common.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -50,23 +52,98 @@ public class ServiceManageController {
     private RegistryDataCache registryDataCache;
 
     /**
-     * 获取服务列表
+     * 获取服务列表-服务维度
      *
      * @return
      */
-    @GetMapping("all")
-    public List<ServiceModel> queryServiceList() {
+    @GetMapping("all-service")
+    public List<ServiceModel> queryServiceListByService(@RequestParam("query") String query) {
         List<ServiceModel> data = new ArrayList<>();
         Map<String, RpcService> rpcServices = registryDataCache.fetchService();
         for (Map.Entry<String, RpcService> rpcServiceEntry : rpcServices.entrySet()) {
             final String serviceName = rpcServiceEntry.getKey();
             ServiceModel model = fetchServiceModel(serviceName);
-            if (model != null) {
+            if (model != null && (serviceName.contains(query) || StringUtils.isBlank(query))) {
                 data.add(model);
             }
         }
-
         return data;
+    }
+
+    /**
+     * 获取服务列表-应用维度
+     *
+     * @return
+     */
+    @GetMapping("all-app")
+    public List<Map<String,String>> queryServiceListByApp(@RequestParam("query") String query) {
+        List<Map<String,String>> data = new ArrayList<>();
+        Map<String, RpcService> rpcServices = registryDataCache.fetchService();
+        for (Map.Entry<String, RpcService> rpcServiceEntry : rpcServices.entrySet()) {
+            final String serviceName = rpcServiceEntry.getKey();
+            List<RpcProvider> providers = registryDataCache.fetchProvidersByService(serviceName);
+            List<RpcConsumer> consumers = registryDataCache.fetchConsumersByService(serviceName);
+            if (providers!=null && providers.size() > 0){
+                providers.forEach((provider)->{
+                    if (provider.getAppName()!=null && !data.contains(provider.getAppName())){
+                        Map<String,String> item = new HashMap<>();
+                        item.put("appName",provider.getAppName());
+                        if (provider.getAppName().contains(query) || StringUtils.isBlank(query)){
+                            data.add(item);
+                        }
+                    }
+                });
+            }
+            if (consumers!=null && consumers.size() > 0){
+                consumers.forEach((consumer)->{
+                    if (consumer.getAppName()!=null && !data.contains(consumer.getAppName())){
+                        Map<String,String> item = new HashMap<>();
+                        item.put("appName",consumer.getAppName());
+                        if (consumer.getAppName().contains(query) || StringUtils.isBlank(query)){
+                            data.add(item);
+                        }
+                    }
+                });
+            }
+        }
+        return data;
+    }
+
+    /**
+     * 查询应用的服务提供和服务消费详情
+     * @param appName
+     * @return
+     */
+    @GetMapping("service-app")
+    public ServiceAppModel queryServiceByAppName(@RequestParam("appName") String appName) {
+        List<String> providersData = new ArrayList<>();
+        List<String> consumersData = new ArrayList<>();
+        ServiceAppModel result = new ServiceAppModel();
+        Map<String, RpcService> rpcServices = registryDataCache.fetchService();
+        for (Map.Entry<String, RpcService> rpcServiceEntry : rpcServices.entrySet()) {
+            final String serviceName = rpcServiceEntry.getKey();
+            List<RpcProvider> providers = registryDataCache.fetchProvidersByService(serviceName);
+            List<RpcConsumer> consumers = registryDataCache.fetchConsumersByService(serviceName);
+            if (providers!=null && providers.size() > 0){
+                providers.forEach((provider)->{
+                    if (provider.getAppName()!=null && appName.equals(provider.getAppName()) && !providersData.contains(serviceName)){
+                        providersData.add(serviceName);
+                    }
+                });
+            }
+            if (consumers!=null && consumers.size() > 0){
+                consumers.forEach((consumer)->{
+                    if (consumer.getAppName()!=null && appName.contains(consumer.getAppName())){
+                        if (consumer.getAppName()!=null && appName.equals(consumer.getAppName()) && !consumersData.contains(serviceName)){
+                            consumersData.add(serviceName);
+                        }
+                    }
+                });
+            }
+        }
+        result.setConsumers(consumersData);
+        result.setProviders(providersData);
+        return result;
     }
 
     private List<RpcProvider> fetchProviderData(String serviceName) {
