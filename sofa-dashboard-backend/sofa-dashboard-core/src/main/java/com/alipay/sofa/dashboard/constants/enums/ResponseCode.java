@@ -14,39 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alipay.sofa.dashboard.model;
+package com.alipay.sofa.dashboard.constants.enums;
 
 /**
- * @author: guolei.sgl (guolei.sgl@antfin.com) 18/12/21 下午2:29
+ * @author: guolei.sgl (guolei.sgl@antfin.com) 2019/7/16 12:06 PM
  * @since:
  **/
-public class AppUnitModel {
-
-    private String ip;
-    private String status;
-    private int    port;
-
-    public String getIp() {
-        return ip;
-    }
-
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
-    }
+public enum ResponseCode {
+    SUCCESS, FAILED, REPEAT_BIZ, NOT_FOUND_BIZ, ILLEGAL_STATE_BIZ;
 }

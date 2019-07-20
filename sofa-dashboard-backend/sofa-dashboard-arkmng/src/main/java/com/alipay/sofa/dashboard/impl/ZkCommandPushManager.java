@@ -75,6 +75,7 @@ public class ZkCommandPushManager implements CommandPushManager {
                 }
             } catch (Exception e) {
                 LOGGER.error("Failed to install biz module via app dimension.", e);
+                throw new RuntimeException(e);
             }
         } else {
             // 如果是按照IP维度推送，则放在 /ip 节点数据中
@@ -100,6 +101,7 @@ public class ZkCommandPushManager implements CommandPushManager {
                     }
                 } catch (Exception e) {
                     LOGGER.error("Failed to install biz module via ip dimension.", e);
+                    throw new RuntimeException(e);
                 }
             });
         }

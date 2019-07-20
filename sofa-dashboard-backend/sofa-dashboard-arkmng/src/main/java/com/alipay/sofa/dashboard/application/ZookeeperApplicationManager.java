@@ -30,9 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringBootVersion;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -50,12 +48,9 @@ public class ZookeeperApplicationManager implements ApplicationManager, Initiali
 
     private static final Logger                  LOGGER       = LoggerFactory
                                                                   .getLogger(ZookeeperApplicationManager.class);
-    private static final String                  LOCALHOST_IP = "127.0.0.1";
 
     @Autowired
     private ZkCommandClient                      zkCommandClient;
-
-    private RestTemplate                         restTemplate = new RestTemplate();
 
     /**
      * 内存中缓存一份应用实例信息 key:appName  value
@@ -66,9 +61,10 @@ public class ZookeeperApplicationManager implements ApplicationManager, Initiali
     public void afterPropertiesSet() throws Exception {
         // 拉取应用信息
         initApplications();
-        // 添加监听器
+        // 添加监听器 /apps/instance
         TreeCache treeCache = new TreeCache(zkCommandClient.getCuratorClient(),
-            SofaDashboardConstants.SOFA_BOOT_CLIENT_ROOT);
+            SofaDashboardConstants.SOFA_BOOT_CLIENT_ROOT
+                    + SofaDashboardConstants.SOFA_BOOT_CLIENT_INSTANCE);
         addListener(treeCache);
     }
 
@@ -217,55 +213,4 @@ public class ZookeeperApplicationManager implements ApplicationManager, Initiali
         return applications;
     }
 
-    public String getAppState(String appName, String ip, String pluginName, String version) {
-        try {
-            Map<String, Set<Application>> applications = this.getApplications();
-            Set<Application> instances = applications.get(appName);
-            for (Application instance : instances) {
-                // 兼容 "127.0.0.1" 和 真实地址，主要是本地环境下
-                if (LOCALHOST_IP.equals(ip) || instance.getHostName().equals(ip)) {
-                    Map result = restTemplate.getForObject(getBizStateUrl(instance), Map.class);
-                    return parseStateFromMapJSON(result, pluginName, version);
-                }
-            }
-        } catch (Exception e) {
-            LOGGER.error("Failed to get ark biz state by restTemplate.", e);
-        }
-        return "";
-    }
-
-    private String parseStateFromMapJSON(Map result, String pluginName, String version) {
-        if (result == null || result.isEmpty()) {
-            return "";
-        }
-        if (result.get(SofaDashboardConstants.CODE) instanceof String) {
-            String code = (String) result.get(SofaDashboardConstants.CODE);
-            if (SofaDashboardConstants.SUCCESS.equals(code)) {
-                Object bizInfos = result.get(SofaDashboardConstants.BIZ_INFOS);
-                if (bizInfos instanceof ArrayList) {
-                    List<Map> bizInfoList = (List<Map>) bizInfos;
-                    for (Map item : bizInfoList) {
-                        if (item.containsKey(SofaDashboardConstants.BIZ_NAME)
-                            && item.containsKey(SofaDashboardConstants.BIZ_VERSION)) {
-                            if (pluginName.equals(item.get(SofaDashboardConstants.BIZ_NAME))
-                                && version.equals(item.get(SofaDashboardConstants.BIZ_VERSION))) {
-                                return item.get(SofaDashboardConstants.BIZ_STATE) == null ? ""
-                                    : item.get(SofaDashboardConstants.BIZ_STATE).toString();
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return "";
-    }
-
-    private String getBizStateUrl(Application instance) {
-        String basePath = SpringBootVersion.getVersion().startsWith("1") ? SofaDashboardConstants.SEPARATOR
-                                                                           + SofaDashboardConstants.HEALTH
-            : SofaDashboardConstants.SEPARATOR + SofaDashboardConstants.ACTUATOR;
-        return SofaDashboardConstants.HTTP_SCHEME + instance.getHostName()
-               + SofaDashboardConstants.COLON + instance.getPort() + basePath
-               + SofaDashboardConstants.SEPARATOR + SofaDashboardConstants.BIZ_STATE;
-    }
 }

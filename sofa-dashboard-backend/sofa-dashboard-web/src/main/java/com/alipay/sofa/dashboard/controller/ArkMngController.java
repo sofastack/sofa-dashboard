@@ -19,11 +19,13 @@ package com.alipay.sofa.dashboard.controller;
 import com.alipay.sofa.dashboard.application.ZookeeperApplicationManager;
 import com.alipay.sofa.dashboard.constants.SofaDashboardConstants;
 import com.alipay.sofa.dashboard.impl.ZkHelper;
+import com.alipay.sofa.dashboard.model.AppArkDO;
 import com.alipay.sofa.dashboard.model.AppArkModel;
 import com.alipay.sofa.dashboard.model.ArkPluginDO;
 import com.alipay.sofa.dashboard.model.ArkPluginModel;
+import com.alipay.sofa.dashboard.response.ResponseEntity;
 import com.alipay.sofa.dashboard.service.ArkMngService;
-import com.alipay.sofa.dashboard.utils.DateUtil;
+import com.alipay.sofa.dashboard.utils.SofaDashboardUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,13 +67,14 @@ public class ArkMngController {
     public List<ArkPluginModel> queryArkPluginList() {
         List<ArkPluginModel> list = arkMngService.fetchRegisteredPlugins();
         list.forEach((item) -> {
-            List<String> appNames = arkMngService.queryAppsByPlugin(item.getPluginName());
+            List<AppArkDO> appArkDOS = arkMngService.queryAppsByPlugin(item.getPluginName());
             List<AppArkModel> appArkList = new ArrayList<>();
-            appNames.forEach((appName) -> {
+            appArkDOS.forEach((appArkDO) -> {
                 try {
                     AppArkModel appArkModel = new AppArkModel();
-                    appArkModel.setAppName(appName);
-                    appArkModel.setInstanceNum(zkHelper.getArkAppCount(appName));
+                    appArkModel.setAppName(appArkDO.getAppName());
+                    appArkModel.setCreateTime(SofaDashboardUtil.formatDate(appArkDO.getCreateTime()));
+                    appArkModel.setInstanceNum(zkHelper.getArkAppCount(appArkDO.getAppName()));
                     appArkList.add(appArkModel);
                 } catch (Exception e) {
                     LOGGER.error("Failed to calculate ark app count.", e);
@@ -95,28 +98,55 @@ public class ArkMngController {
         }
         String pluginName = map.get(SofaDashboardConstants.PLUGIN_NAME);
         String description = map.get(SofaDashboardConstants.DESCRIPTION);
-        ArkPluginDO arkPluginDO = new ArkPluginDO(pluginName, DateUtil.now(), description);
+        ArkPluginDO arkPluginDO = new ArkPluginDO(pluginName, SofaDashboardUtil.now(), description);
         return arkMngService.registerPlugin(arkPluginDO);
     }
 
-    @RequestMapping("/registerNewVersion")
+    @RequestMapping("/update-plugin")
+    public boolean updatePlugin(@RequestBody ArkPluginDO arkPluginDO) {
+        if (arkPluginDO == null) {
+            return false;
+        }
+        return arkMngService.updatePlugin(arkPluginDO);
+    }
+
+    @RequestMapping("/register-new-version")
     public boolean registerNewVersion(@RequestBody Map<String, String> map) {
         if (map == null) {
             return false;
         }
         String version = map.get(SofaDashboardConstants.VERSION);
-        String pluginName = map.get(SofaDashboardConstants.PLUGIN_NAME);
+        String id = map.get(SofaDashboardConstants.ID);
         String address = map.get(SofaDashboardConstants.ADDRESS);
-        return arkMngService.addNewVersion(pluginName, version, address);
-    }
-
-    @RequestMapping("/deletePluginModel")
-    public boolean deletePluginModel(@RequestBody Map<String, String> map) {
-        if (map == null) {
+        // 不符合
+        if (StringUtils.isEmpty(id)) {
             return false;
         }
-        String pluginName = map.get(SofaDashboardConstants.PLUGIN_NAME);
-        return arkMngService.removePlugins(pluginName);
+        return arkMngService.addNewVersion(Integer.valueOf(id), version, address);
+    }
+
+    @RequestMapping("/delete-version")
+    public ResponseEntity<Boolean> deleteVersion(@RequestParam("id") int id,
+                                                 @RequestParam("version") String version) {
+        ResponseEntity<Boolean> result = new ResponseEntity<>();
+        if (id <= 0 || StringUtils.isEmpty(version)) {
+            result.setSuccess(false);
+            result.setError("plugin id or version cannot be blank.");
+            return result;
+        }
+
+        if (!arkMngService.deleteVersion(id, version)) {
+            result.setError("delete version error.");
+        }
+        return result;
+    }
+
+    @RequestMapping("/delete-plugin")
+    public boolean deletePluginModel(@RequestParam("id") int id) {
+        if (id < 0) {
+            return false;
+        }
+        return arkMngService.removePlugins(id);
     }
 
     @RequestMapping("/search-plugin")
@@ -129,9 +159,8 @@ public class ArkMngController {
     }
 
     @RequestMapping("/related-app")
-    public boolean relatedApp(@RequestParam("pluginName") String pluginName,
-                              @RequestParam("appName") String appName) {
-        return arkMngService.relatedAppToPlugin(pluginName, appName) > 0;
+    public boolean relatedApp(@RequestParam("id") int id, @RequestParam("appName") String appName) {
+        return arkMngService.relatedAppToPlugin(id, appName) > 0;
     }
 
     @RequestMapping("/cancel-related-app")

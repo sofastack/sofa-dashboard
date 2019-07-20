@@ -16,37 +16,42 @@
  */
 package com.alipay.sofa.dashboard.model;
 
+import com.alipay.sofa.ark.api.ResponseCode;
+
+import java.util.HashSet;
+import java.util.Set;
+
 /**
- * @author: guolei.sgl (guolei.sgl@antfin.com) 18/12/21 下午2:29
+ * @author: guolei.sgl (guolei.sgl@antfin.com) 2019/7/17 10:29 PM
  * @since:
  **/
-public class AppUnitModel {
+public class ClientResponseModel {
 
-    private String ip;
-    private String status;
-    private int    port;
+    private String        message  = "";
+    private ResponseCode  code     = ResponseCode.NOT_FOUND_BIZ;
+    private Set<BizModel> bizInfos = new HashSet<>();
 
-    public String getIp() {
-        return ip;
+    public String getMessage() {
+        return message;
     }
 
-    public void setIp(String ip) {
-        this.ip = ip;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
-    public String getStatus() {
-        return status;
+    public ResponseCode getCode() {
+        return code;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setCode(ResponseCode code) {
+        this.code = code;
     }
 
-    public int getPort() {
-        return port;
+    public Set<BizModel> getBizInfos() {
+        return bizInfos;
     }
 
-    public void setPort(int port) {
-        this.port = port;
+    public void setBizInfos(Set<BizModel> bizInfos) {
+        this.bizInfos = bizInfos;
     }
 }

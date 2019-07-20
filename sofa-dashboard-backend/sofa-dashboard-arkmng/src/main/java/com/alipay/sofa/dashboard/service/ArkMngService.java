@@ -16,6 +16,7 @@
  */
 package com.alipay.sofa.dashboard.service;
 
+import com.alipay.sofa.dashboard.model.AppArkDO;
 import com.alipay.sofa.dashboard.model.ArkPluginDO;
 import com.alipay.sofa.dashboard.model.ArkPluginModel;
 
@@ -43,22 +44,36 @@ public interface ArkMngService {
     boolean registerPlugin(ArkPluginDO model);
 
     /**
+     * 更新插件
+     * @param model
+     * @return
+     */
+    boolean updatePlugin(ArkPluginDO model);
+
+    /**
      * 给模块增加新的版本
      *
-     * @param pluginName
+     * @param mId
      * @param version
      * @param address
      * @return
      */
-    boolean addNewVersion(String pluginName, String version, String address);
+    boolean addNewVersion(int mId, String version, String address);
+
+    /**
+     * 删除插件版本
+     * @param mId
+     * @param version
+     * @return
+     */
+    boolean deleteVersion(int mId, String version);
 
     /**
      * 删除一个模块
-     *
-     * @param pluginName
+     * @param mId
      * @return
      */
-    boolean removePlugins(String pluginName);
+    boolean removePlugins(int mId);
 
     /**
      * 通过插件名查询插件
@@ -71,11 +86,11 @@ public interface ArkMngService {
     /**
      * 关联应用和插件
      *
-     * @param pluginName
+     * @param moduleId
      * @param appName
      * @return
      */
-    int relatedAppToPlugin(String pluginName, String appName);
+    int relatedAppToPlugin(int moduleId, String appName);
 
     /**
      * 根据插件名查询当前插件关联的应用名
@@ -83,7 +98,7 @@ public interface ArkMngService {
      * @param pluginName
      * @return
      */
-    List<String> queryAppsByPlugin(String pluginName);
+    List<AppArkDO> queryAppsByPlugin(String pluginName);
 
     /**
      * 取消

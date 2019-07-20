@@ -18,12 +18,15 @@ package com.alipay.sofa.dashboard;
 
 import com.alipay.sofa.dashboard.base.AbstractTestBase;
 import com.alipay.sofa.dashboard.constants.SofaDashboardConstants;
+import com.alipay.sofa.dashboard.controller.ArkMngController;
+import com.alipay.sofa.dashboard.model.ArkPluginModel;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
@@ -36,6 +39,9 @@ import java.util.Map;
  * @since:
  **/
 public class ArkManagementTest extends AbstractTestBase {
+
+    @Autowired
+    ArkMngController arkMngController;
 
     @Before
     public void before() throws Exception {
@@ -56,21 +62,26 @@ public class ArkManagementTest extends AbstractTestBase {
         // 注册插件
         Map<String, String> params = new HashMap<>();
         params.put(SofaDashboardConstants.PLUGIN_NAME, "test_plugin");
-        params.put(SofaDashboardConstants.VERSION, "1.0");
-        params.put(SofaDashboardConstants.ADDRESS, "http://localhost/xxx/yyy");
         params.put(SofaDashboardConstants.DESCRIPTION, "description");
         String register = "http://localhost:" + definedPort + "/api/ark/register";
         ResponseEntity<Boolean> result1 = restTemplate.postForEntity(register, params,
             Boolean.class);
         Assert.assertTrue(result1.getBody());
+
+        List<ArkPluginModel> result = arkMngController.searchPlugins("test_plugin");
+        Assert.assertTrue(result.size() == 1);
+
         //增加版本
-        Map<String, String> versionParam = new HashMap<>();
-        versionParam.put(SofaDashboardConstants.PLUGIN_NAME, "test_plugin");
+        Map<String, Object> versionParam = new HashMap<>();
+        versionParam.put(SofaDashboardConstants.ID, result.get(0).getId());
+        versionParam.put(SofaDashboardConstants.ADDRESS, "file://sss/ss/s");
         versionParam.put(SofaDashboardConstants.VERSION, "2.0");
+        params.put(SofaDashboardConstants.ADDRESS, "http://localhost/xxx/yyy");
         String registerNewVersion = "http://localhost:" + definedPort
-                                    + "/api/ark/registerNewVersion";
-        ResponseEntity<Boolean> result2 = restTemplate.postForEntity(registerNewVersion, params,
-            Boolean.class);
+                                    + "/api/ark/register-new-version";
+
+        ResponseEntity<Boolean> result2 = restTemplate.postForEntity(registerNewVersion,
+            versionParam, Boolean.class);
         Assert.assertTrue(result2.getBody());
 
         // 查询插件
