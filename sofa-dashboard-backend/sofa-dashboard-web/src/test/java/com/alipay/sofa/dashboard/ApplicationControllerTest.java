@@ -77,6 +77,14 @@ public class ApplicationControllerTest extends AbstractTestBase {
     }
 
     @Test
+    public void testGetList() {
+        String request = "http://localhost:" + definedPort
+                         + "/api/application/list?applicationName=";
+        List<ApplicationInfo> list = restTemplate.getForObject(request, List.class);
+        Assert.assertTrue(list != null && list.size() == 1);
+    }
+
+    @Test
     public void testGetInstance() {
         String request = "http://localhost:" + definedPort
                          + "/api/instance/list?applicationName={1}";
