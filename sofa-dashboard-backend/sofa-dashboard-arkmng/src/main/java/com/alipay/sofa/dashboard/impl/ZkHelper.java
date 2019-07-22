@@ -16,9 +16,8 @@
  */
 package com.alipay.sofa.dashboard.impl;
 
-import com.alipay.sofa.dashboard.application.ZookeeperApplicationManager;
+import com.alipay.sofa.dashboard.client.model.common.Application;
 import com.alipay.sofa.dashboard.constants.SofaDashboardConstants;
-import com.alipay.sofa.dashboard.model.AppInfo;
 import com.alipay.sofa.dashboard.zookeeper.ZkCommandClient;
 import org.apache.curator.framework.CuratorFramework;
 import org.slf4j.Logger;
@@ -40,8 +39,6 @@ public class ZkHelper {
 
     @Autowired
     ZkCommandClient             zkCommandClient;
-    @Autowired
-    ZookeeperApplicationManager zookeeperApplicationManager;
 
     /**
      * 根据应用名获取当前应用的所有实例
@@ -50,15 +47,17 @@ public class ZkHelper {
      * @return
      * @throws Exception
      */
-    public List<AppInfo> getArkAppFromZookeeper(String appName, String pluginName, String version) throws Exception {
-        List<AppInfo> applications = new ArrayList<>();
+    public List<Application> getArkAppFromZookeeper(String appName, String pluginName,
+                                                    String version) throws Exception {
+        List<Application> applications = new ArrayList<>();
         CuratorFramework curatorClient = zkCommandClient.getCuratorClient();
         // 根据应用名获取所有实例信息
-        List<String> apps = curatorClient.getChildren().forPath(SofaDashboardConstants.SOFA_ARK_ROOT + SofaDashboardConstants.SEPARATOR + appName);
+        List<String> apps = curatorClient.getChildren().forPath(
+            SofaDashboardConstants.SOFA_ARK_ROOT + SofaDashboardConstants.SEPARATOR + appName);
         // 遍历实例IP，生成应用元数据
         apps.forEach((ip) -> {
             try {
-                AppInfo application = new AppInfo();
+                Application application = new Application();
                 application.setAppName(appName);
                 application.setHostName(ip);
                 // 这里通过 actuator 方式获取状态
@@ -93,6 +92,6 @@ public class ZkHelper {
      * @return
      */
     private String getAppState(String appName, String ip, String pluginName, String version) {
-        return zookeeperApplicationManager.getAppState(appName, ip, pluginName, version);
+        return ""; //TODO: how to get state?
     }
 }

@@ -16,7 +16,6 @@
  */
 package com.alipay.sofa.dashboard.controller;
 
-import com.alipay.sofa.dashboard.application.ZookeeperApplicationManager;
 import com.alipay.sofa.dashboard.constants.SofaDashboardConstants;
 import com.alipay.sofa.dashboard.impl.ZkHelper;
 import com.alipay.sofa.dashboard.model.AppArkModel;
@@ -51,10 +50,7 @@ public class ArkMngController {
     private ArkMngService       arkMngService;
 
     @Autowired
-    ZookeeperApplicationManager zookeeperApplicationManager;
-
-    @Autowired
-    ZkHelper                    zkHelper;
+    private ZkHelper            zkHelper;
 
     /**
      * 获取 ark plugin 数据

@@ -19,11 +19,20 @@ package com.alipay.sofa.dashboard.model;
 import java.util.Objects;
 
 /**
- * @author: guolei.sgl (guolei.sgl@antfin.com) 2019/7/14 10:38 AM
- * @since:
+ * 引用运行状态概况
+ *
+ * @author guolei.sgl (guolei.sgl@antfin.com) 2019/7/14 10:38 AM
  **/
-public class ApplicationInfo {
+public class AppStatistic implements Comparable<AppStatistic> {
+
+    /**
+     * 服务名称
+     */
     private String applicationName;
+
+    /**
+     * 运行实例总数
+     */
     private int    applicationCount;
 
     public String getApplicationName() {
@@ -34,29 +43,38 @@ public class ApplicationInfo {
         this.applicationName = applicationName;
     }
 
-    public Integer getApplicationCount() {
+    public int getApplicationCount() {
         return applicationCount;
     }
 
-    public void setApplicationCount(Integer applicationCount) {
+    public void setApplicationCount(int applicationCount) {
         this.applicationCount = applicationCount;
     }
 
     @Override
+    public String toString() {
+        return "AppStatistic{" + "applicationName='" + applicationName + '\''
+               + ", applicationCount=" + applicationCount + '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
-        if (this == o) {
+        if (this == o)
             return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
+        if (o == null || getClass() != o.getClass())
             return false;
-        }
-        ApplicationInfo that = (ApplicationInfo) o;
-        return applicationCount == that.applicationCount
-               && Objects.equals(applicationName, that.applicationName);
+        AppStatistic statistic = (AppStatistic) o;
+        return getApplicationCount() == statistic.getApplicationCount()
+               && Objects.equals(getApplicationName(), statistic.getApplicationName());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(applicationName, applicationCount);
+        return Objects.hash(getApplicationName(), getApplicationCount());
+    }
+
+    @Override
+    public int compareTo(AppStatistic o) {
+        return applicationName.compareTo(o.applicationName);
     }
 }

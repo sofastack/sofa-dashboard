@@ -16,11 +16,9 @@
  */
 package com.alipay.sofa.dashboard.controller;
 
-import com.alipay.sofa.dashboard.application.ApplicationService;
-import com.alipay.sofa.dashboard.application.ZookeeperApplicationManager;
-import com.alipay.sofa.dashboard.model.ApplicationInfo;
+import com.alipay.sofa.dashboard.model.AppStatistic;
+import com.alipay.sofa.dashboard.spi.AppService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,19 +34,13 @@ import java.util.List;
 public class ApplicationController {
 
     @Autowired
-    ZookeeperApplicationManager zookeeperApplicationManager;
-
-    @Autowired
-    private ApplicationService  applicationService;
+    private AppService appService;
 
     /**
      * 获取所有应用列表
      */
     @RequestMapping("/list")
-    public List<ApplicationInfo> getApplications(@RequestParam("applicationName") String applicationName) {
-        if (StringUtils.isEmpty(applicationName)) {
-            return applicationService.applications();
-        }
-        return applicationService.applicationsByMatch(applicationName);
+    public List<AppStatistic> getApplications(@RequestParam("applicationName") String applicationName) {
+        return appService.getStatisticsByKeyword(applicationName);
     }
 }

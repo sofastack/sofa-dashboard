@@ -16,35 +16,28 @@
  */
 package com.alipay.sofa.dashboard.controller;
 
-import com.alipay.sofa.dashboard.app.AppServiceImpl;
-import com.alipay.sofa.dashboard.client.model.common.Application;
+import com.alipay.sofa.dashboard.client.model.common.HostAndPort;
+import com.alipay.sofa.dashboard.client.model.env.EnvironmentDescriptor;
+import com.alipay.sofa.dashboard.spi.MonitorService;
+import com.alipay.sofa.dashboard.utils.HostPortUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 /**
- *
- * 应用实例控制器
- * @author: guolei.sgl (guolei.sgl@antfin.com) 2019/7/11 2:51 PM
- * @since:
- **/
-@RestController
-@RequestMapping("/api/instance")
-public class InstanceController {
+ * @author chen.pengzhi (chpengzh@foxmail.com)
+ */
+@RestController("/api/monitor")
+public class MonitorController {
 
     @Autowired
-    private AppServiceImpl applicationService;
+    private MonitorService service;
 
-    /**
-     * 获取指定应用的实例列表
-     * @param applicationName
-     * @return
-     */
-    @RequestMapping("/list")
-    public List<Application> instances(@RequestParam("applicationName") String applicationName) {
-        return applicationService.getInstancesByName(applicationName);
+    @GetMapping("/env")
+    public EnvironmentDescriptor getEnv(@RequestParam("instanceId") String instanceId) {
+        HostAndPort hostAndPort = HostPortUtils.fromInstanceId(instanceId);
+        return service.fetchEnvironment(hostAndPort);
     }
+
 }
