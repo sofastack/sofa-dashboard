@@ -49,12 +49,6 @@ public class ArkMngServiceTest extends AbstractTestBase {
     }
 
     @Test
-    public void testFetchRegisteredPlugins() {
-        List<ArkPluginModel> arkPluginModels = arkMngService.fetchRegisteredPlugins();
-        Assert.assertTrue(arkPluginModels.size() == 1);
-    }
-
-    @Test
     public void testUpdatePlugin() {
         ArkPluginDO arkPluginDO = new ArkPluginDO();
         arkPluginDO.setId(getPluginId("test-plugin"));
