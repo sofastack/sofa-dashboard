@@ -16,21 +16,22 @@
  */
 package com.alipay.sofa.dashboard.utils;
 
-import java.text.SimpleDateFormat;
+import org.junit.Assert;
+import org.junit.Test;
+
 import java.util.Date;
 
 /**
- * @author: guolei.sgl (guolei.sgl@antfin.com) 2019/7/16 11:28 AM
+ * @author: guolei.sgl (guolei.sgl@antfin.com) 2019/7/22 11:48 AM
  * @since:
  **/
-public class SofaDashboardUtil {
+public class SofaDashboardUtilTest {
 
-    public static Date now() {
-        return new Date(System.currentTimeMillis());
+    @Test
+    public void testFormatDate() {
+        Date now = SofaDashboardUtil.now();
+        String s = SofaDashboardUtil.formatDate(now);
+        Assert.assertTrue(s != null);
     }
 
-    public static String formatDate(Date date) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return dateFormat.format(date);
-    }
 }

@@ -16,7 +16,6 @@
  */
 package com.alipay.sofa.dashboard.impl;
 
-import com.alipay.sofa.dashboard.application.ZookeeperApplicationManager;
 import com.alipay.sofa.dashboard.constants.SofaDashboardConstants;
 import com.alipay.sofa.dashboard.dao.ArkDao;
 import com.alipay.sofa.dashboard.model.ArkModuleVersionDO;
@@ -51,9 +50,6 @@ public class ZkCommandPushManager implements CommandPushManager {
 
     @Autowired
     private ZkCommandClient        zkCommandClient;
-
-    @Autowired
-    ZookeeperApplicationManager    zookeeperApplicationManager;
 
     @Autowired
     private ArkDao                 arkDao;
