@@ -14,30 +14,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alipay.sofa.dashboard.controller;
+package com.alipay.sofa.dashboard.model;
 
+import com.alipay.sofa.dashboard.client.model.common.Application;
 import com.alipay.sofa.dashboard.client.model.common.HostAndPort;
-import com.alipay.sofa.dashboard.client.model.env.EnvironmentDescriptor;
-import com.alipay.sofa.dashboard.spi.MonitorService;
 import com.alipay.sofa.dashboard.utils.HostPortUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author chen.pengzhi (chpengzh@foxmail.com)
  */
-@RestController("/api/monitor")
-public class MonitorController {
+public class AppRecord extends Application {
 
-    @Autowired
-    private MonitorService service;
+    public AppRecord() {
+    }
 
-    @GetMapping("/env")
-    public EnvironmentDescriptor getEnv(@RequestParam("instanceId") String instanceId) {
-        HostAndPort hostAndPort = HostPortUtils.fromInstanceId(instanceId);
-        return service.fetchEnvironment(hostAndPort);
+    public AppRecord(Application other) {
+        setAppName(other.getAppName());
+        setHostName(other.getHostName());
+        setPort(other.getPort());
+        setAppState(other.getAppState());
+        setStartTime(other.getStartTime());
+        setLastRecover(other.getLastRecover());
+    }
+
+    public String getId() {
+        return HostPortUtils.toInstanceId(new HostAndPort(getHostName(), getPort()));
+    }
+
+    public void setId(String instanceId) {
+        // Do nothing for json serializer
     }
 
 }

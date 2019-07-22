@@ -30,7 +30,7 @@
         <mysql.connector.version>5.1.35</mysql.connector.version>
         <druid.version>1.1.9</druid.version>
         <sofaark.version>0.6.0</sofaark.version>
-        <dashborad.client.version>1.1.0-SNAPSHOT</dashborad.client.version>
+        <dashboard.client.version>1.1.0-SNAPSHOT</dashboard.client.version>
         <curator.version>2.9.1</curator.version>
         <sofa.common.version>1.0.17</sofa.common.version>
         <swagger.version>2.2.2</swagger.version>
@@ -63,12 +63,12 @@
             <dependency>
                 <groupId>com.alipay.sofa</groupId>
                 <artifactId>dashboard-client-core</artifactId>
-                <version>${dashborad.client.version}</version>
+                <version>${dashboard.client.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.alipay.sofa</groupId>
                 <artifactId>dashboard-support</artifactId>
-                <version>${dashborad.client.version}</version>
+                <version>${dashboard.client.version}</version>
             </dependency>
 
             <dependency>

@@ -18,7 +18,10 @@ package com.alipay.sofa.dashboard.controller;
 
 import com.alipay.sofa.dashboard.model.AppStatistic;
 import com.alipay.sofa.dashboard.spi.AppService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,21 +29,19 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * @author: guolei.sgl (guolei.sgl@antfin.com) 18/12/7 下午5:15
- * @since:
- **/
+ * @author guolei.sgl (guolei.sgl@antfin.com) 18/12/7 下午5:15
+ */
 @RestController
 @RequestMapping("/api/application")
+@Api(value = "应用资源", tags = "application")
 public class ApplicationController {
 
     @Autowired
     private AppService appService;
 
-    /**
-     * 获取所有应用列表
-     */
-    @RequestMapping("/list")
-    public List<AppStatistic> getApplications(@RequestParam("applicationName") String applicationName) {
+    @GetMapping("/list")
+    @ApiOperation(value = "获取所有应用统计列表", notes = "指定一个关键字，返回所有包含关键字的应用，每一个应用具有应用名作为唯一标识")
+    public List<AppStatistic> getApplications(@RequestParam(value = "applicationName", required = false) String applicationName) {
         return appService.getStatisticsByKeyword(applicationName);
     }
 }

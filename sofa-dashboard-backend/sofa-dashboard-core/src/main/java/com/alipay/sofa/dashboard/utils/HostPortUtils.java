@@ -57,8 +57,7 @@ public final class HostPortUtils {
         }
 
         String host = sb.toString();
-        int port = Integer.parseInt(split[5], 16);
+        int port = Integer.parseInt(split[4], 16);
         return new HostAndPort(host, port);
     }
-
 }
