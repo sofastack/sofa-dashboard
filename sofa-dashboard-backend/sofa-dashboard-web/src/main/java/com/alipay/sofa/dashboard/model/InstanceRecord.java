@@ -23,12 +23,12 @@ import com.alipay.sofa.dashboard.utils.HostPortUtils;
 /**
  * @author chen.pengzhi (chpengzh@foxmail.com)
  */
-public class AppRecord extends Application {
+public class InstanceRecord extends Application {
 
-    public AppRecord() {
+    public InstanceRecord() {
     }
 
-    public AppRecord(Application other) {
+    public InstanceRecord(Application other) {
         setAppName(other.getAppName());
         setHostName(other.getHostName());
         setPort(other.getPort());
@@ -37,8 +37,13 @@ public class AppRecord extends Application {
         setLastRecover(other.getLastRecover());
     }
 
+    /**
+     * Id 是接口层概念，用来和前端交换一个短的 host&port 描述
+     *
+     * @return 唯一id
+     */
     public String getId() {
-        return HostPortUtils.toInstanceId(new HostAndPort(getHostName(), getPort()));
+        return HostPortUtils.uniqueId(new HostAndPort(getHostName(), getPort()));
     }
 
     public void setId(String instanceId) {

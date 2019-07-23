@@ -31,8 +31,10 @@ import com.alipay.sofa.dashboard.client.utils.JsonUtils;
 import com.alipay.sofa.dashboard.model.StampedValueEntity;
 import com.alipay.sofa.dashboard.spi.MonitorService;
 import org.springframework.stereotype.Component;
+import reactor.util.annotation.NonNull;
 import reactor.util.annotation.Nullable;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -89,32 +91,13 @@ public class MonitorServiceImpl implements MonitorService {
     }
 
     @Override
-    public List<StampedValueEntity<ThreadSummaryDescriptor>> fetchThreadInfo(
-        HostAndPort hostAndPort) {
-        List<StoreRecord> records = exporter.getLatestRecords(hostAndPort,
-            RecordName.THREAD_SUMMARY, TimeUnit.MINUTES.toMillis(MULTI_QUERY_DURATION));
-
-        return records.stream().map(it -> {
-            StampedValueEntity<ThreadSummaryDescriptor> value = new StampedValueEntity<>();
-            value.setName(RecordName.THREAD_SUMMARY);
-            value.setTimestamp(formatTime(it.getTimestamp()));
-            value.setValue(JsonUtils.parseObject(it.getValue(), ThreadSummaryDescriptor.class));
-            return value;
-        }).collect(Collectors.toList());
+    public List<StampedValueEntity<ThreadSummaryDescriptor>> fetchThreadInfo(HostAndPort hostAndPort) {
+        return queryList(hostAndPort, RecordName.THREAD_SUMMARY, ThreadSummaryDescriptor.class);
     }
 
     @Override
     public List<StampedValueEntity<MemoryDescriptor>> fetchMemoryInfo(HostAndPort hostAndPort) {
-        List<StoreRecord> records = exporter.getLatestRecords(hostAndPort,
-            RecordName.MEMORY, TimeUnit.MINUTES.toMillis(MULTI_QUERY_DURATION));
-
-        return records.stream().map(it -> {
-            StampedValueEntity<MemoryDescriptor> value = new StampedValueEntity<>();
-            value.setName(RecordName.THREAD_SUMMARY);
-            value.setTimestamp(formatTime(it.getTimestamp()));
-            value.setValue(JsonUtils.parseObject(it.getValue(), MemoryDescriptor.class));
-            return value;
-        }).collect(Collectors.toList());
+        return queryList(hostAndPort, RecordName.MEMORY, MemoryDescriptor.class);
     }
 
     @Nullable
@@ -127,6 +110,22 @@ public class MonitorServiceImpl implements MonitorService {
             .orElse(null);
     }
 
+    @NonNull
+    private <T extends Serializable> List<StampedValueEntity<T>> queryList(
+        HostAndPort hostAndPort, String schemeName, Class<T> descriptorType) {
+        List<StoreRecord> records = exporter.getLatestRecords(hostAndPort,
+            schemeName, TimeUnit.MINUTES.toMillis(MULTI_QUERY_DURATION));
+
+        return records.stream().map(it -> {
+            StampedValueEntity<T> value = new StampedValueEntity<>();
+            value.setName(RecordName.THREAD_SUMMARY);
+            value.setTimestamp(formatTime(it.getTimestamp()));
+            value.setValue(JsonUtils.parseObject(it.getValue(), descriptorType));
+            return value;
+        }).collect(Collectors.toList());
+    }
+
+    @NonNull
     private String formatTime(long timestamp) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
         return dateFormat.format(timestamp);

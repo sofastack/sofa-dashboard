@@ -21,7 +21,7 @@ import com.alipay.sofa.dashboard.client.model.env.EnvironmentDescriptor;
 import com.alipay.sofa.dashboard.client.model.info.InfoDescriptor;
 import com.alipay.sofa.dashboard.client.model.logger.LoggersDescriptor;
 import com.alipay.sofa.dashboard.client.model.mappings.MappingsDescriptor;
-import com.alipay.sofa.dashboard.model.AppRecord;
+import com.alipay.sofa.dashboard.model.InstanceRecord;
 import com.alipay.sofa.dashboard.spi.AppService;
 import com.alipay.sofa.dashboard.spi.MonitorService;
 import com.alipay.sofa.dashboard.utils.HostPortUtils;
@@ -54,38 +54,38 @@ public class InstanceController {
     @ApiOperation(
         value = "获取指定应用的实例列表",
         notes = "指定一个应用名称，返回所有匹配的应用实例，每个实例由一个id作为唯一标识")
-    public List<AppRecord> instances(
+    public List<InstanceRecord> instances(
         @RequestParam(value = "applicationName", required = false) String applicationName) {
         return applicationService.getInstancesByName(applicationName).stream()
-            .map(AppRecord::new)
+            .map(InstanceRecord::new)
             .collect(Collectors.toList());
     }
 
     @GetMapping("/{instanceId}/env")
     @ApiOperation("根据实例id获取实例运行时参数")
     public EnvironmentDescriptor getEnv(@PathVariable("instanceId") String instanceId) {
-        HostAndPort hostAndPort = HostPortUtils.fromInstanceId(instanceId);
+        HostAndPort hostAndPort = HostPortUtils.getById(instanceId);
         return service.fetchEnvironment(hostAndPort);
     }
 
     @GetMapping("/{instanceId}/health")
     @ApiOperation("根据实例id获取实例运行健康状态")
     public InfoDescriptor getInfo(@PathVariable("instanceId") String instanceId) {
-        HostAndPort hostAndPort = HostPortUtils.fromInstanceId(instanceId);
+        HostAndPort hostAndPort = HostPortUtils.getById(instanceId);
         return service.fetchInfo(hostAndPort);
     }
 
     @GetMapping("/{instanceId}/loggers")
     @ApiOperation("根据实例id获取实例Logger信息")
     public LoggersDescriptor getLoggers(@PathVariable("instanceId") String instanceId) {
-        HostAndPort hostAndPort = HostPortUtils.fromInstanceId(instanceId);
+        HostAndPort hostAndPort = HostPortUtils.getById(instanceId);
         return service.fetchLoggers(hostAndPort);
     }
 
     @GetMapping("/{instanceId}/mappings")
     @ApiOperation("根据实例id获取实例Mapping信息")
     public MappingsDescriptor getMappings(@PathVariable("instanceId") String instanceId) {
-        HostAndPort hostAndPort = HostPortUtils.fromInstanceId(instanceId);
+        HostAndPort hostAndPort = HostPortUtils.getById(instanceId);
         return service.fetchMappings(hostAndPort);
     }
 
