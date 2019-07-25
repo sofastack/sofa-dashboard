@@ -18,10 +18,14 @@ package com.alipay.sofa.dashboard.controller;
 
 import com.alipay.sofa.dashboard.client.model.common.HostAndPort;
 import com.alipay.sofa.dashboard.client.model.env.EnvironmentDescriptor;
+import com.alipay.sofa.dashboard.client.model.health.HealthDescriptor;
 import com.alipay.sofa.dashboard.client.model.info.InfoDescriptor;
 import com.alipay.sofa.dashboard.client.model.logger.LoggersDescriptor;
 import com.alipay.sofa.dashboard.client.model.mappings.MappingsDescriptor;
+import com.alipay.sofa.dashboard.client.model.memory.MemoryDescriptor;
+import com.alipay.sofa.dashboard.client.model.thread.ThreadSummaryDescriptor;
 import com.alipay.sofa.dashboard.model.InstanceRecord;
+import com.alipay.sofa.dashboard.model.StampedValueEntity;
 import com.alipay.sofa.dashboard.spi.AppService;
 import com.alipay.sofa.dashboard.spi.MonitorService;
 import com.alipay.sofa.dashboard.utils.HostPortUtils;
@@ -68,11 +72,18 @@ public class InstanceController {
         return service.fetchEnvironment(hostAndPort);
     }
 
-    @GetMapping("/{instanceId}/health")
-    @ApiOperation("根据实例id获取实例运行健康状态")
+    @GetMapping("/{instanceId}/info")
+    @ApiOperation("根据实例id获取实例应用信息")
     public InfoDescriptor getInfo(@PathVariable("instanceId") String instanceId) {
         HostAndPort hostAndPort = HostPortUtils.getById(instanceId);
         return service.fetchInfo(hostAndPort);
+    }
+
+    @GetMapping("/{instanceId}/health")
+    @ApiOperation("根据实例id获取实例运行健康状态")
+    public HealthDescriptor getHealth(@PathVariable("instanceId") String instanceId) {
+        HostAndPort hostAndPort = HostPortUtils.getById(instanceId);
+        return service.fetchHealth(hostAndPort);
     }
 
     @GetMapping("/{instanceId}/loggers")
@@ -89,4 +100,17 @@ public class InstanceController {
         return service.fetchMappings(hostAndPort);
     }
 
+    @GetMapping("/{instanceId}/memory")
+    @ApiOperation("根据实例id获取实例内存状态信息")
+    public List<StampedValueEntity<MemoryDescriptor>> getMemoryRecords(@PathVariable("instanceId") String instanceId) {
+        HostAndPort hostAndPort = HostPortUtils.getById(instanceId);
+        return service.fetchMemoryInfo(hostAndPort);
+    }
+
+    @GetMapping("/{instanceId}/thread")
+    @ApiOperation("根据实例id获取实例线程状态信息")
+    public List<StampedValueEntity<ThreadSummaryDescriptor>> getThreadRecords(@PathVariable("instanceId") String instanceId) {
+        HostAndPort hostAndPort = HostPortUtils.getById(instanceId);
+        return service.fetchThreadInfo(hostAndPort);
+    }
 }
