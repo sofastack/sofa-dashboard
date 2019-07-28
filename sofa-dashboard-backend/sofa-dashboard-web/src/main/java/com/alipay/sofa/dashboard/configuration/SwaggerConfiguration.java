@@ -34,6 +34,8 @@ import java.text.SimpleDateFormat;
 
 /**
  * SwaggerUI 相关配置
+ * swagger页面上会展示构建版本以及依赖的support版本
+ * 默认关闭swagger-ui，如果需要打开，可以通过参数<code>--swagger.enable=true</code>打开
  */
 @EnableSwagger2
 @Configuration

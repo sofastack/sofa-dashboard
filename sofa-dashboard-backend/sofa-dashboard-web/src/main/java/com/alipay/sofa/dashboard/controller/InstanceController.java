@@ -18,6 +18,7 @@ package com.alipay.sofa.dashboard.controller;
 
 import com.alipay.sofa.dashboard.client.model.common.HostAndPort;
 import com.alipay.sofa.dashboard.client.model.env.EnvironmentDescriptor;
+import com.alipay.sofa.dashboard.client.model.env.PropertySourceDescriptor;
 import com.alipay.sofa.dashboard.client.model.health.HealthDescriptor;
 import com.alipay.sofa.dashboard.client.model.info.InfoDescriptor;
 import com.alipay.sofa.dashboard.client.model.logger.LoggersDescriptor;
@@ -25,16 +26,22 @@ import com.alipay.sofa.dashboard.client.model.mappings.MappingsDescriptor;
 import com.alipay.sofa.dashboard.client.model.memory.MemoryDescriptor;
 import com.alipay.sofa.dashboard.client.model.thread.ThreadSummaryDescriptor;
 import com.alipay.sofa.dashboard.model.InstanceRecord;
+import com.alipay.sofa.dashboard.model.RecordResponse;
 import com.alipay.sofa.dashboard.model.StampedValueEntity;
 import com.alipay.sofa.dashboard.spi.AppService;
 import com.alipay.sofa.dashboard.spi.MonitorService;
 import com.alipay.sofa.dashboard.utils.HostPortUtils;
+import com.alipay.sofa.dashboard.utils.MapUtils;
+import com.alipay.sofa.dashboard.utils.TreeNodeConverter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -54,7 +61,7 @@ public class InstanceController {
     @Autowired
     private MonitorService service;
 
-    @GetMapping("/list")
+    @GetMapping
     @ApiOperation(
         value = "获取指定应用的实例列表",
         notes = "指定一个应用名称，返回所有匹配的应用实例，每个实例由一个id作为唯一标识")
@@ -67,16 +74,56 @@ public class InstanceController {
 
     @GetMapping("/{instanceId}/env")
     @ApiOperation("根据实例id获取实例运行时参数")
-    public EnvironmentDescriptor getEnv(@PathVariable("instanceId") String instanceId) {
+    public RecordResponse getEnv(
+        @PathVariable("instanceId") String instanceId) {
         HostAndPort hostAndPort = HostPortUtils.getById(instanceId);
-        return service.fetchEnvironment(hostAndPort);
+        EnvironmentDescriptor descriptor = service.fetchEnvironment(hostAndPort);
+
+        //
+        // 注意descriptor可能为空
+        //
+        Map<String, String> envMap = new HashMap<>();
+        for (PropertySourceDescriptor propertySource :
+            Optional.ofNullable(descriptor).orElse(new EnvironmentDescriptor())
+                .getPropertySources()) {
+            propertySource.getProperties().forEach((key, value) ->
+                envMap.put(key, String.valueOf(value.getValue())));
+        }
+
+        //
+        // 接口层重新拼装一次前端需要的数据结构概览
+        //
+        return RecordResponse.newBuilder()
+            .overview("name", envMap.get("spring.application.name"))
+            .overview("address",
+                String.format("%s:%d", hostAndPort.getHost(), hostAndPort.getPort()))
+            .overview("sofa-boot.version", envMap.get("sofa-boot.version"))
+            .detail(TreeNodeConverter.convert(descriptor))
+            .build();
     }
 
     @GetMapping("/{instanceId}/info")
     @ApiOperation("根据实例id获取实例应用信息")
-    public InfoDescriptor getInfo(@PathVariable("instanceId") String instanceId) {
+    public RecordResponse getInfo(@PathVariable("instanceId") String instanceId) {
         HostAndPort hostAndPort = HostPortUtils.getById(instanceId);
-        return service.fetchInfo(hostAndPort);
+        InfoDescriptor detail = service.fetchInfo(hostAndPort);
+
+        //
+        // 注意descriptor可能为空
+        //
+        Map<String, Object> infoMap = MapUtils.toFlatMap(
+            Optional.ofNullable(detail).orElse(new InfoDescriptor()).getInfo())
+            .entrySet().stream()
+            .limit(3) // 概况只展示3个元素
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        //
+        // 接口层重新拼装一次前端需要的数据结构概览
+        //
+        return RecordResponse.newBuilder()
+            .overview(infoMap)
+            .detail(TreeNodeConverter.convert(detail))
+            .build();
     }
 
     @GetMapping("/{instanceId}/health")

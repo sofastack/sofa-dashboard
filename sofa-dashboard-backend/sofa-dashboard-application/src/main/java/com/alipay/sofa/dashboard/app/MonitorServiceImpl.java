@@ -127,7 +127,7 @@ public class MonitorServiceImpl implements MonitorService {
 
     @NonNull
     private String formatTime(long timestamp) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return dateFormat.format(timestamp);
     }
 }
