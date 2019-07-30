@@ -20,6 +20,8 @@ import com.alipay.sofa.dashboard.client.model.env.EnvironmentDescriptor;
 import com.alipay.sofa.dashboard.client.model.env.PropertySourceDescriptor;
 import com.alipay.sofa.dashboard.client.model.env.PropertyValueDescriptor;
 import com.alipay.sofa.dashboard.client.model.info.InfoDescriptor;
+import com.alipay.sofa.dashboard.client.model.logger.LoggersDescriptor;
+import com.alipay.sofa.dashboard.client.model.mappings.MappingsDescriptor;
 import com.alipay.sofa.dashboard.model.TreeNode;
 
 import java.util.Map;
@@ -33,14 +35,14 @@ public final class TreeNodeConverter {
     }
 
     public static TreeNode convert(EnvironmentDescriptor descriptor) {
+        TreeNode root = TreeNode.create("Environment", null);
         if (descriptor == null) {
-            return TreeNode.create("Environment", null);
+            return root;
         }
 
-        return TreeNode.create("Environment", null)
+        return root
             .child("activeProfiles", descriptor.getActiveProfiles().toString())
             .child("propertySources", (propertySourcesTree) -> {
-
                 for (PropertySourceDescriptor propertySource : descriptor.getPropertySources()) {
                     propertySourcesTree.child(propertySource.getName(), (propertyValueTree) -> {
 
@@ -55,12 +57,72 @@ public final class TreeNodeConverter {
     }
 
     public static TreeNode convert(InfoDescriptor descriptor) {
+        TreeNode root = TreeNode.create("Information", null);
         if (descriptor == null) {
-            return TreeNode.create("Information", null);
+            return root;
+        }
+        convertMap(root, descriptor.getInfo());
+        return root;
+    }
+
+    public static TreeNode convert(LoggersDescriptor descriptor) {
+        TreeNode root = TreeNode.create("Loggers", null);
+        if (descriptor == null) {
+            return root;
+        }
+        return root
+            .child("levels", descriptor.getLevels().toString())
+            .child("loggers", (loggersTree) ->
+                descriptor.getLoggers().forEach((name, item) ->
+                    loggersTree.child(name, item.getEffectiveLevel())));
+    }
+
+    public static TreeNode convert(MappingsDescriptor descriptor) {
+        TreeNode root = TreeNode.create("Mappings", null);
+        if (descriptor == null || descriptor.getMappings() == null) {
+            return root;
         }
 
-        TreeNode root = TreeNode.create("Information", null);
-        convertMap(root, descriptor.getInfo());
+        descriptor.getMappings().forEach((name, mapping) -> {
+            root.child(name, (tree) -> {
+                tree.child("dispatchServlet", (dispatchServletTree) -> {
+                    // dispatch servlet
+                    mapping.getDispatcherServlet().forEach((dispatchServlet) -> {
+                        dispatchServletTree.child(dispatchServlet.getPredicate() + " > method",
+                            dispatchServlet.getMethods());
+                        dispatchServletTree.child(dispatchServlet.getPredicate() + " > params",
+                            dispatchServlet.getParamsType());
+                        dispatchServletTree.child(dispatchServlet.getPredicate() + " > handler",
+                            dispatchServlet.getHandler());
+                        dispatchServletTree.child(dispatchServlet.getPredicate() + " > response",
+                            dispatchServlet.getResponseType());
+                    });
+                });
+
+                tree.child("servletFilter", (servletFilterTree) -> {
+                    // servlet filter
+                    mapping.getServletFilters().forEach((servletFilter) -> {
+                        servletFilterTree.child(servletFilter.getName() + " > class",
+                            servletFilter.getClassName());
+                        servletFilterTree.child(servletFilter.getName() + " > name",
+                            servletFilter.getServletNameMappings());
+                        servletFilterTree.child(servletFilter.getName() + " > urlPattern",
+                            servletFilter.getUrlPatternMappings());
+                    });
+                });
+
+                tree.child("servlet", (servletTree) -> {
+                    // servlet
+                    mapping.getServlets().forEach((servlet) -> {
+                        servletTree.child(servlet.getName() + " > mappings",
+                            servlet.getMappings());
+                        servletTree.child(servlet.getClassName() + " > class",
+                            servlet.getClassName());
+                    });
+                });
+            });
+        });
+
         return root;
     }
 

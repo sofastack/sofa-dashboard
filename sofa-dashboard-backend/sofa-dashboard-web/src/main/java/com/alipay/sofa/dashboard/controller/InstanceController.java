@@ -106,13 +106,13 @@ public class InstanceController {
     @ApiOperation("根据实例id获取实例应用信息")
     public RecordResponse getInfo(@PathVariable("instanceId") String instanceId) {
         HostAndPort hostAndPort = HostPortUtils.getById(instanceId);
-        InfoDescriptor detail = service.fetchInfo(hostAndPort);
+        InfoDescriptor descriptor = service.fetchInfo(hostAndPort);
 
         //
         // 注意descriptor可能为空
         //
         Map<String, Object> infoMap = MapUtils.toFlatMap(
-            Optional.ofNullable(detail).orElse(new InfoDescriptor()).getInfo())
+            Optional.ofNullable(descriptor).orElse(new InfoDescriptor()).getInfo())
             .entrySet().stream()
             .limit(3) // 概况只展示3个元素
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
@@ -122,7 +122,7 @@ public class InstanceController {
         //
         return RecordResponse.newBuilder()
             .overview(infoMap)
-            .detail(TreeNodeConverter.convert(detail))
+            .detail(TreeNodeConverter.convert(descriptor))
             .build();
     }
 
@@ -130,21 +130,61 @@ public class InstanceController {
     @ApiOperation("根据实例id获取实例运行健康状态")
     public HealthDescriptor getHealth(@PathVariable("instanceId") String instanceId) {
         HostAndPort hostAndPort = HostPortUtils.getById(instanceId);
-        return service.fetchHealth(hostAndPort);
+        HealthDescriptor descriptor = service.fetchHealth(hostAndPort);
+
+        
+
+        return descriptor;
     }
 
     @GetMapping("/{instanceId}/loggers")
     @ApiOperation("根据实例id获取实例Logger信息")
-    public LoggersDescriptor getLoggers(@PathVariable("instanceId") String instanceId) {
+    public RecordResponse getLoggers(@PathVariable("instanceId") String instanceId) {
         HostAndPort hostAndPort = HostPortUtils.getById(instanceId);
-        return service.fetchLoggers(hostAndPort);
+        LoggersDescriptor descriptor = service.fetchLoggers(hostAndPort);
+
+        Map<String, Object> loggersMap = descriptor == null
+            ? new HashMap<>()
+            : descriptor.getLoggers().entrySet().stream()
+            .limit(3) // 概况只展示最多3个元素
+            .collect(Collectors.toMap(
+                Map.Entry::getKey,
+                entry -> entry.getValue().getEffectiveLevel()));
+
+        return RecordResponse.newBuilder()
+            .overview(loggersMap)
+            .detail(TreeNodeConverter.convert(descriptor))
+            .build();
     }
 
     @GetMapping("/{instanceId}/mappings")
     @ApiOperation("根据实例id获取实例Mapping信息")
-    public MappingsDescriptor getMappings(@PathVariable("instanceId") String instanceId) {
+    public RecordResponse getMappings(@PathVariable("instanceId") String instanceId) {
         HostAndPort hostAndPort = HostPortUtils.getById(instanceId);
-        return service.fetchMappings(hostAndPort);
+        MappingsDescriptor descriptor = service.fetchMappings(hostAndPort);
+
+        int servletCount = descriptor == null ? 0 : descriptor.getMappings().values()
+            .stream()
+            .map(it -> it.getServlets().size())
+            .reduce((a, b) -> a + b)
+            .orElse(0);
+        int servletFilterCount = descriptor == null ? 0 : descriptor.getMappings().values()
+            .stream()
+            .map(it -> it.getServletFilters().size())
+            .reduce((a, b) -> a + b)
+            .orElse(0);
+        int dispatcherServletCount = descriptor == null ? 0 : descriptor.getMappings().values()
+            .stream()
+            .map(it -> it.getDispatcherServlet().size())
+            .reduce((a, b) -> a + b)
+            .orElse(0);
+
+        return RecordResponse.newBuilder()
+            .overview("servletCount", String.valueOf(servletCount))
+            .overview("servletFilterCount", String.valueOf(servletFilterCount))
+            .overview("dispatcherServletCount", String.valueOf(dispatcherServletCount))
+            .detail(TreeNodeConverter.convert(descriptor))
+            .build();
     }
 
     @GetMapping("/{instanceId}/memory")
