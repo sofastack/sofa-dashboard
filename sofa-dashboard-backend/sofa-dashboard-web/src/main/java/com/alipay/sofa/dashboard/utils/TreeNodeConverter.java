@@ -34,10 +34,10 @@ public final class TreeNodeConverter {
 
     public static TreeNode convert(EnvironmentDescriptor descriptor) {
         if (descriptor == null) {
-            return TreeNode.create("root", "Environment");
+            return TreeNode.create("Environment", null);
         }
 
-        return TreeNode.create("root", "Environment")
+        return TreeNode.create("Environment", null)
             .child("activeProfiles", descriptor.getActiveProfiles().toString())
             .child("propertySources", (propertySourcesTree) -> {
 
@@ -56,10 +56,10 @@ public final class TreeNodeConverter {
 
     public static TreeNode convert(InfoDescriptor descriptor) {
         if (descriptor == null) {
-            return TreeNode.create("root", "Information");
+            return TreeNode.create("Information", null);
         }
 
-        TreeNode root = TreeNode.create("root", "Information");
+        TreeNode root = TreeNode.create("Information", null);
         convertMap(root, descriptor.getInfo());
         return root;
     }
