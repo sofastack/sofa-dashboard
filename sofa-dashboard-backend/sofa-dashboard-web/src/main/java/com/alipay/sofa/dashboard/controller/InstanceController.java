@@ -128,13 +128,31 @@ public class InstanceController {
 
     @GetMapping("/{instanceId}/health")
     @ApiOperation("根据实例id获取实例运行健康状态")
-    public HealthDescriptor getHealth(@PathVariable("instanceId") String instanceId) {
+    public RecordResponse getHealth(@PathVariable("instanceId") String instanceId) {
         HostAndPort hostAndPort = HostPortUtils.getById(instanceId);
         HealthDescriptor descriptor = service.fetchHealth(hostAndPort);
 
-        
+        //
+        // 注意descriptor可能为空
+        //
+        if (descriptor == null) {
+            descriptor = new HealthDescriptor();
+            descriptor.setStatus("UNKNOWN");
+            return RecordResponse.newBuilder()
+                .overview("health", descriptor.getStatus())
+                .build();
+        }
 
-        return descriptor;
+        Map<String, Object> overView = MapUtils.toFlatMap(descriptor.getDetails())
+            .entrySet().stream()
+            .limit(2)
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        return RecordResponse.newBuilder()
+            .overview("Health", descriptor.getStatus())
+            .overview(overView)
+            .detail(TreeNodeConverter.convert(descriptor))
+            .build();
     }
 
     @GetMapping("/{instanceId}/loggers")

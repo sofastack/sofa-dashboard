@@ -19,6 +19,7 @@ package com.alipay.sofa.dashboard.utils;
 import com.alipay.sofa.dashboard.client.model.env.EnvironmentDescriptor;
 import com.alipay.sofa.dashboard.client.model.env.PropertySourceDescriptor;
 import com.alipay.sofa.dashboard.client.model.env.PropertyValueDescriptor;
+import com.alipay.sofa.dashboard.client.model.health.HealthDescriptor;
 import com.alipay.sofa.dashboard.client.model.info.InfoDescriptor;
 import com.alipay.sofa.dashboard.client.model.logger.LoggersDescriptor;
 import com.alipay.sofa.dashboard.client.model.mappings.MappingsDescriptor;
@@ -123,6 +124,12 @@ public final class TreeNodeConverter {
             });
         });
 
+        return root;
+    }
+
+    public static TreeNode convert(HealthDescriptor descriptor) {
+        TreeNode root = TreeNode.create("Health", descriptor.getStatus());
+        convertMap(root, descriptor.getDetails());
         return root;
     }
 
