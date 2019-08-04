@@ -44,7 +44,7 @@ import java.util.List;
 public class ApplicationControllerTest extends AbstractTestBase {
 
     @Autowired
-    ZkCommandClient zkCommandClient;
+    ZkCommandClient       zkCommandClient;
 
     @Autowired
     ApplicationController applicationController;
