@@ -77,12 +77,6 @@ public class ApplicationControllerTest extends AbstractTestBase {
     }
 
     @Test
-    public void testGetList() {
-        List<ApplicationInfo> list = applicationController.getApplications("");
-        Assert.assertTrue(list != null && list.size() == 1);
-    }
-
-    @Test
     public void testGetInstance() {
         String request = "http://localhost:" + definedPort
                          + "/api/instance/list?applicationName={1}";
