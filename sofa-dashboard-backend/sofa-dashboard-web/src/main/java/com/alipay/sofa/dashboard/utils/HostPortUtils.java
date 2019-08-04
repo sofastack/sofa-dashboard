@@ -65,7 +65,7 @@ public final class HostPortUtils {
         long ipSeg = id & 0xFFFFFFFFL;
 
         String ipv4 = fromDigital(ipSeg);
-        short port = (short) ((id >> Integer.SIZE) & 0xFFFF);
+        int port = ((Number) ((id >> Integer.SIZE) & 0xFFFF)).intValue();
         return new HostAndPort(ipv4, port);
     }
 
@@ -142,10 +142,10 @@ public final class HostPortUtils {
         return sj.toString();
     }
 
-    //public static void main(String[] args) {
-    //    String id = uniqueId(new HostAndPort("10.1.1.1", 8999));
-    //    System.out.println(id);
-    //    HostAndPort hostAndPort = getById(id);
-    //    System.out.println(hostAndPort);
-    //}
+    public static void main(String[] args) {
+        String id = uniqueId(new HostAndPort("192.168.0.104", 38081));
+        System.out.println(id);
+        HostAndPort hostAndPort = getById(id);
+        System.out.println(hostAndPort);
+    }
 }
