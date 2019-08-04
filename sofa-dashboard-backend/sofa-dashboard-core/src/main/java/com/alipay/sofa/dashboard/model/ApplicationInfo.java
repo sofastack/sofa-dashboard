@@ -19,50 +19,27 @@ package com.alipay.sofa.dashboard.model;
 import java.util.Objects;
 
 /**
- * 客户端注册上来的应用模型
- *
- * @author: guolei.sgl (guolei.sgl@antfin.com) 19/1/19 上午11:48
+ * @author: guolei.sgl (guolei.sgl@antfin.com) 2019/7/14 10:38 AM
  * @since:
  **/
-public class Application {
+public class ApplicationInfo {
+    private String applicationName;
+    private int    applicationCount;
 
-    private String appName;
-    private String hostName;
-    private int    port;
-    private String appState;
-
-    // 其他属性待定
-
-    public String getAppName() {
-        return appName;
+    public String getApplicationName() {
+        return applicationName;
     }
 
-    public void setAppName(String appName) {
-        this.appName = appName;
+    public void setApplicationName(String applicationName) {
+        this.applicationName = applicationName;
     }
 
-    public String getHostName() {
-        return hostName;
+    public Integer getApplicationCount() {
+        return applicationCount;
     }
 
-    public void setHostName(String hostName) {
-        this.hostName = hostName;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
-    }
-
-    public String getAppState() {
-        return appState;
-    }
-
-    public void setAppState(String appState) {
-        this.appState = appState;
+    public void setApplicationCount(Integer applicationCount) {
+        this.applicationCount = applicationCount;
     }
 
     @Override
@@ -73,14 +50,13 @@ public class Application {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Application that = (Application) o;
-        return port == that.port && Objects.equals(appName, that.appName)
-               && Objects.equals(hostName, that.hostName)
-               && Objects.equals(appState, that.appState);
+        ApplicationInfo that = (ApplicationInfo) o;
+        return applicationCount == that.applicationCount
+               && Objects.equals(applicationName, that.applicationName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(appName, hostName, port, appState);
+        return Objects.hash(applicationName, applicationCount);
     }
 }

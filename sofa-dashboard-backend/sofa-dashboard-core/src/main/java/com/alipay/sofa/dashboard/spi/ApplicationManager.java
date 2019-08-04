@@ -16,7 +16,7 @@
  */
 package com.alipay.sofa.dashboard.spi;
 
-import com.alipay.sofa.dashboard.model.AppModel;
+import com.alipay.sofa.dashboard.model.AppInfo;
 
 import java.util.List;
 
@@ -27,9 +27,16 @@ import java.util.List;
 public interface ApplicationManager {
 
     /**
-     * 获取当前所有的客户端应用
-     *
+     * 根据应用名获取应用实例列表
+     * @param applicationName
+     * @return
+     * @throws Exception
+     */
+    List<AppInfo> appInfoList(String applicationName);
+
+    /**
+     * 获取所有应用名
      * @return
      */
-    List<AppModel> applications();
+    List<String> applicationNames();
 }
