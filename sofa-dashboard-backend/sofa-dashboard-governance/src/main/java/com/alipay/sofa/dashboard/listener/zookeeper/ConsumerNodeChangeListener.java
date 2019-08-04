@@ -23,6 +23,7 @@ import com.alipay.sofa.rpc.client.ProviderHelper;
 import com.alipay.sofa.rpc.client.ProviderInfo;
 import com.alipay.sofa.rpc.client.ProviderInfoAttrs;
 import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheListener;
 import org.slf4j.Logger;
@@ -51,7 +52,16 @@ public class ConsumerNodeChangeListener implements PathChildrenCacheListener {
     @Override
     public void childEvent(CuratorFramework client, PathChildrenCacheEvent event) {
 
-        final String path = event.getData().getPath();
+        // 解决自动重连情况下出现的空指针问题
+        ChildData data = event.getData();
+        if (data == null) {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("event type : {}", event.getType());
+            }
+            return;
+        }
+
+        final String path = data.getPath();
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("consumer : {}", path);

@@ -16,39 +16,44 @@
  */
 package com.alipay.sofa.dashboard.controller;
 
+/**
+ * @author: guolei.sgl (guolei.sgl@antfin.com) 2019/7/14 11:07 AM
+ * @since:
+ **/
 import com.alipay.sofa.dashboard.application.ApplicationService;
-import com.alipay.sofa.dashboard.application.ZookeeperApplicationManager;
-import com.alipay.sofa.dashboard.model.ApplicationInfo;
+import com.alipay.sofa.dashboard.model.AppInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author: guolei.sgl (guolei.sgl@antfin.com) 18/12/7 下午5:15
+ *
+ * 应用实例控制器
+ * @author: guolei.sgl (guolei.sgl@antfin.com) 2019/7/11 2:51 PM
  * @since:
  **/
 @RestController
-@RequestMapping("/api/application")
-public class ApplicationController {
+@RequestMapping("/api/instance")
+public class InstanceController {
 
     @Autowired
-    ZookeeperApplicationManager zookeeperApplicationManager;
-
-    @Autowired
-    private ApplicationService  applicationService;
+    private ApplicationService applicationService;
 
     /**
-     * 获取所有应用列表
+     * 获取指定应用的实例列表
+     * @param applicationName
+     * @return
      */
     @RequestMapping("/list")
-    public List<ApplicationInfo> getApplications(@RequestParam("applicationName") String applicationName) {
+    public List<AppInfo> instances(@RequestParam("applicationName") String applicationName) {
         if (StringUtils.isEmpty(applicationName)) {
-            return applicationService.applications();
+            return new ArrayList<>();
         }
-        return applicationService.applicationsByMatch(applicationName);
+        return applicationService.fetchAllInstanceByName(applicationName);
     }
 }

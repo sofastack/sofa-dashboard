@@ -16,7 +16,7 @@
  */
 package com.alipay.sofa.dashboard.vo;
 
-import com.alipay.sofa.dashboard.model.AppModel;
+import com.alipay.sofa.dashboard.model.AppInfo;
 
 import java.util.List;
 
@@ -25,10 +25,10 @@ import java.util.List;
  * @since:
  **/
 public class ApplicationVO {
-    private Integer        totalCount;
-    private Integer        successCount;
-    private Integer        failCount;
-    private List<AppModel> data;
+    private Integer       totalCount;
+    private Integer       successCount;
+    private Integer       failCount;
+    private List<AppInfo> data;
 
     public Integer getTotalCount() {
         return totalCount;
@@ -54,11 +54,11 @@ public class ApplicationVO {
         this.failCount = failCount;
     }
 
-    public List<AppModel> getData() {
+    public List<AppInfo> getData() {
         return data;
     }
 
-    public void setData(List<AppModel> data) {
+    public void setData(List<AppInfo> data) {
         this.data = data;
     }
 
