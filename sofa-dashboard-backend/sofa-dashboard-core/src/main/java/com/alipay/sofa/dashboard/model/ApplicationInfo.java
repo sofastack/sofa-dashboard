@@ -23,7 +23,7 @@ import java.util.Objects;
  *
  * @author guolei.sgl (guolei.sgl@antfin.com) 2019/7/14 10:38 AM
  **/
-public class AppStatistic implements Comparable<AppStatistic> {
+public class ApplicationInfo implements Comparable<ApplicationInfo> {
 
     /**
      * 服务名称
@@ -63,7 +63,7 @@ public class AppStatistic implements Comparable<AppStatistic> {
             return true;
         if (o == null || getClass() != o.getClass())
             return false;
-        AppStatistic statistic = (AppStatistic) o;
+        ApplicationInfo statistic = (ApplicationInfo) o;
         return getApplicationCount() == statistic.getApplicationCount()
                && Objects.equals(getApplicationName(), statistic.getApplicationName());
     }
@@ -74,7 +74,7 @@ public class AppStatistic implements Comparable<AppStatistic> {
     }
 
     @Override
-    public int compareTo(AppStatistic o) {
+    public int compareTo(ApplicationInfo o) {
         return applicationName.compareTo(o.applicationName);
     }
 }

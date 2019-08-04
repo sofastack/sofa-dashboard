@@ -17,7 +17,7 @@
 package com.alipay.sofa.dashboard.spi;
 
 import com.alipay.sofa.dashboard.client.model.common.Application;
-import com.alipay.sofa.dashboard.model.AppStatistic;
+import com.alipay.sofa.dashboard.model.ApplicationInfo;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
@@ -36,7 +36,7 @@ public interface AppService {
      * @return 全部应用统计信息，如果没有实例则返回空列表
      */
     @NonNull
-    List<AppStatistic> getAllStatistics();
+    List<ApplicationInfo> getAllStatistics();
 
     /**
      * 获取包含关键词的应用统计信息
@@ -45,7 +45,7 @@ public interface AppService {
      * @return 满足条件应用统计信息，如果没有实例则返回空列表
      */
     @NonNull
-    List<AppStatistic> getStatisticsByKeyword(@Nullable String keyword);
+    List<ApplicationInfo> getStatisticsByKeyword(@Nullable String keyword);
 
     /**
      * 获取全部应用实例信息

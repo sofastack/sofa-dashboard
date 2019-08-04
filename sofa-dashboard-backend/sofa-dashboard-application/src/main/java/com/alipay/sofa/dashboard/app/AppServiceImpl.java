@@ -18,9 +18,8 @@ package com.alipay.sofa.dashboard.app;
 
 import com.alipay.sofa.dashboard.client.model.common.Application;
 import com.alipay.sofa.dashboard.client.registry.AppSubscriber;
-import com.alipay.sofa.dashboard.model.AppStatistic;
+import com.alipay.sofa.dashboard.model.ApplicationInfo;
 import com.alipay.sofa.dashboard.spi.AppService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -43,14 +42,14 @@ public class AppServiceImpl implements AppService {
     }
 
     @Override
-    public List<AppStatistic> getAllStatistics() {
+    public List<ApplicationInfo> getAllStatistics() {
         return getStatisticsByKeyword(null);
     }
 
     @Override
-    public List<AppStatistic> getStatisticsByKeyword(@Nullable String keyword) {
+    public List<ApplicationInfo> getStatisticsByKeyword(@Nullable String keyword) {
         return subscriber.summaryCounts().entrySet().stream().map(entry -> {
-            AppStatistic statistic = new AppStatistic();
+            ApplicationInfo statistic = new ApplicationInfo();
             statistic.setApplicationName(entry.getKey());
             statistic.setApplicationCount(entry.getValue());
             return statistic;

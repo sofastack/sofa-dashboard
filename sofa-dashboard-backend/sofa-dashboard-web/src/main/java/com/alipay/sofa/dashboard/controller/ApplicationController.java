@@ -16,7 +16,7 @@
  */
 package com.alipay.sofa.dashboard.controller;
 
-import com.alipay.sofa.dashboard.model.AppStatistic;
+import com.alipay.sofa.dashboard.model.ApplicationInfo;
 import com.alipay.sofa.dashboard.spi.AppService;
 import com.alipay.sofa.rpc.common.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +38,7 @@ public class ApplicationController {
     private AppService appService;
 
     @GetMapping
-    public List<AppStatistic> getApplication(@RequestParam(value = "keyword", required = false) String keyword) {
+    public List<ApplicationInfo> getApplication(@RequestParam(value = "keyword", required = false) String keyword) {
         return StringUtils.isEmpty(keyword) ? appService.getAllStatistics() : appService
             .getStatisticsByKeyword(keyword);
     }

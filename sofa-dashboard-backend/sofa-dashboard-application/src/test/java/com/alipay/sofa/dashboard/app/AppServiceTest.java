@@ -18,7 +18,7 @@ package com.alipay.sofa.dashboard.app;
 
 import com.alipay.sofa.dashboard.client.model.common.Application;
 import com.alipay.sofa.dashboard.mock.MockRegistry;
-import com.alipay.sofa.dashboard.model.AppStatistic;
+import com.alipay.sofa.dashboard.model.ApplicationInfo;
 import com.alipay.sofa.dashboard.spi.AppService;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -45,10 +45,10 @@ public class AppServiceTest {
 
     @Test
     public void emptyDataTest() {
-        List<AppStatistic> allStatistics = service.getAllStatistics();
+        List<ApplicationInfo> allStatistics = service.getAllStatistics();
         Assert.assertTrue(allStatistics.isEmpty());
 
-        List<AppStatistic> queryStatistic = service.getStatisticsByKeyword("none");
+        List<ApplicationInfo> queryStatistic = service.getStatisticsByKeyword("none");
         Assert.assertTrue(queryStatistic.isEmpty());
 
         List<Application> allInstances = service.getAllInstances();
@@ -72,17 +72,17 @@ public class AppServiceTest {
                     .appName(pattern[1]).port(random.nextInt(65536)).build()).register();
         }
 
-        List<AppStatistic> expected = registry.all().stream()
+        List<ApplicationInfo> expected = registry.all().stream()
             .collect(Collectors.groupingBy(it -> it.getAppName(), Collectors.counting()))
             .entrySet().stream()
             .map(entry -> {
-                AppStatistic statistic = new AppStatistic();
+                ApplicationInfo statistic = new ApplicationInfo();
                 statistic.setApplicationName(entry.getKey());
                 statistic.setApplicationCount(entry.getValue().intValue());
                 return statistic;
             })
             .collect(Collectors.toList());
-        List<AppStatistic> query = service.getAllStatistics();
+        List<ApplicationInfo> query = service.getAllStatistics();
 
         Collections.sort(expected);
         Collections.sort(query);
@@ -104,18 +104,18 @@ public class AppServiceTest {
         }
 
         for (String keyword : new String[] { "a", "service", "d", "f" }) {
-            List<AppStatistic> expected = registry.all().stream()
+            List<ApplicationInfo> expected = registry.all().stream()
                 .filter(it -> it.getAppName().contains(keyword))
                 .collect(Collectors.groupingBy(it -> it.getAppName(), Collectors.counting()))
                 .entrySet().stream()
                 .map(entry -> {
-                    AppStatistic statistic = new AppStatistic();
+                    ApplicationInfo statistic = new ApplicationInfo();
                     statistic.setApplicationName(entry.getKey());
                     statistic.setApplicationCount(entry.getValue().intValue());
                     return statistic;
                 })
                 .collect(Collectors.toList());
-            List<AppStatistic> query = service.getStatisticsByKeyword(keyword);
+            List<ApplicationInfo> query = service.getStatisticsByKeyword(keyword);
 
             Collections.sort(expected);
             Collections.sort(query);
