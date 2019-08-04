@@ -16,11 +16,11 @@
  */
 package com.alipay.sofa.dashboard.controller;
 
-import com.alipay.sofa.dashboard.application.ApplicationService;
-import com.alipay.sofa.dashboard.application.ZookeeperApplicationManager;
 import com.alipay.sofa.dashboard.model.ApplicationInfo;
+import com.alipay.sofa.dashboard.spi.AppService;
+import com.alipay.sofa.rpc.common.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,27 +28,18 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * @author: guolei.sgl (guolei.sgl@antfin.com) 18/12/7 下午5:15
- * @since:
- **/
+ * @author guolei.sgl (guolei.sgl@antfin.com) 18/12/7 下午5:15
+ */
 @RestController
 @RequestMapping("/api/application")
 public class ApplicationController {
 
     @Autowired
-    ZookeeperApplicationManager zookeeperApplicationManager;
+    private AppService appService;
 
-    @Autowired
-    private ApplicationService  applicationService;
-
-    /**
-     * 获取所有应用列表
-     */
-    @RequestMapping("/list")
-    public List<ApplicationInfo> getApplications(@RequestParam("applicationName") String applicationName) {
-        if (StringUtils.isEmpty(applicationName)) {
-            return applicationService.applications();
-        }
-        return applicationService.applicationsByMatch(applicationName);
+    @GetMapping
+    public List<ApplicationInfo> getApplication(@RequestParam(value = "keyword", required = false) String keyword) {
+        return StringUtils.isEmpty(keyword) ? appService.getAllStatistics() : appService
+            .getStatisticsByKeyword(keyword);
     }
 }

@@ -21,6 +21,15 @@
             <groupId>com.alipay.sofa</groupId>
             <artifactId>sofa-dashboard-core</artifactId>
         </dependency>
-    </dependencies>
+        <dependency>
+            <groupId>com.alipay.sofa</groupId>
+            <artifactId>dashboard-support</artifactId>
+        </dependency>
 
+        <!-- Test Dependency -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+    </dependencies>
 </project>

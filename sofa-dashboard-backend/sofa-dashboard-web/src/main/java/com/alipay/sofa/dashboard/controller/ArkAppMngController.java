@@ -16,9 +16,14 @@
  */
 package com.alipay.sofa.dashboard.controller;
 
+import com.alipay.sofa.dashboard.client.model.common.Application;
 import com.alipay.sofa.dashboard.constants.SofaDashboardConstants;
 import com.alipay.sofa.dashboard.impl.ZkHelper;
-import com.alipay.sofa.dashboard.model.*;
+import com.alipay.sofa.dashboard.model.AppModuleModel;
+import com.alipay.sofa.dashboard.model.AppUnitModel;
+import com.alipay.sofa.dashboard.model.ArkAppModel;
+import com.alipay.sofa.dashboard.model.ArkPluginModel;
+import com.alipay.sofa.dashboard.model.CommandRequest;
 import com.alipay.sofa.dashboard.service.ArkMngService;
 import com.alipay.sofa.dashboard.spi.CommandPushManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,10 +47,12 @@ public class ArkAppMngController {
 
     @Autowired
     private ArkMngService      arkMngService;
+
     @Autowired
     private CommandPushManager commandPushManager;
+
     @Autowired
-    ZkHelper                   zkHelper;
+    private ZkHelper           zkHelper;
 
     @RequestMapping("/app-list")
     public AppModuleModel fetchArlApps(@RequestParam("pluginName") String pluginName,
@@ -82,7 +89,7 @@ public class ArkAppMngController {
             arkAppModel.setPluginName(pluginName);
             arkAppModel.setPluginVersion(version);
             // 这里需要去匹配当前注册到zk上应用名为appName的所有实例信息
-            List<AppInfo> applications = zkHelper.getArkAppFromZookeeper(appName, pluginName, version);
+            List<Application> applications = zkHelper.getArkAppFromZookeeper(appName, pluginName, version);
             arkAppModel.setIpUnitList(getAppUnitModel(applications));
             list.add(arkAppModel);
         }
@@ -111,7 +118,7 @@ public class ArkAppMngController {
         return request;
     }
 
-    private List<AppUnitModel> getAppUnitModel(List<AppInfo> applications) {
+    private List<AppUnitModel> getAppUnitModel(List<Application> applications) {
         List<AppUnitModel> list = new ArrayList<>();
         if (applications == null || applications.isEmpty()) {
             return list;

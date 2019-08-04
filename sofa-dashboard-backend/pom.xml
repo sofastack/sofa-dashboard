@@ -20,17 +20,21 @@
     </modules>
 
     <properties>
+        <!--Projects about -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <main.user.dir>../</main.user.dir>
+
+        <!-- Dependencies about -->
         <mysql.connector.version>5.1.35</mysql.connector.version>
         <druid.version>1.1.9</druid.version>
         <sofaark.version>0.6.0</sofaark.version>
+        <dashboard.client.version>1.1.0-SNAPSHOT</dashboard.client.version>
         <curator.version>2.9.1</curator.version>
         <sofa.common.version>1.0.17</sofa.common.version>
         <jmockit.version>1.14</jmockit.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <mybatis.spring.boot.version>1.3.2</mybatis.spring.boot.version>
-        <main.user.dir>../</main.user.dir>
     </properties>
 
     <dependencyManagement>
@@ -50,6 +54,21 @@
                 <artifactId>sofa-dashboard-governance</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.alipay.sofa</groupId>
+                <artifactId>sofa-dashboard-application</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alipay.sofa</groupId>
+                <artifactId>dashboard-client-core</artifactId>
+                <version>${dashboard.client.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alipay.sofa</groupId>
+                <artifactId>dashboard-support</artifactId>
+                <version>${dashboard.client.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>com.alipay.sofa</groupId>
@@ -67,6 +86,7 @@
                 <artifactId>mysql-connector-java</artifactId>
                 <version>${mysql.connector.version}</version>
             </dependency>
+
             <!-- alibaba的druid数据库连接池 -->
             <dependency>
                 <groupId>com.alibaba</groupId>
@@ -194,9 +214,13 @@
                         </goals>
                     </execution>
                 </executions>
+
                 <configuration>
                     <configFile>${main.user.dir}/tools/codestyle/formatter.xml</configFile>
                     <encoding>UTF-8</encoding>
+                    <excludes>
+                        <exclude>**/*Enum.java</exclude>
+                    </excludes>
                 </configuration>
             </plugin>
             <plugin>
@@ -210,6 +234,10 @@
                 <version>0.7.9</version>
                 <configuration>
                     <skip>false</skip>
+                    <excludes>
+                        <exclude>**/*Enum.java</exclude>
+                        <exclude>**/model/*.java</exclude>
+                    </excludes>
                 </configuration>
                 <executions>
                     <execution>

@@ -51,12 +51,7 @@ public class ServiceManageController {
     @Autowired
     private RegistryDataCache registryDataCache;
 
-    /**
-     * 获取服务列表-服务维度
-     *
-     * @return
-     */
-    @GetMapping("all-service")
+    @GetMapping("/all-service")
     public List<ServiceModel> queryServiceListByService(@RequestParam("query") String query) {
         List<ServiceModel> data = new ArrayList<>();
         Map<String, RpcService> rpcServices = registryDataCache.fetchService();
@@ -75,31 +70,31 @@ public class ServiceManageController {
      *
      * @return
      */
-    @GetMapping("all-app")
-    public List<Map<String,String>> queryServiceListByApp(@RequestParam("query") String query) {
-        List<Map<String,String>> data = new ArrayList<>();
+    @GetMapping("/all-app")
+    public List<Map<String, String>> queryServiceListByApp(@RequestParam("query") String query) {
+        List<Map<String, String>> data = new ArrayList<>();
         Map<String, RpcService> rpcServices = registryDataCache.fetchService();
         for (Map.Entry<String, RpcService> rpcServiceEntry : rpcServices.entrySet()) {
             final String serviceName = rpcServiceEntry.getKey();
             List<RpcProvider> providers = registryDataCache.fetchProvidersByService(serviceName);
             List<RpcConsumer> consumers = registryDataCache.fetchConsumersByService(serviceName);
-            if (providers!=null && providers.size() > 0){
-                providers.forEach((provider)->{
-                    if (provider.getAppName()!=null && !data.contains(provider.getAppName())){
-                        Map<String,String> item = new HashMap<>();
-                        item.put("appName",provider.getAppName());
-                        if (provider.getAppName().contains(query) || StringUtils.isBlank(query)){
+            if (providers != null && providers.size() > 0) {
+                providers.forEach((provider) -> {
+                    if (provider.getAppName() != null && !data.contains(provider.getAppName())) {
+                        Map<String, String> item = new HashMap<>();
+                        item.put("appName", provider.getAppName());
+                        if (provider.getAppName().contains(query) || StringUtils.isBlank(query)) {
                             data.add(item);
                         }
                     }
                 });
             }
-            if (consumers!=null && consumers.size() > 0){
-                consumers.forEach((consumer)->{
-                    if (consumer.getAppName()!=null && !data.contains(consumer.getAppName())){
-                        Map<String,String> item = new HashMap<>();
-                        item.put("appName",consumer.getAppName());
-                        if (consumer.getAppName().contains(query) || StringUtils.isBlank(query)){
+            if (consumers != null && consumers.size() > 0) {
+                consumers.forEach((consumer) -> {
+                    if (consumer.getAppName() != null && !data.contains(consumer.getAppName())) {
+                        Map<String, String> item = new HashMap<>();
+                        item.put("appName", consumer.getAppName());
+                        if (consumer.getAppName().contains(query) || StringUtils.isBlank(query)) {
                             data.add(item);
                         }
                     }
@@ -111,6 +106,7 @@ public class ServiceManageController {
 
     /**
      * 查询应用的服务提供和服务消费详情
+     *
      * @param appName
      * @return
      */
@@ -124,17 +120,19 @@ public class ServiceManageController {
             final String serviceName = rpcServiceEntry.getKey();
             List<RpcProvider> providers = registryDataCache.fetchProvidersByService(serviceName);
             List<RpcConsumer> consumers = registryDataCache.fetchConsumersByService(serviceName);
-            if (providers!=null && providers.size() > 0){
-                providers.forEach((provider)->{
-                    if (provider.getAppName()!=null && appName.equals(provider.getAppName()) && !providersData.contains(serviceName)){
+            if (providers != null && providers.size() > 0) {
+                providers.forEach((provider) -> {
+                    if (provider.getAppName() != null && appName.equals(provider.getAppName())
+                        && !providersData.contains(serviceName)) {
                         providersData.add(serviceName);
                     }
                 });
             }
-            if (consumers!=null && consumers.size() > 0){
-                consumers.forEach((consumer)->{
-                    if (consumer.getAppName()!=null && appName.contains(consumer.getAppName())){
-                        if (consumer.getAppName()!=null && appName.equals(consumer.getAppName()) && !consumersData.contains(serviceName)){
+            if (consumers != null && consumers.size() > 0) {
+                consumers.forEach((consumer) -> {
+                    if (consumer.getAppName() != null && appName.contains(consumer.getAppName())) {
+                        if (consumer.getAppName() != null && appName.equals(consumer.getAppName())
+                            && !consumersData.contains(serviceName)) {
                             consumersData.add(serviceName);
                         }
                     }
@@ -159,7 +157,7 @@ public class ServiceManageController {
      *
      * @return
      */
-    @RequestMapping("query/providers")
+    @GetMapping("query/providers")
     public List<RpcProvider> queryServiceProviders(@RequestParam("dataid") String serviceName) {
         String dataId = URLDecoder.decode(serviceName);
         return fetchProviderData(dataId);
@@ -170,7 +168,7 @@ public class ServiceManageController {
      *
      * @return
      */
-    @RequestMapping("query/consumers")
+    @GetMapping("query/consumers")
     public List<RpcConsumer> queryServiceConsumers(@RequestParam("dataid") String serviceName) {
         String dataId = URLDecoder.decode(serviceName);
         return fetchConsumerData(dataId);
@@ -181,7 +179,7 @@ public class ServiceManageController {
      *
      * @return
      */
-    @RequestMapping("query/services")
+    @GetMapping("query/services")
     public List<ServiceModel> queryService(@RequestParam("serviceName") String serviceName) {
         List<ServiceModel> data = new ArrayList<>();
 
