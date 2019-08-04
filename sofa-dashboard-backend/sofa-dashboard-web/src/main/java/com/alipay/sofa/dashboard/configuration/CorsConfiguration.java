@@ -14,22 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alipay.sofa.dashboard.spi;
+package com.alipay.sofa.dashboard.configuration;
 
-import com.alipay.sofa.dashboard.model.AppModel;
-
-import java.util.List;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- * @author: guolei.sgl (guolei.sgl@antfin.com) 19/1/10 下午9:31
- * @since:
+ * CORSConfiguration
+ * 解决跨域问题
+ *
+ * @version 1.0
+ * @author: guolei.sgl
  **/
-public interface ApplicationManager {
-
-    /**
-     * 获取当前所有的客户端应用
-     *
-     * @return
-     */
-    List<AppModel> applications();
+@Configuration
+public class CorsConfiguration implements WebMvcConfigurer {
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**").allowedMethods("*").allowedOrigins("*").allowedHeaders("*");
+    }
 }

@@ -72,9 +72,10 @@ public class ServiceManageControllerTest extends AbstractTestBase {
 
     @Test
     public void testQueryServiceList() {
-        String request = "http://localhost:" + definedPort + "/api/service/all";
+        String request = "http://localhost:" + definedPort + "/api/service/all-app?query=";
         ArrayList list = restTemplate.getForObject(request, ArrayList.class);
-        Assert.assertTrue(list != null && list.size() == 1);
+        // 当服务提供者和服务消费者数目都为0时，前端不展示服务数据
+        Assert.assertTrue(list != null && list.size() == 0);
     }
 
     @Test

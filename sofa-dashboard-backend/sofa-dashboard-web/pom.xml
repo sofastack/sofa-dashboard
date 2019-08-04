@@ -11,6 +11,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>sofa-dashboard-web</artifactId>
+    <description>SOFADashboard Monitor Application.</description>
 
     <properties>
         <main.user.dir>../../</main.user.dir>
@@ -29,6 +30,11 @@
             <groupId>com.alipay.sofa</groupId>
             <artifactId>sofa-dashboard-arkmng</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.alipay.sofa</groupId>
+            <artifactId>sofa-dashboard-application</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>com.alipay.sofa</groupId>
             <artifactId>rpc-sofa-boot-starter</artifactId>
@@ -91,8 +97,22 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>build-info</goal>
+                        </goals>
+                        <configuration>
+                            <!--将一些关键的构建信息打包在META-INF的build-info.properties中-->
+                            <additionalProperties>
+                                <support.version>${dashboard.client.version}</support.version>
+                                <sofa.license>Apache License Version 2.0</sofa.license>
+                                <sofa.license.url>http://www.apache.org/licenses/</sofa.license.url>
+                            </additionalProperties>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
-
 </project>

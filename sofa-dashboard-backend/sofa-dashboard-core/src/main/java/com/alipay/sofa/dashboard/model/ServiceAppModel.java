@@ -14,23 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alipay.sofa.dashboard.cors;
+package com.alipay.sofa.dashboard.model;
 
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import java.util.List;
 
 /**
- * CORSConfiguration
- * 解决跨域问题
- *
- * @version 1.0
- * @author: guolei.sgl
+ * @author: guolei.sgl (guolei.sgl@antfin.com) 2019/7/14 11:04 AM
+ * @since:
  **/
-@Configuration
-public class CorsConfiguration implements WebMvcConfigurer {
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**").allowedMethods("*").allowedOrigins("*").allowedHeaders("*");
+public class ServiceAppModel {
+    private List<String> providers;
+    private List<String> consumers;
+
+    public List<String> getProviders() {
+        return providers;
+    }
+
+    public void setProviders(List<String> providers) {
+        this.providers = providers;
+    }
+
+    public List<String> getConsumers() {
+        return consumers;
+    }
+
+    public void setConsumers(List<String> consumers) {
+        this.consumers = consumers;
     }
 }
