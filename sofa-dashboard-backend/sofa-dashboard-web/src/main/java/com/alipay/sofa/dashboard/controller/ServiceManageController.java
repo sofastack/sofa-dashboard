@@ -24,8 +24,6 @@ import com.alipay.sofa.dashboard.domain.RpcService;
 import com.alipay.sofa.dashboard.model.ServiceAppModel;
 import com.alipay.sofa.dashboard.model.ServiceModel;
 import com.alipay.sofa.rpc.common.utils.StringUtils;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,14 +41,12 @@ import java.util.*;
  **/
 @RestController
 @RequestMapping("/api/service")
-@Api(value = "服务资源", tags = "service")
 public class ServiceManageController {
 
     @Autowired
     private RegistryDataCache registryDataCache;
 
     @GetMapping("/all-service")
-    @ApiOperation(value = "获取所有服务资源列表")
     public List<ServiceModel> queryServiceListByService(@RequestParam("query") String query) {
         List<ServiceModel> data = new ArrayList<>();
         Map<String, RpcService> rpcServices = registryDataCache.fetchService();
@@ -70,7 +66,6 @@ public class ServiceManageController {
      * @return
      */
     @GetMapping("/all-app")
-    @ApiOperation(value = "获取所有服务资源列表")
     public List<Map<String, String>> queryServiceListByApp(@RequestParam("query") String query) {
         List<Map<String, String>> data = new ArrayList<>();
         Map<String, RpcService> rpcServices = registryDataCache.fetchService();

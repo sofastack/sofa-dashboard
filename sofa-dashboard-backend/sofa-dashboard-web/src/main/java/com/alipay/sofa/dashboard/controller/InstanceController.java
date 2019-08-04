@@ -33,8 +33,6 @@ import com.alipay.sofa.dashboard.spi.MonitorService;
 import com.alipay.sofa.dashboard.utils.HostPortUtils;
 import com.alipay.sofa.dashboard.utils.MapUtils;
 import com.alipay.sofa.dashboard.utils.TreeNodeConverter;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,7 +50,6 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequestMapping("/api/instance")
-@Api(value = "应用实例资源", tags = "instance")
 public class InstanceController {
 
     @Autowired
@@ -62,9 +59,6 @@ public class InstanceController {
     private MonitorService service;
 
     @GetMapping
-    @ApiOperation(
-        value = "获取指定应用的实例列表",
-        notes = "指定一个应用名称，返回所有匹配的应用实例，每个实例由一个id作为唯一标识")
     public List<InstanceRecord> instances(
         @RequestParam(value = "applicationName", required = false) String applicationName) {
         return applicationService.getInstancesByName(applicationName).stream()
@@ -73,7 +67,6 @@ public class InstanceController {
     }
 
     @GetMapping("/{instanceId}/env")
-    @ApiOperation("根据实例id获取实例运行时参数")
     public RecordResponse getEnv(
         @PathVariable("instanceId") String instanceId) {
         HostAndPort hostAndPort = HostPortUtils.getById(instanceId);
@@ -103,7 +96,6 @@ public class InstanceController {
     }
 
     @GetMapping("/{instanceId}/info")
-    @ApiOperation("根据实例id获取实例应用信息")
     public RecordResponse getInfo(@PathVariable("instanceId") String instanceId) {
         HostAndPort hostAndPort = HostPortUtils.getById(instanceId);
         InfoDescriptor descriptor = service.fetchInfo(hostAndPort);
@@ -127,7 +119,6 @@ public class InstanceController {
     }
 
     @GetMapping("/{instanceId}/health")
-    @ApiOperation("根据实例id获取实例运行健康状态")
     public RecordResponse getHealth(@PathVariable("instanceId") String instanceId) {
         HostAndPort hostAndPort = HostPortUtils.getById(instanceId);
         HealthDescriptor descriptor = service.fetchHealth(hostAndPort);
@@ -157,7 +148,6 @@ public class InstanceController {
     }
 
     @GetMapping("/{instanceId}/loggers")
-    @ApiOperation("根据实例id获取实例Logger信息")
     public RecordResponse getLoggers(@PathVariable("instanceId") String instanceId) {
         HostAndPort hostAndPort = HostPortUtils.getById(instanceId);
         LoggersDescriptor descriptor = service.fetchLoggers(hostAndPort);
@@ -177,7 +167,6 @@ public class InstanceController {
     }
 
     @GetMapping("/{instanceId}/mappings")
-    @ApiOperation("根据实例id获取实例Mapping信息")
     public RecordResponse getMappings(@PathVariable("instanceId") String instanceId) {
         HostAndPort hostAndPort = HostPortUtils.getById(instanceId);
         MappingsDescriptor descriptor = service.fetchMappings(hostAndPort);
@@ -207,14 +196,12 @@ public class InstanceController {
     }
 
     @GetMapping("/{instanceId}/memory")
-    @ApiOperation("根据实例id获取实例内存状态信息")
     public List<StampedValueEntity<MemoryDescriptor>> getMemoryRecords(@PathVariable("instanceId") String instanceId) {
         HostAndPort hostAndPort = HostPortUtils.getById(instanceId);
         return service.fetchMemoryInfo(hostAndPort);
     }
 
     @GetMapping("/{instanceId}/thread")
-    @ApiOperation("根据实例id获取实例线程状态信息")
     public List<StampedValueEntity<ThreadSummaryDescriptor>> getThreadRecords(@PathVariable("instanceId") String instanceId) {
         HostAndPort hostAndPort = HostPortUtils.getById(instanceId);
         return service.fetchThreadInfo(hostAndPort);

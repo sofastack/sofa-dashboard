@@ -33,7 +33,6 @@
         <dashboard.client.version>1.1.0-SNAPSHOT</dashboard.client.version>
         <curator.version>2.9.1</curator.version>
         <sofa.common.version>1.0.17</sofa.common.version>
-        <swagger.version>2.2.2</swagger.version>
         <jmockit.version>1.14</jmockit.version>
         <mybatis.spring.boot.version>1.3.2</mybatis.spring.boot.version>
     </properties>
@@ -86,18 +85,6 @@
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
                 <version>${mysql.connector.version}</version>
-            </dependency>
-
-            <!-- Swagger Support -->
-            <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-swagger2</artifactId>
-                <version>${swagger.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-swagger-ui</artifactId>
-                <version>${swagger.version}</version>
             </dependency>
 
             <!-- alibaba的druid数据库连接池 -->

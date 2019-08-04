@@ -19,9 +19,6 @@ package com.alipay.sofa.dashboard.controller;
 import com.alipay.sofa.dashboard.model.AppStatistic;
 import com.alipay.sofa.dashboard.spi.AppService;
 import com.alipay.sofa.rpc.common.utils.StringUtils;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,15 +32,13 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/application")
-@Api(value = "应用资源", tags = "application")
 public class ApplicationController {
 
     @Autowired
     private AppService appService;
 
     @GetMapping
-    @ApiOperation(value = "获取应用信息")
-    public List<AppStatistic> getApplication(@ApiParam("应用关键字") @RequestParam(value = "keyword", required = false) String keyword) {
+    public List<AppStatistic> getApplication(@RequestParam(value = "keyword", required = false) String keyword) {
         return StringUtils.isEmpty(keyword) ? appService.getAllStatistics() : appService
             .getStatisticsByKeyword(keyword);
     }
