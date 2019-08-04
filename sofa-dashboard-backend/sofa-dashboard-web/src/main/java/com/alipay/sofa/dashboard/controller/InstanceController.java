@@ -140,6 +140,7 @@ public class InstanceController {
             descriptor.setStatus("UNKNOWN");
             return RecordResponse.newBuilder()
                 .overview("health", descriptor.getStatus())
+                .detail(TreeNodeConverter.convert(descriptor))
                 .build();
         }
 
