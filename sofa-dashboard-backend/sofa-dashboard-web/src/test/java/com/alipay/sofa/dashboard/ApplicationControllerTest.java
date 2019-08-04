@@ -18,6 +18,7 @@ package com.alipay.sofa.dashboard;
 
 import com.alipay.sofa.dashboard.application.ZookeeperApplicationManager;
 import com.alipay.sofa.dashboard.base.AbstractTestBase;
+import com.alipay.sofa.dashboard.controller.ApplicationController;
 import com.alipay.sofa.dashboard.model.AppInfo;
 import com.alipay.sofa.dashboard.model.ApplicationInfo;
 import com.alipay.sofa.dashboard.utils.ObjectBytesUtil;
@@ -44,6 +45,9 @@ public class ApplicationControllerTest extends AbstractTestBase {
 
     @Autowired
     ZkCommandClient zkCommandClient;
+
+    @Autowired
+    ApplicationController applicationController;
 
     @Before
     public void before() throws Exception {
@@ -74,9 +78,7 @@ public class ApplicationControllerTest extends AbstractTestBase {
 
     @Test
     public void testGetList() {
-        String request = "http://localhost:" + definedPort
-                         + "/api/application/list?applicationName=";
-        List<ApplicationInfo> list = restTemplate.getForObject(request, List.class);
+        List<ApplicationInfo> list = applicationController.getApplications("");
         Assert.assertTrue(list != null && list.size() == 1);
     }
 
