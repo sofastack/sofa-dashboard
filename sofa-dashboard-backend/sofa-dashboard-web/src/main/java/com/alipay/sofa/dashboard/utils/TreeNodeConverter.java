@@ -24,8 +24,10 @@ import com.alipay.sofa.dashboard.client.model.info.InfoDescriptor;
 import com.alipay.sofa.dashboard.client.model.logger.LoggersDescriptor;
 import com.alipay.sofa.dashboard.client.model.mappings.MappingsDescriptor;
 import com.alipay.sofa.dashboard.model.TreeNode;
+import com.google.common.collect.Sets;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author chen.pengzhi (chpengzh@foxmail.com)
@@ -41,10 +43,15 @@ public final class TreeNodeConverter {
             return root;
         }
 
+        Set<String> propFilters = Sets.newHashSet("systemProperties", "systemEnvironment");
+
         return root
             .child("activeProfiles", descriptor.getActiveProfiles().toString())
             .child("propertySources", (propertySourcesTree) -> {
                 for (PropertySourceDescriptor propertySource : descriptor.getPropertySources()) {
+                    if (propFilters.contains(propertySource.getName())) {
+                        continue;
+                    }
                     propertySourcesTree.child(propertySource.getName(), (propertyValueTree) -> {
 
                         for (Map.Entry<String, PropertyValueDescriptor> entry :
@@ -88,38 +95,23 @@ public final class TreeNodeConverter {
             root.child(name, (tree) -> {
                 tree.child("dispatchServlet", (dispatchServletTree) -> {
                     // dispatch servlet
-                    mapping.getDispatcherServlet().forEach((dispatchServlet) -> {
-                        dispatchServletTree.child(dispatchServlet.getPredicate() + " > method",
-                            dispatchServlet.getMethods());
-                        dispatchServletTree.child(dispatchServlet.getPredicate() + " > params",
-                            dispatchServlet.getParamsType());
-                        dispatchServletTree.child(dispatchServlet.getPredicate() + " > handler",
-                            dispatchServlet.getHandler());
-                        dispatchServletTree.child(dispatchServlet.getPredicate() + " > response",
-                            dispatchServlet.getResponseType());
-                    });
+                    mapping.getDispatcherServlet().forEach((dispatchServlet) ->
+                        dispatchServletTree.child(dispatchServlet.getHandler(),
+                            dispatchServlet.getPredicate()));
                 });
 
                 tree.child("servletFilter", (servletFilterTree) -> {
                     // servlet filter
-                    mapping.getServletFilters().forEach((servletFilter) -> {
-                        servletFilterTree.child(servletFilter.getName() + " > class",
-                            servletFilter.getClassName());
-                        servletFilterTree.child(servletFilter.getName() + " > name",
-                            servletFilter.getServletNameMappings());
-                        servletFilterTree.child(servletFilter.getName() + " > urlPattern",
-                            servletFilter.getUrlPatternMappings());
-                    });
+                    mapping.getServletFilters().forEach((servletFilter) ->
+                        servletFilterTree.child(servletFilter.getName(),
+                            servletFilter.getUrlPatternMappings()));
                 });
 
                 tree.child("servlet", (servletTree) -> {
                     // servlet
-                    mapping.getServlets().forEach((servlet) -> {
-                        servletTree.child(servlet.getName() + " > mappings",
-                            servlet.getMappings());
-                        servletTree.child(servlet.getClassName() + " > class",
-                            servlet.getClassName());
-                    });
+                    mapping.getServlets().forEach((servlet) ->
+                        servletTree.child(servlet.getClassName(),
+                            servlet.getMappings()));
                 });
             });
         });
@@ -141,6 +133,7 @@ public final class TreeNodeConverter {
         for (Map.Entry<String, Object> entry : childMap.entrySet()) {
             if (entry.getValue() instanceof Map) {
                 TreeNode next = TreeNode.create(entry.getKey(), null);
+                //noinspection unchecked
                 convertMap(next, (Map<String, Object>) entry.getValue());
                 root.child(next);
             } else {

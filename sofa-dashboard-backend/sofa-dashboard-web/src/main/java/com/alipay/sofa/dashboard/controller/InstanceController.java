@@ -91,8 +91,8 @@ public class InstanceController {
         // 接口层重新拼装一次前端需要的数据结构概览
         //
         return RecordResponse.newBuilder()
-            .overview("name", envMap.get("spring.application.name"))
-            .overview("address",
+            .overview("Name", envMap.get("spring.application.name"))
+            .overview("Address",
                 String.format("%s:%d", hostAndPort.getHost(), hostAndPort.getPort()))
             .overview("sofa-boot.version", envMap.get("sofa-boot.version"))
             .detail(TreeNodeConverter.convert(descriptor))
@@ -110,7 +110,7 @@ public class InstanceController {
         Map<String, Object> infoMap = MapUtils.toFlatMap(
             Optional.ofNullable(descriptor).orElse(new InfoDescriptor()).getInfo())
             .entrySet().stream()
-            .limit(3) // 概况只展示3个元素
+            .limit(3)
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         //
@@ -133,22 +133,13 @@ public class InstanceController {
         if (descriptor == null) {
             descriptor = new HealthDescriptor();
             descriptor.setStatus("UNKNOWN");
-            return RecordResponse.newBuilder()
-                .overview("health", descriptor.getStatus())
-                .detail(TreeNodeConverter.convert(descriptor))
-                .build();
         }
-
-        Map<String, Object> overView = MapUtils.toFlatMap(descriptor.getDetails())
-            .entrySet().stream()
-            .limit(2)
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         return RecordResponse.newBuilder()
             .overview("Health", descriptor.getStatus())
-            .overview(overView)
-            .detail(TreeNodeConverter.convert(descriptor))
-            .build();
+            .overview("Address",
+                String.format("%s:%d", hostAndPort.getHost(), hostAndPort.getPort()))
+            .detail(TreeNodeConverter.convert(descriptor)).build();
     }
 
     @GetMapping("/{instanceId}/loggers")
@@ -156,18 +147,8 @@ public class InstanceController {
         HostAndPort hostAndPort = HostPortUtils.getById(instanceId);
         LoggersDescriptor descriptor = service.fetchLoggers(hostAndPort);
 
-        Map<String, Object> loggersMap = descriptor == null
-            ? new HashMap<>()
-            : descriptor.getLoggers().entrySet().stream()
-            .limit(3) // 概况只展示最多3个元素
-            .collect(Collectors.toMap(
-                Map.Entry::getKey,
-                entry -> entry.getValue().getEffectiveLevel()));
-
-        return RecordResponse.newBuilder()
-            .overview(loggersMap)
-            .detail(TreeNodeConverter.convert(descriptor))
-            .build();
+        return RecordResponse.newBuilder().overview(new HashMap<>(16))
+            .detail(TreeNodeConverter.convert(descriptor)).build();
     }
 
     @GetMapping("/{instanceId}/mappings")
@@ -178,23 +159,23 @@ public class InstanceController {
         int servletCount = descriptor == null ? 0 : descriptor.getMappings().values()
             .stream()
             .map(it -> it.getServlets().size())
-            .reduce((a, b) -> a + b)
+            .reduce(Integer::sum)
             .orElse(0);
         int servletFilterCount = descriptor == null ? 0 : descriptor.getMappings().values()
             .stream()
             .map(it -> it.getServletFilters().size())
-            .reduce((a, b) -> a + b)
+            .reduce(Integer::sum)
             .orElse(0);
         int dispatcherServletCount = descriptor == null ? 0 : descriptor.getMappings().values()
             .stream()
             .map(it -> it.getDispatcherServlet().size())
-            .reduce((a, b) -> a + b)
+            .reduce(Integer::sum)
             .orElse(0);
 
         return RecordResponse.newBuilder()
-            .overview("servletCount", String.valueOf(servletCount))
-            .overview("servletFilterCount", String.valueOf(servletFilterCount))
-            .overview("dispatcherServletCount", String.valueOf(dispatcherServletCount))
+            .overview("DispatcherServletCount", String.valueOf(dispatcherServletCount))
+            .overview("ServletFilterCount", String.valueOf(servletFilterCount))
+            .overview("ServletCount", String.valueOf(servletCount))
             .detail(TreeNodeConverter.convert(descriptor))
             .build();
     }
