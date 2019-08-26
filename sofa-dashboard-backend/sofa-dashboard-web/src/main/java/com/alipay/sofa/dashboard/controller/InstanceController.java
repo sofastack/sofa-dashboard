@@ -34,12 +34,14 @@ import com.alipay.sofa.dashboard.utils.HostPortUtils;
 import com.alipay.sofa.dashboard.utils.MapUtils;
 import com.alipay.sofa.dashboard.utils.TreeNodeConverter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,6 +67,10 @@ public class InstanceController {
     @GetMapping
     public List<InstanceRecord> instances(
         @RequestParam(value = "applicationName", required = false) String applicationName) {
+        // 这里默认情况如果没有传入 applicationName，前端应不展示任何数据
+        if (StringUtils.isEmpty(applicationName)){
+            return new ArrayList<>();
+        }
         return applicationService.getInstancesByName(applicationName).stream()
             .map(InstanceRecord::new)
             .collect(Collectors.toList());

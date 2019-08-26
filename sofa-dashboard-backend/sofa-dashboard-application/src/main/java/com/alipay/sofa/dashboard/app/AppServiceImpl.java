@@ -53,10 +53,12 @@ public class AppServiceImpl implements AppService {
             statistic.setApplicationName(entry.getKey());
             statistic.setApplicationCount(entry.getValue());
             return statistic;
-        }).filter(it -> // 关键词为空或者服务名包含关键词
-            StringUtils.isEmpty(keyword) ||
+        }).filter(it ->
+            // 关键词为空或者服务名包含关键词
+                (StringUtils.isEmpty(keyword) ||
+            // 名字不为空，并且实例数不为 0
             !StringUtils.isEmpty(it.getApplicationName())
-            && it.getApplicationName().contains(keyword)
+            && it.getApplicationName().contains(keyword)) && it.getApplicationCount() > 0
         ).collect(Collectors.toList());
     }
 

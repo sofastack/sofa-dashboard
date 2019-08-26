@@ -38,3 +38,4 @@ functions/mock
 .umi-production
 screenshot
 .firebase
+application-localhost.properties
