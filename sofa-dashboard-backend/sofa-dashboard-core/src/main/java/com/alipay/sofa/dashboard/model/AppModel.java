@@ -17,29 +17,30 @@
 package com.alipay.sofa.dashboard.model;
 
 /**
- * @author: guolei.sgl (guolei.sgl@antfin.com) 18/12/21 下午2:29
+ * @author: guolei.sgl (guolei.sgl@antfin.com) 2019/8/26 10:35 AM
  * @since:
  **/
-public class AppUnitModel {
+public class AppModel {
 
-    private String ip;
-    private String status;
+    private String name;
+    private String host;
     private int    port;
+    private String state;
 
-    public String getIp() {
-        return ip;
+    public String getName() {
+        return name;
     }
 
-    public void setIp(String ip) {
-        this.ip = ip;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getStatus() {
-        return status;
+    public String getHost() {
+        return host;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setHost(String host) {
+        this.host = host;
     }
 
     public int getPort() {
@@ -48,5 +49,13 @@ public class AppUnitModel {
 
     public void setPort(int port) {
         this.port = port;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 }

@@ -14,39 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alipay.sofa.dashboard.model;
+package com.alipay.sofa.dashboard.utils;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
- * @author: guolei.sgl (guolei.sgl@antfin.com) 18/12/21 下午2:29
+ * @author: guolei.sgl (guolei.sgl@antfin.com) 2019/7/16 11:28 AM
  * @since:
  **/
-public class AppUnitModel {
+public class SofaDashboardUtil {
 
-    private String ip;
-    private String status;
-    private int    port;
-
-    public String getIp() {
-        return ip;
+    public static Date now() {
+        return new Date(System.currentTimeMillis());
     }
 
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
+    public static String formatDate(Date date) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return dateFormat.format(date);
     }
 }

@@ -123,7 +123,7 @@ public interface ArkDao {
      * @param moduleId
      * @return
      */
-    List<String> queryAppsModuleId(int moduleId);
+    List<AppArkDO> queryAppsModuleId(int moduleId);
 
     /**
      * 根据模块ID和应用名删除关联应用
@@ -153,4 +153,18 @@ public interface ArkDao {
     ArkModuleVersionDO queryByModuleIdAndModuleVersion(@Param("moduleId") int moduleId,
                                                        @Param("moduleVersion") String moduleVersion);
 
+    /**
+     * 更新 ArkPluginDO
+     * @param model
+     * @return
+     */
+    int update(ArkPluginDO model);
+
+    /**
+     * 删除插件版本
+     * @param id
+     * @param version
+     * @return
+     */
+    int deletePluginVersion(@Param("id") int id, @Param("version") String version);
 }

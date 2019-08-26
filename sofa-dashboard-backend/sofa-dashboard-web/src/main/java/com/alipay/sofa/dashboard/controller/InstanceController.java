@@ -135,7 +135,8 @@ public class InstanceController {
             descriptor.setStatus("UNKNOWN");
         }
 
-        return RecordResponse.newBuilder()
+        return RecordResponse
+            .newBuilder()
             .overview("Health", descriptor.getStatus())
             .overview("Address",
                 String.format("%s:%d", hostAndPort.getHost(), hostAndPort.getPort()))

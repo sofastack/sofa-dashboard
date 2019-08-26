@@ -19,6 +19,7 @@ package com.alipay.sofa.dashboard.utils;
 import com.alibaba.fastjson.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 /**
  * Used to convert an Object into a byte array and a byte array into an object
@@ -36,6 +37,18 @@ public class ObjectBytesUtil {
                 return null;
             }
             return JSON.parseObject(bytes, valueType);
+        } catch (Exception e) {
+            LOGGER.error("Error to convert object from data bytes.", e);
+        }
+        return null;
+    }
+
+    public static <T> T convertFromString(String input, Class<T> valueType) {
+        try {
+            if (StringUtils.isEmpty(input)) {
+                return null;
+            }
+            return JSON.parseObject(input, valueType);
         } catch (Exception e) {
             LOGGER.error("Error to convert object from data bytes.", e);
         }

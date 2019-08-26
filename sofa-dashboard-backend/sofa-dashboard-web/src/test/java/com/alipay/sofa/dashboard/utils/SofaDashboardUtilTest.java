@@ -14,39 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alipay.sofa.dashboard.model;
+package com.alipay.sofa.dashboard.utils;
+
+import org.junit.Assert;
+import org.junit.Test;
+
+import java.util.Date;
 
 /**
- * @author: guolei.sgl (guolei.sgl@antfin.com) 18/12/21 下午2:29
+ * @author: guolei.sgl (guolei.sgl@antfin.com) 2019/7/22 11:48 AM
  * @since:
  **/
-public class AppUnitModel {
+public class SofaDashboardUtilTest {
 
-    private String ip;
-    private String status;
-    private int    port;
-
-    public String getIp() {
-        return ip;
+    @Test
+    public void testFormatDate() {
+        Date now = SofaDashboardUtil.now();
+        String s = SofaDashboardUtil.formatDate(now);
+        Assert.assertTrue(s != null);
     }
 
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
-    }
 }

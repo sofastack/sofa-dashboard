@@ -27,13 +27,12 @@ public class SofaDashboardConstants {
     public static final String SEPARATOR                   = "/";
     public static final String SOFA_BOOT_CLIENT_ROOT       = SEPARATOR + "apps";
     public static final String SOFA_BOOT_CLIENT_INSTANCE   = SEPARATOR + "instance";
-    public static final String SOFA_INSTANCE               = SOFA_BOOT_CLIENT_ROOT
-                                                             + SOFA_BOOT_CLIENT_INSTANCE
-                                                             + SEPARATOR;
+    public static final String SOFA_BOOT_CLIENT_BIZ        = SEPARATOR + "biz";
     public static final String SOFA_ARK_ROOT               = SEPARATOR + "sofa-ark";
     public static final String DEFAULT_GROUP               = "sofa-rpc";
     public static final String COMMAND                     = "command";
     public static final String APP_NAME                    = "appName";
+    public static final String ID                          = "id";
     public static final String PLUGIN_NAME                 = "pluginName";
     public static final String PLUGIN_VERSION              = "pluginVersion";
     public static final String TARGET_HOSTS                = "targetHosts";

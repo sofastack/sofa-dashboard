@@ -14,39 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alipay.sofa.dashboard.model;
+package com.alipay.sofa.dashboard.spi;
+
+import com.alipay.sofa.dashboard.model.AppModel;
+
+import java.util.List;
 
 /**
- * @author: guolei.sgl (guolei.sgl@antfin.com) 18/12/21 下午2:29
+ * @author: guolei.sgl (guolei.sgl@antfin.com) 2019/8/26 10:35 AM
  * @since:
  **/
-public class AppUnitModel {
+public interface ApplicationManager {
 
-    private String ip;
-    private String status;
-    private int    port;
-
-    public String getIp() {
-        return ip;
-    }
-
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
-    }
+    List<AppModel> applications();
 }

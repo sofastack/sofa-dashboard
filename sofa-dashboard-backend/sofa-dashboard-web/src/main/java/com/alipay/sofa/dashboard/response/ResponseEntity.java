@@ -14,17 +14,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alipay.sofa.dashboard.utils;
-
-import java.util.Date;
+package com.alipay.sofa.dashboard.response;
 
 /**
- * @author: guolei.sgl (guolei.sgl@antfin.com) 19/1/10 下午5:02
+ * @author: guolei.sgl (guolei.sgl@antfin.com) 2019/7/20 10:44 AM
  * @since:
  **/
-public class DateUtil {
+public class ResponseEntity<T> {
 
-    public static Date now() {
-        return new Date(System.currentTimeMillis());
+    private boolean success = true;
+
+    private String  error   = "";
+
+    private T       data;
+
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
+    }
+
+    public T getData() {
+        return data;
+    }
+
+    public void setData(T data) {
+        this.data = data;
     }
 }
