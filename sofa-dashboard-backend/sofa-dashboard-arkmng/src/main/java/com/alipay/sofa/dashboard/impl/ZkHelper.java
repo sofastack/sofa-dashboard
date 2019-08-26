@@ -21,7 +21,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alipay.sofa.ark.api.ResponseCode;
 import com.alipay.sofa.ark.spi.model.BizState;
-import com.alipay.sofa.dashboard.application.ZookeeperApplicationManager;
 import com.alipay.sofa.dashboard.constants.SofaDashboardConstants;
 import com.alipay.sofa.dashboard.model.AppUnitModel;
 import com.alipay.sofa.dashboard.model.BizModel;
@@ -54,8 +53,6 @@ public class ZkHelper {
 
     @Autowired
     ZkCommandClient             zkCommandClient;
-    @Autowired
-    ZookeeperApplicationManager zookeeperApplicationManager;
 
     /**
      * 根据应用名获取当前应用的所有实例
