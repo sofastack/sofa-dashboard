@@ -16,9 +16,14 @@
  */
 package com.alipay.sofa.dashboard.controller;
 
+import com.alipay.sofa.dashboard.client.model.common.Application;
 import com.alipay.sofa.dashboard.constants.SofaDashboardConstants;
 import com.alipay.sofa.dashboard.impl.ZkHelper;
-import com.alipay.sofa.dashboard.model.*;
+import com.alipay.sofa.dashboard.model.AppModuleModel;
+import com.alipay.sofa.dashboard.model.AppUnitModel;
+import com.alipay.sofa.dashboard.model.ArkAppModel;
+import com.alipay.sofa.dashboard.model.ArkPluginModel;
+import com.alipay.sofa.dashboard.model.CommandRequest;
 import com.alipay.sofa.dashboard.service.ArkMngService;
 import com.alipay.sofa.dashboard.spi.CommandPushManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,10 +47,12 @@ public class ArkAppMngController {
 
     @Autowired
     private ArkMngService      arkMngService;
+
     @Autowired
     private CommandPushManager commandPushManager;
+
     @Autowired
-    ZkHelper                   zkHelper;
+    private ZkHelper           zkHelper;
 
     @RequestMapping("/app-list")
     public AppModuleModel fetchArlApps(@RequestParam("pluginName") String pluginName,
