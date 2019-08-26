@@ -16,14 +16,15 @@
  */
 package com.alipay.sofa.dashboard.controller;
 
-import com.alipay.sofa.dashboard.client.model.common.Application;
 import com.alipay.sofa.dashboard.constants.SofaDashboardConstants;
 import com.alipay.sofa.dashboard.impl.ZkHelper;
 import com.alipay.sofa.dashboard.model.AppModuleModel;
 import com.alipay.sofa.dashboard.model.AppUnitModel;
-import com.alipay.sofa.dashboard.model.ArkAppModel;
+import com.alipay.sofa.dashboard.model.Application;
 import com.alipay.sofa.dashboard.model.ArkPluginModel;
+import com.alipay.sofa.dashboard.model.ClientResponseModel;
 import com.alipay.sofa.dashboard.model.CommandRequest;
+import com.alipay.sofa.dashboard.response.ResponseEntity;
 import com.alipay.sofa.dashboard.service.ArkMngService;
 import com.alipay.sofa.dashboard.spi.CommandPushManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,23 +48,26 @@ public class ArkAppMngController {
 
     @Autowired
     private ArkMngService      arkMngService;
-
     @Autowired
     private CommandPushManager commandPushManager;
-
     @Autowired
     private ZkHelper           zkHelper;
 
-    @RequestMapping("/app-list")
-    public AppModuleModel fetchArlApps(@RequestParam("pluginName") String pluginName,
+    @RequestMapping("/ark-app")
+    @Deprecated
+    public AppModuleModel fetchArkApps(@RequestParam("pluginName") String pluginName,@RequestParam("appName") String appName,
                                        @RequestParam("version") String version) throws Exception {
 
         AppModuleModel appModuleModel = new AppModuleModel();
+
         List<String> versions = new ArrayList<>();
         // 如果插件名为空，则返回空
-        if (StringUtils.isEmpty(pluginName)) {
+        if (StringUtils.isEmpty(pluginName) || StringUtils.isEmpty(appName)) {
             return appModuleModel;
         }
+
+        appModuleModel.setAppName(appName);
+        appModuleModel.setPluginName(pluginName);
 
         List<ArkPluginModel> arkPluginModels = arkMngService.fetchPluginsByName(pluginName);
         arkPluginModels.forEach((item) ->
@@ -78,30 +82,49 @@ public class ArkAppMngController {
         }
         appModuleModel.setDefaultVersion(version);
         appModuleModel.setVersionList(versions);
-        List<ArkAppModel> list = new ArrayList<>();
-
-        // 从数据库中拿到所有绑定的应用名
-        List<String> appNames = arkMngService.queryAppsByPlugin(pluginName);
-
-        for (String appName : appNames) {
-            ArkAppModel arkAppModel = new ArkAppModel();
-            arkAppModel.setAppName(appName);
-            arkAppModel.setPluginName(pluginName);
-            arkAppModel.setPluginVersion(version);
-            // 这里需要去匹配当前注册到zk上应用名为appName的所有实例信息
-            List<Application> applications = zkHelper.getArkAppFromZookeeper(appName, pluginName, version);
-            arkAppModel.setIpUnitList(getAppUnitModel(applications));
-            list.add(arkAppModel);
-        }
-        appModuleModel.setAppList(list);
+        // 获取挂载在zk上的应用信息
+        List<AppUnitModel> ipUnitList = zkHelper.getArkAppFromZookeeper(appName, pluginName, version);
+        appModuleModel.setIpUnitList(ipUnitList);
         return appModuleModel;
     }
 
     @RequestMapping("/command")
-    public void command(@RequestBody Map<String, Object> commandMap) {
+    public boolean command(@RequestBody Map<String, Object> commandMap) {
         // parse commandMap
         CommandRequest commandRequest = parseCommandRequest(commandMap);
-        commandPushManager.pushCommand(commandRequest);
+        try {
+            commandPushManager.pushCommand(commandRequest);
+        } catch (Exception e) {
+            // 异常在上层已经输出到日志了，这里仅作为此次操作的是否发生异常的一个标记
+            return false;
+        }
+        return true;
+    }
+
+    @RequestMapping("biz-state-detail")
+    public ClientResponseModel fetchBizState(@RequestParam("ip") String ip,
+                                             @RequestParam("appName") String appName) {
+        try {
+            return zkHelper.getBizState(appName, ip);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ClientResponseModel();
+    }
+
+    @RequestMapping("biz-state")
+    public ResponseEntity<String> getBizState(@RequestParam("ip") String ip,
+                                              @RequestParam("appName") String appName,
+                                              @RequestParam("pluginName") String pluginName,
+                                              @RequestParam("version") String version) {
+        ResponseEntity<String> result = new ResponseEntity<>();
+        try {
+            result.setData(zkHelper.getAppState(appName, ip, pluginName, version));
+        } catch (Exception e) {
+            result.setSuccess(false);
+            e.printStackTrace();
+        }
+        return result;
     }
 
     private CommandRequest parseCommandRequest(Map<String, Object> commandMap) {
@@ -126,7 +149,7 @@ public class ArkAppMngController {
         applications.forEach((item) -> {
             AppUnitModel appUnitModel = new AppUnitModel();
             appUnitModel.setIp(item.getHostName());
-            appUnitModel.setStatue(item.getAppState());
+            appUnitModel.setStatus(item.getAppState());
             list.add(appUnitModel);
         });
         return list;

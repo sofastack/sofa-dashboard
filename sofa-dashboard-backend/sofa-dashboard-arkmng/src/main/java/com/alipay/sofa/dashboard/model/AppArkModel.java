@@ -23,6 +23,7 @@ package com.alipay.sofa.dashboard.model;
 public class AppArkModel {
 
     private String appName;
+    private String createTime;
     private int    instanceNum;
 
     public String getAppName() {
@@ -39,5 +40,13 @@ public class AppArkModel {
 
     public void setInstanceNum(int instanceNum) {
         this.instanceNum = instanceNum;
+    }
+
+    public String getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
     }
 }

@@ -27,15 +27,20 @@ public class AppModuleModel {
     /**
      * 默认版本
      */
-    private String            defaultVersion;
+    private String             defaultVersion;
+
+    private String             pluginName;
+    private String             appName;
+
     /**
-     * 默认版本下使用的所有应用列表
+     * 所有应用列表
      */
-    private List<ArkAppModel> appList     = new ArrayList<>();
+    private List<AppUnitModel> ipUnitList;
+
     /**
      * 版本列表
      */
-    private List<String>      versionList = new ArrayList<>();
+    private List<String>       versionList = new ArrayList<>();
 
     public String getDefaultVersion() {
         return defaultVersion;
@@ -45,19 +50,35 @@ public class AppModuleModel {
         this.defaultVersion = defaultVersion;
     }
 
-    public List<ArkAppModel> getAppList() {
-        return appList;
-    }
-
-    public void setAppList(List<ArkAppModel> appList) {
-        this.appList = appList;
-    }
-
     public List<String> getVersionList() {
         return versionList;
     }
 
     public void setVersionList(List<String> versionList) {
         this.versionList = versionList;
+    }
+
+    public String getPluginName() {
+        return pluginName;
+    }
+
+    public void setPluginName(String pluginName) {
+        this.pluginName = pluginName;
+    }
+
+    public String getAppName() {
+        return appName;
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
+    }
+
+    public List<AppUnitModel> getIpUnitList() {
+        return ipUnitList;
+    }
+
+    public void setIpUnitList(List<AppUnitModel> ipUnitList) {
+        this.ipUnitList = ipUnitList;
     }
 }

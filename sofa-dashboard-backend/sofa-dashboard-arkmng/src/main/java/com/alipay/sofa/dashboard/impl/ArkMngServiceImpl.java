@@ -23,7 +23,7 @@ import com.alipay.sofa.dashboard.model.ArkModuleVersionDO;
 import com.alipay.sofa.dashboard.model.ArkPluginDO;
 import com.alipay.sofa.dashboard.model.ArkPluginModel;
 import com.alipay.sofa.dashboard.service.ArkMngService;
-import com.alipay.sofa.dashboard.utils.DateUtil;
+import com.alipay.sofa.dashboard.utils.SofaDashboardUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +56,11 @@ public class ArkMngServiceImpl implements ArkMngService {
     @Override
     public boolean registerPlugin(ArkPluginDO model) {
         try {
+            List<ArkPluginDO> arkPluginDOS = arkDao.queryModuleInfoByNameStrict(model
+                .getPluginName());
+            if (arkPluginDOS.size() > 0) {
+                return false;
+            }
             // 向模块表中插入一条数据
             arkDao.insert(model);
             int mId = model.getId();
@@ -74,17 +79,25 @@ public class ArkMngServiceImpl implements ArkMngService {
     }
 
     @Override
-    public boolean addNewVersion(String pluginName, String version, String address) {
-        int mId = arkDao.queryModuleIdByName(pluginName);
+    public boolean updatePlugin(ArkPluginDO model) {
+        return arkDao.update(model) > 0;
+    }
+
+    @Override
+    public boolean addNewVersion(int mId, String version, String address) {
         // 向模板版本表中插入数据
         return doInsertModuleVersion(mId, version, address) > 0;
     }
 
+    @Override
+    public boolean deleteVersion(int mId, String version) {
+        return arkDao.deletePluginVersion(mId, version) >= 0;
+    }
+
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public boolean removePlugins(String pluginName) {
+    public boolean removePlugins(int mId) {
         try {
-            int mId = arkDao.queryModuleIdByName(pluginName);
             // 移除模块表
             arkDao.remove(mId);
             // 移除模块版本表
@@ -104,21 +117,20 @@ public class ArkMngServiceImpl implements ArkMngService {
     }
 
     @Override
-    public int relatedAppToPlugin(String pluginName, String appName) {
-        int moduleId = queryModuleIdByPluginName(pluginName);
+    public int relatedAppToPlugin(int moduleId, String appName) {
         if (moduleId < 0) {
             return -1;
         }
         AppArkDO appArkDO = new AppArkDO();
         appArkDO.setAppName(appName);
-        appArkDO.setCreateTime(DateUtil.now());
+        appArkDO.setCreateTime(SofaDashboardUtil.now());
         appArkDO.setModuleId(moduleId);
         arkDao.insertAppArk(appArkDO);
         return appArkDO.getId();
     }
 
     @Override
-    public List<String> queryAppsByPlugin(String pluginName) {
+    public List<AppArkDO> queryAppsByPlugin(String pluginName) {
         int moduleId = queryModuleIdByPluginName(pluginName);
         return arkDao.queryAppsModuleId(moduleId);
     }
@@ -165,7 +177,7 @@ public class ArkMngServiceImpl implements ArkMngService {
     private int doInsertModuleVersion(int mId, String version, String address) {
         // 向模板版本表中插入数据
         ArkModuleVersionDO arkModuleVersionDO = new ArkModuleVersionDO();
-        arkModuleVersionDO.setCreateTime(DateUtil.now());
+        arkModuleVersionDO.setCreateTime(SofaDashboardUtil.now());
         arkModuleVersionDO.setModuleId(mId);
         arkModuleVersionDO.setModuleVersion(version);
         arkModuleVersionDO.setSourcePath(address);
