@@ -16,17 +16,19 @@
  */
 package com.alipay.sofa.dashboard.controller;
 
+import com.alipay.sofa.dashboard.client.model.common.Application;
 import com.alipay.sofa.dashboard.constants.SofaDashboardConstants;
 import com.alipay.sofa.dashboard.impl.ZkHelper;
 import com.alipay.sofa.dashboard.model.AppModuleModel;
 import com.alipay.sofa.dashboard.model.AppUnitModel;
-import com.alipay.sofa.dashboard.model.Application;
 import com.alipay.sofa.dashboard.model.ArkPluginModel;
 import com.alipay.sofa.dashboard.model.ClientResponseModel;
 import com.alipay.sofa.dashboard.model.CommandRequest;
 import com.alipay.sofa.dashboard.response.ResponseEntity;
 import com.alipay.sofa.dashboard.service.ArkMngService;
 import com.alipay.sofa.dashboard.spi.CommandPushManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -46,12 +48,14 @@ import java.util.Map;
 @RequestMapping("/api/arkapp")
 public class ArkAppMngController {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ArkAppMngController.class);
+
     @Autowired
-    private ArkMngService      arkMngService;
+    private ArkMngService       arkMngService;
     @Autowired
-    private CommandPushManager commandPushManager;
+    private CommandPushManager  commandPushManager;
     @Autowired
-    private ZkHelper           zkHelper;
+    private ZkHelper            zkHelper;
 
     @RequestMapping("/ark-app")
     @Deprecated
@@ -107,7 +111,7 @@ public class ArkAppMngController {
         try {
             return zkHelper.getBizState(appName, ip);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("Error to fetchBizState.", e);
         }
         return new ClientResponseModel();
     }
@@ -122,7 +126,7 @@ public class ArkAppMngController {
             result.setData(zkHelper.getAppState(appName, ip, pluginName, version));
         } catch (Exception e) {
             result.setSuccess(false);
-            e.printStackTrace();
+            LOGGER.error("Error to getBizState.", e);
         }
         return result;
     }
