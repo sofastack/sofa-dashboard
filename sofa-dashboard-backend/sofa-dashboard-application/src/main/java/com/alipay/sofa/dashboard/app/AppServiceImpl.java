@@ -35,9 +35,9 @@ import java.util.stream.Collectors;
 @Service
 public class AppServiceImpl implements AppService {
 
-    private final AppSubscriber<?> subscriber;
+    private final AppSubscriber subscriber;
 
-    public AppServiceImpl(AppSubscriber<?> subscriber) {
+    public AppServiceImpl(AppSubscriber subscriber) {
         this.subscriber = subscriber;
     }
 
