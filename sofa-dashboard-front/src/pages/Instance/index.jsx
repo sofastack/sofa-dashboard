@@ -62,6 +62,11 @@ class Instance extends React.Component {
         key: 'hostName',
       },
       {
+        title: '内部IP',
+        dataIndex: 'internalHost',
+        key: 'internalHost',
+      },
+      {
         title: '端口',
         dataIndex: 'port',
         key: 'port',
