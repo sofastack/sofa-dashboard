@@ -17,7 +17,6 @@
 package com.alipay.sofa.dashboard.mock;
 
 import com.alipay.sofa.dashboard.client.model.common.Application;
-import com.alipay.sofa.dashboard.client.model.common.RegistryConfig;
 import com.alipay.sofa.dashboard.client.registry.AppPublisher;
 import com.alipay.sofa.dashboard.client.registry.AppSubscriber;
 import org.jboss.netty.util.internal.ConcurrentHashMap;
@@ -47,13 +46,13 @@ public class MockRegistry implements TestRule {
      */
     private volatile Map<String, Set<Application>> applications = new ConcurrentHashMap<>();
 
-    public AppPublisher<?> publisher(Application app) {
-        MockPublisher publisher = new MockPublisher(app);
+    public AppPublisher publisher(Application app) {
+        MockPublisher publisher = new MockPublisher();
         publisher.start();
         return publisher;
     }
 
-    public AppSubscriber<?> subscriber() {
+    public AppSubscriber subscriber() {
         MockSubscriber subscriber = new MockSubscriber();
         subscriber.start();
         return subscriber;
@@ -82,10 +81,18 @@ public class MockRegistry implements TestRule {
         };
     }
 
-    private class MockPublisher extends AppPublisher<RegistryConfig> {
+    private class MockPublisher implements AppPublisher {
 
-        protected MockPublisher(Application application) {
-            super(application, null);
+        @Override
+        public Application getApplication() {
+            Application mockApp = new Application();
+            mockApp.setAppName("testApp");
+            mockApp.setAppState("RUNNING");
+            mockApp.setHostName("127.0.0.1");
+            mockApp.setLastRecover(System.currentTimeMillis());
+            mockApp.setPort(8080);
+            mockApp.setStartTime(System.currentTimeMillis());
+            return mockApp;
         }
 
         @Override
@@ -117,11 +124,7 @@ public class MockRegistry implements TestRule {
         }
     }
 
-    private class MockSubscriber extends AppSubscriber<RegistryConfig> {
-
-        public MockSubscriber() {
-            super(null);
-        }
+    private class MockSubscriber implements AppSubscriber {
 
         @Override
         public boolean start() {
