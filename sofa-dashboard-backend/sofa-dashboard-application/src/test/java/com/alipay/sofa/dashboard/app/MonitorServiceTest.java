@@ -134,6 +134,6 @@ public class MonitorServiceTest {
     private HostAndPort randomInstance() {
         String host = UUID.randomUUID().toString().replace("-", "").substring(8);
         int port = random.nextInt(65536);
-        return new HostAndPort(host, port);
+        return new HostAndPort(host, host, port);
     }
 }
