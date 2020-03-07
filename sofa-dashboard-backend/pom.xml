@@ -87,6 +87,12 @@
                 <version>${mysql.connector.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>net.minidev</groupId>
+                <artifactId>accessors-smart</artifactId>
+                <version>1.2</version>
+            </dependency>
+
             <!-- alibaba的druid数据库连接池 -->
             <dependency>
                 <groupId>com.alibaba</groupId>
