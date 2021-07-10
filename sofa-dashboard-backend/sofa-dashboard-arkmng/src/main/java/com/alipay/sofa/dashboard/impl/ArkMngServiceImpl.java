@@ -45,6 +45,8 @@ public class ArkMngServiceImpl implements ArkMngService {
 
     @Autowired
     private ArkDao arkDao;
+    @Autowired
+    private ZkHelper zkHelper;
     @Override
     public boolean isRelatedByModuleAndApp(int mId, String appName) {
         return arkDao.queryRelationByModuleIdAndAppName(mId, appName).size() > 0;
@@ -123,14 +125,18 @@ public class ArkMngServiceImpl implements ArkMngService {
         if (moduleId < 0) {
             return -1;
         }
-        if (isRelatedByModuleAndApp(moduleId, appName) == false)
-        {
-            AppArkDO appArkDO = new AppArkDO();
-            appArkDO.setAppName(appName);
-            appArkDO.setCreateTime(SofaDashboardUtil.now());
-            appArkDO.setModuleId(moduleId);
-            arkDao.insertAppArk(appArkDO);
-            return appArkDO.getId();
+        List<String> arkAppList = zkHelper.getArkAppList();
+        boolean relatedByModuleAndApp = isRelatedByModuleAndApp(moduleId, appName);
+        for (String appApp : arkAppList) {
+            //zk中已存在应用 并且 未关联
+            if (appApp.equals(appName) && isRelatedByModuleAndApp(moduleId,appName)==false) {
+                AppArkDO appArkDO = new AppArkDO();
+                appArkDO.setAppName(appName);
+                appArkDO.setCreateTime(SofaDashboardUtil.now());
+                appArkDO.setModuleId(moduleId);
+                arkDao.insertAppArk(appArkDO);
+                return appArkDO.getId();
+            }
         }
         return -1;
     }
