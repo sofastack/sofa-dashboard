@@ -35,7 +35,7 @@ import java.util.List;
  * @author guolei.sgl (guolei.sgl@antfin.com) 18/12/7 下午5:15
  */
 @RestController
-@Api(value = SofaDashboardConstants.API_APPLICATION_TAGS,tags = SofaDashboardConstants.API_APPLICATION_TAGS)
+@Api(value = SofaDashboardConstants.API_APPLICATION_TAGS, tags = SofaDashboardConstants.API_APPLICATION_TAGS)
 @RequestMapping("/api/application")
 public class ApplicationController {
 

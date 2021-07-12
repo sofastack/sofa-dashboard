@@ -45,7 +45,7 @@ import java.util.Map;
  * @author: guolei.sgl (guolei.sgl@antfin.com) 18/12/19 上午11:06
  * @since:
  **/
-@Api(value = SofaDashboardConstants.API_ARK_TAGS,tags = SofaDashboardConstants.API_ARK_TAGS)
+@Api(value = SofaDashboardConstants.API_ARK_TAGS, tags = SofaDashboardConstants.API_ARK_TAGS)
 @RestController
 @RequestMapping("/api/ark")
 public class ArkMngController {
@@ -93,8 +93,7 @@ public class ArkMngController {
      * @param map
      * @return
      */
-    @ApiOperation(value = "注册插件",tags = SofaDashboardConstants.API_ARK_TAGS)
-
+    @ApiOperation(value = "注册插件", tags = SofaDashboardConstants.API_ARK_TAGS)
     @ApiOperationSupport(order = 2)
     @RequestMapping("/register")
     public boolean registerPlugin(@RequestBody Map<String, String> map) {
@@ -107,7 +106,7 @@ public class ArkMngController {
         return arkMngService.registerPlugin(arkPluginDO);
     }
 
-    @ApiOperation(value = "更新插件",tags = SofaDashboardConstants.API_ARK_TAGS)
+    @ApiOperation(value = "更新插件", tags = SofaDashboardConstants.API_ARK_TAGS)
     @ApiOperationSupport(order = 3)
     @RequestMapping("/update-plugin")
     public boolean updatePlugin(@RequestBody ArkPluginDO arkPluginDO) {
@@ -117,7 +116,7 @@ public class ArkMngController {
         return arkMngService.updatePlugin(arkPluginDO);
     }
 
-    @ApiOperation(value = "更新插件版本",tags = SofaDashboardConstants.API_ARK_TAGS)
+    @ApiOperation(value = "更新插件版本", tags = SofaDashboardConstants.API_ARK_TAGS)
     @ApiOperationSupport(order = 4)
     @RequestMapping("/register-new-version")
     public boolean registerNewVersion(@RequestBody Map<String, String> map) {
@@ -133,7 +132,8 @@ public class ArkMngController {
         }
         return arkMngService.addNewVersion(Integer.valueOf(id), version, address);
     }
-    @ApiOperation(value = "删除插件版本",tags = SofaDashboardConstants.API_ARK_TAGS)
+
+    @ApiOperation(value = "删除插件版本", tags = SofaDashboardConstants.API_ARK_TAGS)
     @ApiOperationSupport(order = 8)
     @RequestMapping("/delete-version")
     public ResponseEntity<Boolean> deleteVersion(@RequestParam("id") int id,
@@ -150,7 +150,8 @@ public class ArkMngController {
         }
         return result;
     }
-    @ApiOperation(value = "删除插件",tags = SofaDashboardConstants.API_ARK_TAGS)
+
+    @ApiOperation(value = "删除插件", tags = SofaDashboardConstants.API_ARK_TAGS)
     @ApiOperationSupport(order = 9)
     @RequestMapping("/delete-plugin")
     public boolean deletePluginModel(@RequestParam("id") int id) {
@@ -159,7 +160,8 @@ public class ArkMngController {
         }
         return arkMngService.removePlugins(id);
     }
-    @ApiOperation(value = "查询插件",tags = SofaDashboardConstants.API_ARK_TAGS)
+
+    @ApiOperation(value = "查询插件", tags = SofaDashboardConstants.API_ARK_TAGS)
     @ApiOperationSupport(order = 7)
     @RequestMapping("/search-plugin")
     public List<ArkPluginModel> searchPlugins(@RequestParam("pluginName") String pluginName) {
@@ -169,13 +171,15 @@ public class ArkMngController {
         }
         return arkMngService.fetchPluginsByName(pluginName);
     }
-    @ApiOperation(value = "关联应用",tags = SofaDashboardConstants.API_ARK_TAGS)
+
+    @ApiOperation(value = "关联应用", tags = SofaDashboardConstants.API_ARK_TAGS)
     @ApiOperationSupport(order = 5)
     @RequestMapping("/related-app")
     public boolean relatedApp(@RequestParam("id") int id, @RequestParam("appName") String appName) {
         return arkMngService.relatedAppToPlugin(id, appName) > 0;
     }
-    @ApiOperation(value = "取消关联应用",tags = SofaDashboardConstants.API_ARK_TAGS)
+
+    @ApiOperation(value = "取消关联应用", tags = SofaDashboardConstants.API_ARK_TAGS)
     @ApiOperationSupport(order = 6)
     @RequestMapping("/cancel-related-app")
     public boolean cancelRelatedApp(@RequestParam("pluginName") String pluginName,

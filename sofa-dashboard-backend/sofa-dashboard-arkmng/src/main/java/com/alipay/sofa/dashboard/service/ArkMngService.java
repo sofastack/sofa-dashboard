@@ -34,7 +34,8 @@ public interface ArkMngService {
      * @param appName
      * @return
      */
-    boolean isRelatedByModuleAndApp(int mId,String appName);
+    boolean isRelatedByModuleAndApp(int mId, String appName);
+
     /**
      * 获取当前所有注册的 plugin 信息
      *

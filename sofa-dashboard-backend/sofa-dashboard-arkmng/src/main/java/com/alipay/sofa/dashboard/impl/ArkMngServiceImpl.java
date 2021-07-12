@@ -44,13 +44,15 @@ public class ArkMngServiceImpl implements ArkMngService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ArkMngServiceImpl.class);
 
     @Autowired
-    private ArkDao arkDao;
+    private ArkDao              arkDao;
     @Autowired
-    private ZkHelper zkHelper;
+    private ZkHelper            zkHelper;
+
     @Override
     public boolean isRelatedByModuleAndApp(int mId, String appName) {
         return arkDao.queryRelationByModuleIdAndAppName(mId, appName).size() > 0;
     }
+
     @Override
     public List<ArkPluginModel> fetchRegisteredPlugins() {
         return doFetchPluginsByName(null);
@@ -129,7 +131,7 @@ public class ArkMngServiceImpl implements ArkMngService {
         boolean relatedByModuleAndApp = isRelatedByModuleAndApp(moduleId, appName);
         for (String appApp : arkAppList) {
             //zk中已存在应用 并且 未关联
-            if (appApp.equals(appName) && isRelatedByModuleAndApp(moduleId,appName)==false) {
+            if (appApp.equals(appName) && isRelatedByModuleAndApp(moduleId, appName) == false) {
                 AppArkDO appArkDO = new AppArkDO();
                 appArkDO.setAppName(appName);
                 appArkDO.setCreateTime(SofaDashboardUtil.now());

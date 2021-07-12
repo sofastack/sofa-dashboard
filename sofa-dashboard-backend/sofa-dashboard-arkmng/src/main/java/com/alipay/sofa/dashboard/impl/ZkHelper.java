@@ -53,6 +53,7 @@ public class ZkHelper {
 
     @Autowired
     ZkCommandClient             zkCommandClient;
+
     /**
      * 根据应用名获取当前应用的所有实例
      *
@@ -86,7 +87,7 @@ public class ZkHelper {
         List<String> result = null;
         CuratorFramework curatorClient = zkCommandClient.getCuratorClient();
         String arkAppBasePath = SofaDashboardConstants.SOFA_ARK_ROOT
-                + SofaDashboardConstants.SEPARATOR + appName;
+                                + SofaDashboardConstants.SEPARATOR + appName;
         try {
             if (checkExist(arkAppBasePath, curatorClient)) {
                 // 根据应用名获取所有实例信息
@@ -106,7 +107,7 @@ public class ZkHelper {
      * 获取 /sofa-ark 下面所有的应用
      * @return
      */
-    public  List<String> getArkAppList( ) {
+    public List<String> getArkAppList() {
         List<String> result = null;
         CuratorFramework curatorClient = zkCommandClient.getCuratorClient();
         String arkAppBasePath = SofaDashboardConstants.SOFA_ARK_ROOT;
@@ -158,13 +159,13 @@ public class ZkHelper {
      * @return
      */
     public String getAppState(String appName, String ip, String pluginName, String version)
-            throws Exception {
+                                                                                           throws Exception {
         String bizPath = SofaDashboardConstants.SOFA_BOOT_CLIENT_ROOT
-                + SofaDashboardConstants.SOFA_BOOT_CLIENT_BIZ;
+                         + SofaDashboardConstants.SOFA_BOOT_CLIENT_BIZ;
         CuratorFramework curatorClient = zkCommandClient.getCuratorClient();
         if (curatorClient.checkExists().forPath(bizPath) != null) {
             String bizAppPath = bizPath + SofaDashboardConstants.SEPARATOR + appName
-                    + SofaDashboardConstants.SEPARATOR + ip;
+                                + SofaDashboardConstants.SEPARATOR + ip;
             if (curatorClient.checkExists().forPath(bizAppPath) != null) {
                 byte[] bytes = curatorClient.getData().forPath(bizAppPath);
                 String data = new String(bytes);
@@ -176,7 +177,7 @@ public class ZkHelper {
                     String bizName = FastJsonUtils.getString(item, "bizName");
                     String bizVersion = FastJsonUtils.getString(item, "bizVersion");
                     if (bizName.equalsIgnoreCase(pluginName)
-                            && bizVersion.equalsIgnoreCase(version)) {
+                        && bizVersion.equalsIgnoreCase(version)) {
                         return FastJsonUtils.getString(item, "bizState");
                     }
                 }
@@ -194,11 +195,11 @@ public class ZkHelper {
     public ClientResponseModel getBizState(String appName, String ip) throws Exception {
         ClientResponseModel result = new ClientResponseModel();
         String bizPath = SofaDashboardConstants.SOFA_BOOT_CLIENT_ROOT
-                + SofaDashboardConstants.SOFA_BOOT_CLIENT_BIZ;
+                         + SofaDashboardConstants.SOFA_BOOT_CLIENT_BIZ;
         CuratorFramework curatorClient = zkCommandClient.getCuratorClient();
         if (curatorClient.checkExists().forPath(bizPath) != null) {
             String bizAppPath = bizPath + SofaDashboardConstants.SEPARATOR + appName
-                    + SofaDashboardConstants.SEPARATOR + ip;
+                                + SofaDashboardConstants.SEPARATOR + ip;
             if (curatorClient.checkExists().forPath(bizAppPath) != null) {
                 byte[] bytes = curatorClient.getData().forPath(bizAppPath);
                 String data = new String(bytes);
@@ -221,12 +222,12 @@ public class ZkHelper {
                     bizModel.setClassPath(getUrls("classPath", item));
                     bizModel.setDenyImportClasses(parseBizStateByKey("denyImportClasses", item));
                     bizModel.setDenyImportPackageNodes(parseBizStateByKey("denyImportPackageNodes",
-                            item));
+                        item));
                     bizModel.setDenyImportPackageStems(parseBizStateByKey("denyImportPackageStems",
-                            item));
+                        item));
                     bizModel.setDenyImportPackages(parseBizStateByKey("denyImportPackages", item));
                     bizModel
-                            .setDenyImportResources(parseBizStateByKey("denyImportResources", item));
+                        .setDenyImportResources(parseBizStateByKey("denyImportResources", item));
                     bizModel.setWebContextPath(FastJsonUtils.getString(item, "webContextPath"));
                     bizModel.setPriority(FastJsonUtils.getInteger(item, "priority"));
                     bizModel.setBizClassLoader(getClassLoader(item));

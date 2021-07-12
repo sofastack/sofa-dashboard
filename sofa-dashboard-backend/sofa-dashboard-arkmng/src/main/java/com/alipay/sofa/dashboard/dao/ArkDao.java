@@ -174,5 +174,5 @@ public interface ArkDao {
      * @param appName
      * @return
      */
-    List<AppArkDO> queryRelationByModuleIdAndAppName(int mId,String appName);
+    List<AppArkDO> queryRelationByModuleIdAndAppName(int mId, String appName);
 }
