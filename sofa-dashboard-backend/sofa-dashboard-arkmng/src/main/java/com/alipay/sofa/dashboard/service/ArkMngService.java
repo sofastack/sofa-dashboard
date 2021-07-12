@@ -91,9 +91,8 @@ public interface ArkMngService {
      */
     List<ArkPluginModel> fetchPluginsByName(String pluginName);
 
-    /**
+    /***
      * 关联应用和插件
-     *
      * @param moduleId
      * @param appName
      * @return

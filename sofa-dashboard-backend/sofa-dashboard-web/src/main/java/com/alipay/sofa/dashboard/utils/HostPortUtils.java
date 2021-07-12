@@ -164,8 +164,5 @@ public final class HostPortUtils {
 
     public static void main(String[] args) {
         String id = uniqueId(new HostAndPort("192.168.0.104", "8.16.32.64", 38081));
-        System.out.println(id);
-        HostAndPort hostAndPort = getById(id);
-        System.out.println(hostAndPort);
     }
 }

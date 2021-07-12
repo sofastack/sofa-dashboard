@@ -33,7 +33,7 @@ public class Swagger2Config {
     @Bean
     public Docket createRestApi() {
         return new Docket(DocumentationType.SWAGGER_2).useDefaultResponseMessages(false)
-            .apiInfo(apiInfo()).groupName("1.0版本").select()
+            .apiInfo(apiInfo()).groupName("default").select()
             .apis(RequestHandlerSelectors.basePackage("com.alipay.sofa.dashboard.controller"))
             .paths(PathSelectors.any()).build();
 
