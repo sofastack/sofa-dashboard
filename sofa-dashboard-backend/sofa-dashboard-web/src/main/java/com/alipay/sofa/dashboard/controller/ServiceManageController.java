@@ -18,12 +18,16 @@ package com.alipay.sofa.dashboard.controller;
 
 import com.alipay.sofa.common.utils.StringUtil;
 import com.alipay.sofa.dashboard.cache.RegistryDataCache;
+import com.alipay.sofa.dashboard.constants.SofaDashboardConstants;
 import com.alipay.sofa.dashboard.domain.RpcConsumer;
 import com.alipay.sofa.dashboard.domain.RpcProvider;
 import com.alipay.sofa.dashboard.domain.RpcService;
 import com.alipay.sofa.dashboard.model.ServiceAppModel;
 import com.alipay.sofa.dashboard.model.ServiceModel;
 import com.alipay.sofa.rpc.common.utils.StringUtils;
+import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,11 +50,14 @@ import java.util.Set;
  **/
 @RestController
 @RequestMapping("/api/service")
+@Api(value = SofaDashboardConstants.API_SERVICES_TAGS,tags =  SofaDashboardConstants.API_SERVICES_TAGS)
 public class ServiceManageController {
 
     @Autowired
     private RegistryDataCache registryDataCache;
 
+    @ApiOperation(value = "获取全部服务列表",tags = SofaDashboardConstants.API_SERVICES_TAGS)
+    @ApiOperationSupport(order = 1)
     @GetMapping("/all-service")
     public List<ServiceModel> queryServiceListByService(@RequestParam("query") String query) {
         List<ServiceModel> data = new ArrayList<>();
@@ -70,6 +77,8 @@ public class ServiceManageController {
      *
      * @return
      */
+    @ApiOperation(value = "获取服务列表-应用维度",tags = SofaDashboardConstants.API_SERVICES_TAGS)
+    @ApiOperationSupport(order = 2)
     @GetMapping("/all-app")
     public List<Map<String, String>> queryServiceListByApp(@RequestParam("query") String query) {
         List<Map<String, String>> data = new ArrayList<>();
@@ -110,6 +119,8 @@ public class ServiceManageController {
      * @param appName
      * @return
      */
+    @ApiOperation(value = "获取应用服务信息",tags = SofaDashboardConstants.API_SERVICES_TAGS)
+    @ApiOperationSupport(order = 2)
     @GetMapping("service-app")
     public ServiceAppModel queryServiceByAppName(@RequestParam("appName") String appName) {
         List<String> providersData = new ArrayList<>();
@@ -152,33 +163,39 @@ public class ServiceManageController {
         return registryDataCache.fetchConsumersByService(serviceName);
     }
 
-    /**
+    /***
      * 获取某个服务的所有提供方
-     *
+     * @param serviceName
      * @return
      */
+    @ApiOperation(value = "获取指定服务所有提供方",tags = SofaDashboardConstants.API_SERVICES_TAGS)
+    @ApiOperationSupport(order = 3)
     @GetMapping("query/providers")
     public List<RpcProvider> queryServiceProviders(@RequestParam("dataid") String serviceName) {
         String dataId = URLDecoder.decode(serviceName);
         return fetchProviderData(dataId);
     }
 
-    /**
-     * 获取某个服务的所有提供方
-     *
+    /***
+     * 获取某个服务的所有接受方
+     * @param serviceName
      * @return
      */
+    @ApiOperation(value = "获取指定服务所有接受方",tags = SofaDashboardConstants.API_SERVICES_TAGS)
+    @ApiOperationSupport(order = 4)
     @GetMapping("query/consumers")
     public List<RpcConsumer> queryServiceConsumers(@RequestParam("dataid") String serviceName) {
         String dataId = URLDecoder.decode(serviceName);
         return fetchConsumerData(dataId);
     }
 
-    /**
-     * 获取某个服务的所有提供方
-     *
+    /***
+     * 获取某个服务的所有信息
+     * @param serviceName
      * @return
      */
+    @ApiOperation(value = "根据名字获取指定服务",tags = SofaDashboardConstants.API_SERVICES_TAGS)
+    @ApiOperationSupport(order = 5)
     @GetMapping("query/services")
     public List<ServiceModel> queryService(@RequestParam("serviceName") String serviceName) {
         List<ServiceModel> data = new ArrayList<>();

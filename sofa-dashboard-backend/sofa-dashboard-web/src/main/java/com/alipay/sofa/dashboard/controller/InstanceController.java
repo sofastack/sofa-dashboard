@@ -25,6 +25,7 @@ import com.alipay.sofa.dashboard.client.model.logger.LoggersDescriptor;
 import com.alipay.sofa.dashboard.client.model.mappings.MappingsDescriptor;
 import com.alipay.sofa.dashboard.client.model.memory.MemoryDescriptor;
 import com.alipay.sofa.dashboard.client.model.thread.ThreadSummaryDescriptor;
+import com.alipay.sofa.dashboard.constants.SofaDashboardConstants;
 import com.alipay.sofa.dashboard.model.InstanceRecord;
 import com.alipay.sofa.dashboard.model.RecordResponse;
 import com.alipay.sofa.dashboard.model.StampedValueEntity;
@@ -33,6 +34,9 @@ import com.alipay.sofa.dashboard.spi.MonitorService;
 import com.alipay.sofa.dashboard.utils.HostPortUtils;
 import com.alipay.sofa.dashboard.utils.MapUtils;
 import com.alipay.sofa.dashboard.utils.TreeNodeConverter;
+import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -56,6 +60,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequestMapping("/api/instance")
+@Api(value = SofaDashboardConstants.API_INSTANCE_TAGS,tags = SofaDashboardConstants.API_INSTANCE_TAGS)
 public class InstanceController {
 
     @Autowired
@@ -63,6 +68,7 @@ public class InstanceController {
 
     @Autowired
     private MonitorService service;
+
 
     @GetMapping
     public List<InstanceRecord> instances(
@@ -76,6 +82,8 @@ public class InstanceController {
             .collect(Collectors.toList());
     }
 
+    @ApiOperation(value = "获取实例环境",tags = SofaDashboardConstants.API_INSTANCE_TAGS)
+    @ApiOperationSupport(order = 1)
     @GetMapping("/{instanceId}/env")
     public RecordResponse getEnv(
         @PathVariable("instanceId") String instanceId) {
@@ -104,7 +112,8 @@ public class InstanceController {
             .detail(TreeNodeConverter.convert(descriptor))
             .build();
     }
-
+    @ApiOperation(value = "获取实例信息",tags = SofaDashboardConstants.API_INSTANCE_TAGS)
+    @ApiOperationSupport(order = 2)
     @GetMapping("/{instanceId}/info")
     public RecordResponse getInfo(@PathVariable("instanceId") String instanceId) {
         HostAndPort hostAndPort = HostPortUtils.getById(instanceId);
@@ -127,7 +136,8 @@ public class InstanceController {
             .detail(TreeNodeConverter.convert(descriptor))
             .build();
     }
-
+    @ApiOperation(value = "获取实例健康状态",tags = SofaDashboardConstants.API_INSTANCE_TAGS)
+    @ApiOperationSupport(order = 3)
     @GetMapping("/{instanceId}/health")
     public RecordResponse getHealth(@PathVariable("instanceId") String instanceId) {
         HostAndPort hostAndPort = HostPortUtils.getById(instanceId);
@@ -148,7 +158,8 @@ public class InstanceController {
                 String.format("%s:%d", hostAndPort.getHost(), hostAndPort.getPort()))
             .detail(TreeNodeConverter.convert(descriptor)).build();
     }
-
+    @ApiOperation(value = "获取实例日志",tags = SofaDashboardConstants.API_INSTANCE_TAGS)
+    @ApiOperationSupport(order = 4)
     @GetMapping("/{instanceId}/loggers")
     public RecordResponse getLoggers(@PathVariable("instanceId") String instanceId) {
         HostAndPort hostAndPort = HostPortUtils.getById(instanceId);
@@ -157,7 +168,8 @@ public class InstanceController {
         return RecordResponse.newBuilder().overview(new HashMap<>(16))
             .detail(TreeNodeConverter.convert(descriptor)).build();
     }
-
+    @ApiOperation(value = "获取实例映射",tags = SofaDashboardConstants.API_INSTANCE_TAGS)
+    @ApiOperationSupport(order = 5)
     @GetMapping("/{instanceId}/mappings")
     public RecordResponse getMappings(@PathVariable("instanceId") String instanceId) {
         HostAndPort hostAndPort = HostPortUtils.getById(instanceId);
@@ -186,13 +198,15 @@ public class InstanceController {
             .detail(TreeNodeConverter.convert(descriptor))
             .build();
     }
-
+    @ApiOperation(value = "获取内存记录",tags = SofaDashboardConstants.API_INSTANCE_TAGS)
+    @ApiOperationSupport(order = 6)
     @GetMapping("/{instanceId}/memory")
     public List<StampedValueEntity<MemoryDescriptor>> getMemoryRecords(@PathVariable("instanceId") String instanceId) {
         HostAndPort hostAndPort = HostPortUtils.getById(instanceId);
         return service.fetchMemoryInfo(hostAndPort);
     }
-
+    @ApiOperation(value = "获取线程记录",tags = SofaDashboardConstants.API_INSTANCE_TAGS)
+    @ApiOperationSupport(order = 7)
     @GetMapping("/{instanceId}/thread")
     public List<StampedValueEntity<ThreadSummaryDescriptor>> getThreadRecords(@PathVariable("instanceId") String instanceId) {
         HostAndPort hostAndPort = HostPortUtils.getById(instanceId);

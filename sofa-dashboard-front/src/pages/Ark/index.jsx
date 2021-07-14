@@ -127,7 +127,6 @@ class Ark extends React.Component {
     const { form } = this.formRelatedAppRef.props;
     const { dispatch } = this.props;
     form.validateFields((err, values) => {
-      console.log("values"+values)
       if (err) {
         return;
       }
