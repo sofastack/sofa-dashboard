@@ -70,4 +70,11 @@ public class SofaDashboardConstants {
     public static final String ZOOKEEPER_PREFIX            = "zookeeper://";
     public static final String SOFA_PREFIX                 = "sofa://";
 
+    //    API接口类
+    public static final String API_ARK_TAGS                = "Ark相关接口";
+    public static final String API_APPLICATION_TAGS        = "Application相关接口";
+    public static final String API_ARK_APPLICATION_TAGS    ="Ark与application相关应用";
+    public static final String API_INSTANCE_TAGS           ="Instance相关接口";
+    public static final String API_SERVICES_TAGS           ="Services相关接口";
+
 }

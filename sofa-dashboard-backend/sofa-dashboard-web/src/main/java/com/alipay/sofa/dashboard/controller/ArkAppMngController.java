@@ -27,6 +27,9 @@ import com.alipay.sofa.dashboard.model.CommandRequest;
 import com.alipay.sofa.dashboard.response.ResponseEntity;
 import com.alipay.sofa.dashboard.service.ArkMngService;
 import com.alipay.sofa.dashboard.spi.CommandPushManager;
+import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,8 +47,10 @@ import java.util.Map;
  * @author: guolei.sgl (guolei.sgl@antfin.com) 18/12/21 下午2:26
  * @since:
  **/
+
 @RestController
 @RequestMapping("/api/arkapp")
+@Api(value = SofaDashboardConstants.API_ARK_APPLICATION_TAGS,tags = SofaDashboardConstants.API_ARK_APPLICATION_TAGS)
 public class ArkAppMngController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ArkAppMngController.class);
@@ -58,6 +63,8 @@ public class ArkAppMngController {
     private ZkHelper            zkHelper;
 
     @RequestMapping("/ark-app")
+    @ApiOperation(value = "获取插件的所有关联应用",tags = SofaDashboardConstants.API_ARK_APPLICATION_TAGS)
+    @ApiOperationSupport(order = 1)
     @Deprecated
     public AppModuleModel fetchArkApps(@RequestParam("pluginName") String pluginName,@RequestParam("appName") String appName,
                                        @RequestParam("version") String version) throws Exception {
@@ -91,7 +98,8 @@ public class ArkAppMngController {
         appModuleModel.setIpUnitList(ipUnitList);
         return appModuleModel;
     }
-
+    @ApiOperation(value = "推送命令",tags = SofaDashboardConstants.API_ARK_APPLICATION_TAGS)
+    @ApiOperationSupport(order = 2)
     @RequestMapping("/command")
     public boolean command(@RequestBody Map<String, Object> commandMap) {
         // parse commandMap
@@ -104,7 +112,8 @@ public class ArkAppMngController {
         }
         return true;
     }
-
+    @ApiOperation(value = "fetchBiz状态信息",tags = SofaDashboardConstants.API_ARK_APPLICATION_TAGS)
+    @ApiOperationSupport(order = 3)
     @RequestMapping("biz-state-detail")
     public ClientResponseModel fetchBizState(@RequestParam("ip") String ip,
                                              @RequestParam("appName") String appName) {
@@ -116,6 +125,8 @@ public class ArkAppMngController {
         return new ClientResponseModel();
     }
 
+    @ApiOperation(value = "获取Biz状态信息",tags = SofaDashboardConstants.API_ARK_APPLICATION_TAGS)
+    @ApiOperationSupport(order = 4)
     @RequestMapping("biz-state")
     public ResponseEntity<String> getBizState(@RequestParam("ip") String ip,
                                               @RequestParam("appName") String appName,

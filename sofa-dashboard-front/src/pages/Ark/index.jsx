@@ -154,6 +154,9 @@ class Ark extends React.Component {
           });
         } else {
           message.info('关联失败，请联系管理员');
+          this.setState({
+            confirmRelatedAppLoading: false,
+          });
         }
       });
     });
