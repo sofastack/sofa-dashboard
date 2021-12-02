@@ -1,5 +1,5 @@
-import { queryAll, queryServiceByAppName, queryProviderDetails, queryConsumerDetails } from '../services/governance';
-
+// eslint-disable-next-line no-unused-vars
+import { queryAll, queryServiceByAppName, queryProviderDetails, queryConsumerDetails, queryConfigs } from '../services/governance';
 const GovernanceModel = {
     namespace: 'governance',
     state: {
@@ -7,7 +7,9 @@ const GovernanceModel = {
         providerListData: [],
         consumerListData: [],
         providerDetail: [],
-        consumerDetail: []
+        consumerDetail: [],
+        providerConfig: [],
+        consumerConfig: []
     },
     reducers: {
         restate(state, action) {
@@ -36,6 +38,14 @@ const GovernanceModel = {
             return {
                 ...state,
                 consumerDetail: action.payload,
+            }
+        },
+
+        restateForConfigs(state, action) {
+            return {
+                ...state,
+                providerConfig: action.payload.providers,
+                consumerConfig: action.payload.consumers
             }
         },
     },
@@ -77,6 +87,14 @@ const GovernanceModel = {
             const response = yield call(queryConsumerDetails, payload);
             yield put({
                 type: 'restateForConsumerDetails',
+                payload: response,
+            });
+        },
+
+        *fetchConfigs({ payload }, { call, put }) {
+            const response = yield call(queryConfigs, payload);
+            yield put({
+                type: 'restateForConfigs',
                 payload: response,
             });
         },
