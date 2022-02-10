@@ -112,19 +112,6 @@
                 <artifactId>curator-recipes</artifactId>
                 <version>${curator.version}</version>
             </dependency>
-
-            <!--            <dependency>-->
-            <!--                <groupId>com.alipay.sofa.common</groupId>-->
-            <!--                <artifactId>log-sofa-boot-starter</artifactId>-->
-            <!--                <version>${sofa.common.version}</version>-->
-            <!--                <exclusions>-->
-            <!--                    <exclusion>-->
-            <!--                        <artifactId>sofa-common-tools</artifactId>-->
-            <!--                        <groupId>com.alipay.sofa.common</groupId>-->
-            <!--                    </exclusion>-->
-            <!--                </exclusions>-->
-            <!--            </dependency>-->
-            <!-- test -->
             <dependency>
                 <groupId>com.h2database</groupId>
                 <artifactId>h2</artifactId>
