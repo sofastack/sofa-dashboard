@@ -11,7 +11,7 @@
     <parent>
         <groupId>com.alipay.sofa</groupId>
         <artifactId>sofaboot-dependencies</artifactId>
-        <version>3.0.0</version>
+        <version>3.10.0</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <artifactId>sofa-dashboard</artifactId>

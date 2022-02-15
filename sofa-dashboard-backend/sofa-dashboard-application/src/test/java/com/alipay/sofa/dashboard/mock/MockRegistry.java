@@ -19,7 +19,6 @@ package com.alipay.sofa.dashboard.mock;
 import com.alipay.sofa.dashboard.client.model.common.Application;
 import com.alipay.sofa.dashboard.client.registry.AppPublisher;
 import com.alipay.sofa.dashboard.client.registry.AppSubscriber;
-import org.jboss.netty.util.internal.ConcurrentHashMap;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -33,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.stream.Collectors;
 
