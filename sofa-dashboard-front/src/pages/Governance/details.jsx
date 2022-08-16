@@ -5,11 +5,18 @@ const { Option } = Select;
 const { Search } = Input;
 const { TabPane } = Tabs;
 @connect(({ governance }) => ({
+  list: governance.list,
+  providerListData: governance.providerListData || [],
+  consumerListData: governance.consumerListData || [],
   providerDetail: governance.providerDetail,
-  consumerDetail: governance.consumerDetail
+  consumerDetail: governance.consumerDetail,
+  providerConfig: governance.providerConfig,
+  consumerConfig: governance.consumerConfig
 }))
 class ServiceDetails extends React.Component {
-
+  state = {
+    visible: false
+  };
   componentDidMount() {
     const { dispatch, location } = this.props;
     const queryParams = location.query;
@@ -21,7 +28,27 @@ class ServiceDetails extends React.Component {
       }
     });
   }
-  
+
+  showDrawer = (address) => {
+      this.setState({
+        visible: true,
+      });
+
+      const { dispatch } = this.props;
+      dispatch({
+        type: 'governance/fetchConfigs',
+        payload: {
+          "address": address
+        }
+      });
+    };
+
+  onClose = () => {
+      this.setState({
+        visible: false,
+      });
+    };
+
   render() {
     const {dispatch, location } = this.props;
     const queryParams = location.query;
@@ -53,6 +80,7 @@ class ServiceDetails extends React.Component {
       title: 'IP',
       dataIndex: 'address',
       key: 'address',
+      render: address => <a onClick={() => this.showDrawer(address)}>{address}</a>,
     },
     {
       title: '端口',
@@ -77,6 +105,7 @@ class ServiceDetails extends React.Component {
       title: 'IP',
       dataIndex: 'address',
       key: 'address',
+      render: address => <a onClick={() => this.showDrawer(address)}>{address}</a>,
     },
     {
       title: '端口',
@@ -113,6 +142,35 @@ class ServiceDetails extends React.Component {
               </TabPane>
             </Tabs>
           </Card>
+
+          <Drawer
+            title="服务详情"
+            placement="right"
+            closable={false}
+            onClose={this.onClose}
+            visible={this.state.visible}
+            width={640}
+          >
+            <Card title="发布服务配置详细信息">
+              <List
+                size="small"
+                dataSource={this.props.providerConfig}
+                style={{ minHeight: 30 }}
+                renderItem={item => <List.Item>{item}</List.Item>}
+              />
+            </Card>
+            <Card title="订阅服务配置详细信息" style={{ marginTop: 10 }}>
+                <List
+                  size="small"
+                  dataSource={this.props.consumerConfig}
+                  style={{ minHeight: 30 }}
+                  renderItem={item => <List.Item>{item}</List.Item>}
+                />
+            </Card>
+
+
+          </Drawer>
+
         </div>
     );
   }

@@ -22,3 +22,7 @@ export async function queryProviderDetails(params) {
 export async function queryConsumerDetails(params) {
     return request(`/api/service/query/consumers?${stringify(params)}`);
 }
+//获取服务配置信息
+export async function queryConfigs(params) {
+    return request(`/api/service/query/config?${stringify(params)}`);
+}
